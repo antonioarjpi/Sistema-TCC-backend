@@ -9,11 +9,23 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
-public class DefesaDTO {
+public class BancaPostDTO {
+
+    private String descricao;
 
     @JsonFormat(pattern="dd/MM/yyyy")
-    public Date data;
+    private Date dataBanca;
+    private Integer ordemApresentacao;
 
-    public Long banca;
+    //orientador
+    private String matriculaOrientador;
+
+    //Equipe
+    private Long equipe;
+
+    //memrbo banca
+    private String membroMatricula;
+
+
 
 }

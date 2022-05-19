@@ -10,15 +10,26 @@ import java.util.Date;
 import java.util.List;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
-public class EquipeDTO {
+public class EquipePostDTO {
 
+    //Equipe
     private String nome;
     private Integer quantidade;
+
     @JsonFormat(pattern="dd/MM/yyyy")
     private Date dataCadastro;
+
+    //Tema
     private String delimitacao;
-    private List<String> alunos;
+
+    //Aluno
+    //private List<Aluno> alunos = new ArrayList<>();
+    private List<String> matricula;
+
+    //Linha pesquisa orientador
     private String descricaoLinha;
+
+    //Area de conhecimento
     private String descricaoConhecimento;
 
 }

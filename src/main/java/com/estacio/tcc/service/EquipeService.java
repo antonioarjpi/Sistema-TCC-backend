@@ -1,6 +1,7 @@
 package com.estacio.tcc.service;
 
 import com.estacio.tcc.dto.EquipeDTO;
+import com.estacio.tcc.dto.EquipePostDTO;
 import com.estacio.tcc.model.*;
 import com.estacio.tcc.repository.AlunoRepository;
 import com.estacio.tcc.repository.EquipeRepository;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -27,7 +29,7 @@ public class EquipeService {
     }
 
     @Transactional
-    public Equipe save(EquipeDTO dto){
+    public Equipe save(EquipePostDTO dto){
         Equipe equipe = modelToDto(dto);
         List<Aluno> alunos = new ArrayList<>();
 
@@ -52,7 +54,14 @@ public class EquipeService {
         return equipe;
     }
 
-    public Equipe modelToDto(EquipeDTO dto){
+    public List<EquipeDTO> list(){
+        return repository.findAll()
+                .stream()
+                .map(x -> dtoToModel(x))
+                .collect(Collectors.toList());
+    }
+
+    public Equipe modelToDto(EquipePostDTO dto){
         AreaConhecimento area = new AreaConhecimento(null, dto.getDescricaoConhecimento());
         LinhaPesquisa linha = new LinhaPesquisa(null, dto.getDescricaoLinha(), area );
         Tema tema = new Tema(null, dto.getDelimitacao(), linha);
@@ -63,5 +72,20 @@ public class EquipeService {
         equipe.setQuantidade(dto.getQuantidade());
         equipe.setTema(tema);
         return equipe;
+    }
+
+    public EquipeDTO dtoToModel(Equipe equipe){
+        EquipeDTO dto = new EquipeDTO();
+        dto.setNome(equipe.getNome());
+        dto.setDataCadastro(equipe.getDataCadastro());
+        dto.setQuantidade(equipe.getQuantidade());
+        dto.setDelimitacao(equipe.getTema().getDelimitacao());
+        dto.setDescricaoLinha(equipe.getTema().getLinhaPesquisa().getDescricao());
+        dto.setDescricaoConhecimento(equipe.getTema().getDelimitacao());
+        dto.setAlunos(equipe.getAlunos()
+                .stream()
+                .map(aluno -> aluno.getNome())
+                .collect(Collectors.toList()));
+        return dto;
     }
 }

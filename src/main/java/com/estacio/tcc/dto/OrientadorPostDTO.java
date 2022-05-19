@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data @Builder @AllArgsConstructor @NoArgsConstructor
-public class OrientadorDTO {
+public class OrientadorPostDTO {
 
     private String nome;
     private String matricula;

@@ -1,6 +1,6 @@
 package com.estacio.tcc.controller;
 
-import com.estacio.tcc.dto.OrientadorDTO;
+import com.estacio.tcc.dto.OrientadorPostDTO;
 import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.service.OrientadorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class OrientadorController {
     private OrientadorService service;
 
     @PostMapping
-    public ResponseEntity<Orientador> save(@RequestBody OrientadorDTO orientador){
+    public ResponseEntity<Orientador> save(@RequestBody OrientadorPostDTO orientador){
         return ResponseEntity.ok(service.save(orientador));
     }
 

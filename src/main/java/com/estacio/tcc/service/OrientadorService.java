@@ -1,6 +1,6 @@
 package com.estacio.tcc.service;
 
-import com.estacio.tcc.dto.OrientadorDTO;
+import com.estacio.tcc.dto.OrientadorPostDTO;
 import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.model.Titulacao;
 import com.estacio.tcc.repository.OrientadorRepository;
@@ -35,13 +35,13 @@ public class OrientadorService {
     }
 
     @Transactional
-    public Orientador save(OrientadorDTO dto){
+    public Orientador save(OrientadorPostDTO dto){
         Orientador orientador = modelToDto(dto);
         orientador = repository.save(orientador);
         return orientador;
     }
 
-    public Orientador modelToDto(OrientadorDTO dto){
+    public Orientador modelToDto(OrientadorPostDTO dto){
         Orientador orientador = new Orientador();
         orientador.setMatricula(dto.getMatricula());
         orientador.setNome(dto.getNome());

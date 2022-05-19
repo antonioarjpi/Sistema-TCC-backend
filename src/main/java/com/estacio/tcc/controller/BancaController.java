@@ -1,6 +1,6 @@
 package com.estacio.tcc.controller;
 
-import com.estacio.tcc.dto.BancaDTO;
+import com.estacio.tcc.dto.BancaPostDTO;
 import com.estacio.tcc.model.Banca;
 import com.estacio.tcc.service.BancaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class BancaController {
     private BancaService service;
 
     @PostMapping
-    public ResponseEntity<Banca> save(@RequestBody BancaDTO banca){
+    public ResponseEntity<Banca> save(@RequestBody BancaPostDTO banca){
         return ResponseEntity.ok(service.save(banca));
     }
 }

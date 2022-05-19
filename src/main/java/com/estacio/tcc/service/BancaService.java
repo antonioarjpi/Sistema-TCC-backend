@@ -1,6 +1,6 @@
 package com.estacio.tcc.service;
 
-import com.estacio.tcc.dto.BancaDTO;
+import com.estacio.tcc.dto.BancaPostDTO;
 import com.estacio.tcc.model.Banca;
 import com.estacio.tcc.model.Equipe;
 import com.estacio.tcc.model.MembroBanca;
@@ -23,7 +23,7 @@ public class BancaService {
                 .orElseThrow(() -> new ObjectNotFoundException("Banca não localizada"));
     }
 
-    public Banca save(BancaDTO dto){
+    public Banca save(BancaPostDTO dto){
         Banca banca = modelToDto(dto);
 
         Orientador orientador = orientadorService.findByMatricula(dto.getMatriculaOrientador());
@@ -37,7 +37,7 @@ public class BancaService {
     }
 
 
-    public Banca modelToDto(BancaDTO dto){
+    public Banca modelToDto(BancaPostDTO dto){
         Banca banca = new Banca();
         banca.setDescricao(dto.getDescricao());
         banca.setDataBanca(dto.getDataBanca());
