@@ -25,7 +25,7 @@ public class AcompanhamentoOrientacao {
     @JoinColumn(name = "orientacao_id")
     private Orientacao orientacao;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.PERSIST)
     @JoinColumn(name = "devolutiva_id")
     private Devolutiva devolutiva;
 

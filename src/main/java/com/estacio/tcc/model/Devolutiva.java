@@ -20,13 +20,11 @@ public class Devolutiva {
     private String descricao;
     private String versaoDoc;
 
-
     @ManyToOne
     @JoinColumn(name = "orientacao_id")
     private Orientacao orientacao;
 
-
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.PERSIST)
     @JoinColumn(name = "local_correcao_id")
     private LocalCorrecao localCorrecao;
 
