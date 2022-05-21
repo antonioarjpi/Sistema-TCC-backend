@@ -19,7 +19,7 @@ public class EstruturaTcc {
     private Long id;
     private String descricao;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.PERSIST)
     @JoinColumn(name = "tipo_tcc_id")
     private TipoTcc tipoTcc;
 

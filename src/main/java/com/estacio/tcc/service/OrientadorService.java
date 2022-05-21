@@ -1,5 +1,6 @@
 package com.estacio.tcc.service;
 
+import com.estacio.tcc.dto.OrientadorDTO;
 import com.estacio.tcc.dto.OrientadorPostDTO;
 import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.model.Titulacao;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -25,8 +27,11 @@ public class OrientadorService {
         }
     }
 
-    public List<Orientador> list(){
-        return repository.findAll();
+    public List<OrientadorDTO> list(){
+        return repository.findAll()
+                .stream()
+                .map(x -> dtoToModel(x))
+                .collect(Collectors.toList());
     }
 
     public Orientador findById(Long id){
@@ -39,6 +44,16 @@ public class OrientadorService {
         Orientador orientador = modelToDto(dto);
         orientador = repository.save(orientador);
         return orientador;
+    }
+
+    public OrientadorDTO dtoToModel(Orientador orientador){
+        OrientadorDTO dto = new OrientadorDTO();
+        dto.setNome(orientador.getNome());
+        dto.setMatricula(orientador.getMatricula());
+        dto.setDescricaoTitulacao(orientador.getTitulacao().getDescricao());
+        dto.setGrau(orientador.getTitulacao().getGrau());
+        dto.setIES(orientador.getTitulacao().getIes());
+        return dto;
     }
 
     public Orientador modelToDto(OrientadorPostDTO dto){

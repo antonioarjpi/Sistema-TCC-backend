@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Data
@@ -12,13 +13,29 @@ import java.util.Date;
 @NoArgsConstructor
 public class AcompanhamentoOrientacaoPostDTO {
 
-    private Long orientacao;
-    private Long devolutiva;
+    //Acompanhamento Orientacao
     private String statusOrientacao;
+
+    @NotBlank
+    private String descricaoDaDevolutiva;
+
+    @NotBlank
+    private String versaoDoc;
+
+    private String localDeCorrecao;
+
+    private String correcaoSugerida;
+
     @JsonFormat(pattern="dd/MM/yyyy")
     private Date dataMudancao;
-    private String descricaoDaDevolutiva;
-    private String versaoDoc;
-    private String localDeCorrecao;
-    private String correcaoSugerida;
+
+    //Orientacao
+    private String matriculaOrientador;
+
+    @JsonFormat(pattern="dd/MM/yyyy")
+    private Date dataOrientacao;
+    private String tipoTCC;
+    private String descricaoTCC;
+
+
 }

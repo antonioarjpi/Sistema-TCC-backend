@@ -1,5 +1,6 @@
 package com.estacio.tcc.controller;
 
+import com.estacio.tcc.dto.OrientadorDTO;
 import com.estacio.tcc.dto.OrientadorPostDTO;
 import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.service.OrientadorService;
@@ -22,7 +23,7 @@ public class OrientadorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Orientador>> list(){
+    public ResponseEntity<List<OrientadorDTO>> list(){
         return ResponseEntity.ok(service.list());
     }
 

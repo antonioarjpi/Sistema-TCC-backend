@@ -1,5 +1,6 @@
 package com.estacio.tcc.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,8 @@ public class Orientador {
     private Long id;
     private String nome;
     private String matricula;
+
+    @JsonIgnore
     private String senha;
 
     @ManyToOne(cascade=CascadeType.PERSIST)

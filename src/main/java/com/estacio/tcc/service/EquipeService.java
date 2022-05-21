@@ -43,6 +43,8 @@ public class EquipeService {
             throw new ObjectNotFoundException("Não pode ter equipe sem aluno.");
         }
 
+        equipe.setQuantidade(alunos.size());
+
         equipe.setAlunos(alunos);
         equipe = repository.save(equipe);
 
@@ -78,7 +80,6 @@ public class EquipeService {
         EquipeDTO dto = new EquipeDTO();
         dto.setNome(equipe.getNome());
         dto.setDataCadastro(equipe.getDataCadastro());
-        dto.setQuantidade(equipe.getQuantidade());
         dto.setDelimitacao(equipe.getTema().getDelimitacao());
         dto.setDescricaoLinha(equipe.getTema().getLinhaPesquisa().getDescricao());
         dto.setDescricaoConhecimento(equipe.getTema().getDelimitacao());

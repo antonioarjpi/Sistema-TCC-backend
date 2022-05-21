@@ -17,7 +17,7 @@ public class AcompanhamentoOrientacaoController {
     private AcompanhamentoOrientacaoService service;
 
     @GetMapping
-    public ResponseEntity<List<AcompanhamentoOrientacao>> list(){
+    public ResponseEntity<List<AcompanhamentoOrientacaoPostDTO>> list(){
         return ResponseEntity.ok(service.list());
     }
 
