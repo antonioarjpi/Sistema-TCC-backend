@@ -27,4 +27,11 @@ public class OrientadorController {
         return ResponseEntity.ok(service.list());
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        Orientador orientador = service.findById(id);
+        service.delete(orientador);
+        return ResponseEntity.noContent().build();
+    }
+
 }

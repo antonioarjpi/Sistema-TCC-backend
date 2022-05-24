@@ -10,6 +10,7 @@ public class OrientadorPostDTO {
 
     private String nome;
     private String matricula;
+    private String email;
     private String senha;
 
     //titulacao

@@ -8,12 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/alunos")
 public class AlunoController {
 
     @Autowired
     private AlunoService alunoService;
+
+    @GetMapping
+    public ResponseEntity<List<Aluno>> findAll(){
+        return ResponseEntity.ok(alunoService.list());
+    }
 
     @PostMapping("/autenticar")
     public ResponseEntity autenticar(@RequestBody AlunoDTO aluno){

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +41,13 @@ public class OrientadorService {
     }
 
     @Transactional
+    public void delete(Orientador orientador){
+        Objects.requireNonNull(orientador.getId());
+        repository.delete(orientador);
+
+    }
+
+    @Transactional
     public Orientador save(OrientadorPostDTO dto){
         Orientador orientador = modelToDto(dto);
         orientador = repository.save(orientador);
@@ -49,6 +57,7 @@ public class OrientadorService {
     public OrientadorDTO dtoToModel(Orientador orientador){
         OrientadorDTO dto = new OrientadorDTO();
         dto.setNome(orientador.getNome());
+        dto.setEmail(orientador.getEmail());
         dto.setMatricula(orientador.getMatricula());
         dto.setDescricaoTitulacao(orientador.getTitulacao().getDescricao());
         dto.setGrau(orientador.getTitulacao().getGrau());
@@ -60,6 +69,7 @@ public class OrientadorService {
         Orientador orientador = new Orientador();
         orientador.setMatricula(dto.getMatricula());
         orientador.setNome(dto.getNome());
+        orientador.setEmail(dto.getEmail());
         orientador.setSenha(dto.getSenha());
 
         orientador.setTitulacao(Titulacao

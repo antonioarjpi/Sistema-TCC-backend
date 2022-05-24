@@ -17,6 +17,7 @@ public class Orientador {
     private Long id;
     private String nome;
     private String matricula;
+    private String email;
 
     @JsonIgnore
     private String senha;
