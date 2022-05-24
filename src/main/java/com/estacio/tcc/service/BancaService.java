@@ -1,5 +1,6 @@
 package com.estacio.tcc.service;
 
+import com.estacio.tcc.dto.BancaDTO;
 import com.estacio.tcc.dto.BancaPostDTO;
 import com.estacio.tcc.model.Banca;
 import com.estacio.tcc.model.Equipe;
@@ -9,6 +10,9 @@ import com.estacio.tcc.repository.BancaRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -36,6 +40,12 @@ public class BancaService {
         return banca;
     }
 
+    public List<BancaDTO> list(){
+        return repository.findAll()
+                .stream()
+                .map(x -> dtoToModel(x))
+                .collect(Collectors.toList());
+    }
 
     public Banca modelToDto(BancaPostDTO dto){
         Banca banca = new Banca();
@@ -47,6 +57,25 @@ public class BancaService {
                 .matricula(dto.getMembroMatricula())
                 .build());
         return banca;
+    }
+
+    public BancaDTO dtoToModel(Banca banca){
+        BancaDTO dto = new BancaDTO();
+        dto.setBanca(banca.getId());
+        dto.setDescricao(banca.getDescricao());
+        dto.setDataBanca(banca.getDataBanca());
+        dto.setOrdemDeApresentacao(banca.getOrdemApresentacao());
+        dto.setNomeOrientador(banca.getOrientador().getNome());
+        dto.setNomeEquipe(banca.getEquipe().getNome());
+        dto.setTamanhoEquipe(banca.getEquipe().getQuantidade());
+        dto.setDataEquipe(banca.getEquipe().getDataCadastro());
+        dto.setIntegrantes(banca.getEquipe().getAlunos()
+                        .stream()
+                        .map(aluno -> aluno.getNome())
+                        .collect(Collectors.toList()));
+        dto.setMembroBanca(banca.getMembroBanca().getMatricula());
+        return dto;
+
     }
 
 }
