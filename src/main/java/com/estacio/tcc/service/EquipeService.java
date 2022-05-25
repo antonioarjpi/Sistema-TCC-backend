@@ -85,7 +85,7 @@ public class EquipeService {
         dto.setDescricaoConhecimento(equipe.getTema().getDelimitacao());
         dto.setAlunos(equipe.getAlunos()
                 .stream()
-                .map(aluno -> aluno.getNome())
+                .map(aluno -> aluno.getNome() + ". ")
                 .collect(Collectors.toList()));
         return dto;
     }

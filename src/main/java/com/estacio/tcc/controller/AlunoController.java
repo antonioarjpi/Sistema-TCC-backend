@@ -38,6 +38,11 @@ public class AlunoController {
         }
     }
 
+    @GetMapping("/matricula/{matricula}")
+    public ResponseEntity<Aluno> findMatricula(@PathVariable String matricula){
+        return ResponseEntity.ok(alunoService.findByMatricula(matricula));
+    }
+
     @PostMapping
     public ResponseEntity<Aluno> save(@RequestBody Aluno aluno){
         return ResponseEntity.ok(alunoService.save(aluno));

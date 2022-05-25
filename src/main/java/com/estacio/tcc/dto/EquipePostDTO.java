@@ -16,7 +16,7 @@ public class EquipePostDTO {
     private String nome;
     private Integer quantidade;
 
-    @JsonFormat(pattern="dd/MM/yyyy")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date dataCadastro;
 
     //Tema

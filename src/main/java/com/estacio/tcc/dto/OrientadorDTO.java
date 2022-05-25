@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Data @Builder @AllArgsConstructor @NoArgsConstructor
 public class OrientadorDTO {
 
+    private Long id;
     private String nome;
     private String matricula;
     private String email;

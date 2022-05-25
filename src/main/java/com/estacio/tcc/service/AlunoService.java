@@ -49,7 +49,11 @@ public class AlunoService {
 
     @Transactional
     public Aluno findByMatricula(String matricula){
-        return repository.findByMatricula(matricula);
+        Aluno aluno = repository.findByMatricula(matricula);
+        if (aluno == null){
+            throw new ObjectNotFoundException("Matricula inexistente");
+        }
+        return aluno;
     }
 
     @Transactional

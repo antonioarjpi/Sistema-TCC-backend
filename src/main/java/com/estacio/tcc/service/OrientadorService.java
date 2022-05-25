@@ -56,6 +56,7 @@ public class OrientadorService {
 
     public OrientadorDTO dtoToModel(Orientador orientador){
         OrientadorDTO dto = new OrientadorDTO();
+        dto.setId(orientador.getId());
         dto.setNome(orientador.getNome());
         dto.setEmail(orientador.getEmail());
         dto.setMatricula(orientador.getMatricula());
