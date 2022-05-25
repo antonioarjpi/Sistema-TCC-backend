@@ -26,5 +26,12 @@ public class BancaController {
     public ResponseEntity<List<BancaDTO>> list(){
         return ResponseEntity.ok(service.list());
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        Banca banca = service.findById(id);
+        service.delete(banca);
+        return ResponseEntity.noContent().build();
+    }
 }
 

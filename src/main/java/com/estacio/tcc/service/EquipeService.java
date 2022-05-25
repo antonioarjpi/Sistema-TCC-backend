@@ -3,8 +3,7 @@ package com.estacio.tcc.service;
 import com.estacio.tcc.dto.EquipeDTO;
 import com.estacio.tcc.dto.EquipePostDTO;
 import com.estacio.tcc.model.*;
-import com.estacio.tcc.repository.AlunoRepository;
-import com.estacio.tcc.repository.EquipeRepository;
+import com.estacio.tcc.repository.*;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +20,9 @@ public class EquipeService {
 
     private EquipeRepository repository;
     private AlunoService alunoService;
+    private LinhaPesquisaRepository linhaPesquisaRepository;
+    private TemaRepository temaRepository;
+    private AreaConhecimentoRepository areaConhecimentoRepository;
 
     private AlunoRepository alunoRepository;
 
@@ -56,6 +59,15 @@ public class EquipeService {
         return equipe;
     }
 
+    @Transactional
+    public void delete(Equipe equipe){
+        Objects.requireNonNull(equipe.getId());
+        repository.delete(equipe);
+        temaRepository.delete(equipe.getTema());
+        linhaPesquisaRepository.delete(equipe.getTema().getLinhaPesquisa());
+        areaConhecimentoRepository.delete(equipe.getTema().getLinhaPesquisa().getAreaConhecimento());
+    }
+
     public List<EquipeDTO> list(){
         return repository.findAll()
                 .stream()
@@ -78,6 +90,7 @@ public class EquipeService {
 
     public EquipeDTO dtoToModel(Equipe equipe){
         EquipeDTO dto = new EquipeDTO();
+        dto.setId(equipe.getId());
         dto.setNome(equipe.getNome());
         dto.setDataCadastro(equipe.getDataCadastro());
         dto.setDelimitacao(equipe.getTema().getDelimitacao());
@@ -85,7 +98,7 @@ public class EquipeService {
         dto.setDescricaoConhecimento(equipe.getTema().getDelimitacao());
         dto.setAlunos(equipe.getAlunos()
                 .stream()
-                .map(aluno -> aluno.getNome() + ". ")
+                .map(aluno -> aluno.getNome())
                 .collect(Collectors.toList()));
         return dto;
     }

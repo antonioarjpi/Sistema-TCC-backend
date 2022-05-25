@@ -22,6 +22,13 @@ public class DefesaController {
         return ResponseEntity.ok(service.save(dto));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        Defesa defesa = service.findById(id);
+        service.delete(defesa);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public ResponseEntity<List<DefesaDTO>> list(){
         return ResponseEntity.ok(service.list());

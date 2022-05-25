@@ -11,7 +11,7 @@ import java.util.Date;
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class DefesaPostDTO {
 
-    @JsonFormat(pattern="dd/MM/yyyy")
+    @JsonFormat(pattern="yyyy-MM-dd")
     public Date data;
 
     public Long banca;

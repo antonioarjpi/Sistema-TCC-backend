@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class BancaDTO {
 
-    private Long banca;
+    private Long id;
     private String descricao;
     @JsonFormat(pattern="dd/MM/yyyy")
     private Date dataBanca;

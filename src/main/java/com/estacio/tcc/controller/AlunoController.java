@@ -48,6 +48,13 @@ public class AlunoController {
         return ResponseEntity.ok(alunoService.save(aluno));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        Aluno aluno = alunoService.findById(id);
+        alunoService.delete(aluno);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/atualizar/{matricula}")
     public ResponseEntity<Aluno> update(@PathVariable String matricula, @RequestBody Aluno aluno){
         aluno.setMatricula(matricula);

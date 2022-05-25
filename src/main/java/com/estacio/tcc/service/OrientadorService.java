@@ -5,6 +5,7 @@ import com.estacio.tcc.dto.OrientadorPostDTO;
 import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.model.Titulacao;
 import com.estacio.tcc.repository.OrientadorRepository;
+import com.estacio.tcc.repository.TitulacaoRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,14 @@ import java.util.stream.Collectors;
 public class OrientadorService {
 
     private OrientadorRepository repository;
+    private TitulacaoRepository titulacaoRepository;
 
     public Orientador findByMatricula(String matricula){
-        try {
-            return repository.findByMatricula(matricula);
-        }catch (ObjectNotFoundException e){
+        Orientador orientador = repository.findByMatricula(matricula);
+        if (orientador == null) {
             throw new ObjectNotFoundException("Orientador não encontrado");
         }
+        return orientador;
     }
 
     public List<OrientadorDTO> list(){
@@ -44,7 +46,7 @@ public class OrientadorService {
     public void delete(Orientador orientador){
         Objects.requireNonNull(orientador.getId());
         repository.delete(orientador);
-
+        titulacaoRepository.delete(orientador.getTitulacao());
     }
 
     @Transactional

@@ -14,7 +14,7 @@ import java.util.Date;
 @Builder
 public class DefesaDTO {
 
-    private Long banca;
+    private Long id;
     private String descricao;
     @JsonFormat(pattern="dd/MM/yyyy")
     private Date dataBanca;

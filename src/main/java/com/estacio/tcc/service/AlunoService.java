@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 @Service
@@ -71,6 +72,12 @@ public class AlunoService {
             throw new RuleOfBusinessException("Senha incorreta!");
         }
         return aluno;
+    }
+
+    @Transactional
+    public void delete(Aluno aluno){
+        Objects.requireNonNull(aluno.getId());
+        repository.delete(aluno);
     }
 
     @Transactional

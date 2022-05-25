@@ -27,4 +27,10 @@ public class EquipeController {
         return ResponseEntity.ok(service.list());
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        Equipe equipe = service.findById(id);
+        service.delete(equipe);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -13,7 +13,7 @@ public class BancaPostDTO {
 
     private String descricao;
 
-    @JsonFormat(pattern="dd/MM/yyyy")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date dataBanca;
     private Integer ordemApresentacao;
 
