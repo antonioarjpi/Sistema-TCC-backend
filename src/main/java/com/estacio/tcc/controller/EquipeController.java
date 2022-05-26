@@ -5,6 +5,7 @@ import com.estacio.tcc.dto.EquipePostDTO;
 import com.estacio.tcc.model.Equipe;
 import com.estacio.tcc.service.EquipeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class EquipeController {
 
     @PostMapping
     public ResponseEntity<Equipe> save(@RequestBody EquipePostDTO dto){
-        return ResponseEntity.ok(service.save(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
     }
 
     @GetMapping

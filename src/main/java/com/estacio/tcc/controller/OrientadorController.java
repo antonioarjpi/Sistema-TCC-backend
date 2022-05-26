@@ -5,6 +5,7 @@ import com.estacio.tcc.dto.OrientadorPostDTO;
 import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.service.OrientadorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class OrientadorController {
 
     @PostMapping
     public ResponseEntity<Orientador> save(@RequestBody OrientadorPostDTO orientador){
-        return ResponseEntity.ok(service.save(orientador));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(orientador));
     }
 
     @GetMapping

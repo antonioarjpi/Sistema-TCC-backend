@@ -5,6 +5,7 @@ import com.estacio.tcc.model.Aluno;
 import com.estacio.tcc.service.AlunoService;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +46,7 @@ public class AlunoController {
 
     @PostMapping
     public ResponseEntity<Aluno> save(@RequestBody Aluno aluno){
-        return ResponseEntity.ok(alunoService.save(aluno));
+        return ResponseEntity.status(HttpStatus.CREATED).body(alunoService.save(aluno));
     }
 
     @DeleteMapping("/{id}")

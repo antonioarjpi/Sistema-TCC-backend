@@ -5,6 +5,7 @@ import com.estacio.tcc.dto.BancaPostDTO;
 import com.estacio.tcc.model.Banca;
 import com.estacio.tcc.service.BancaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class BancaController {
 
     @PostMapping
     public ResponseEntity<Banca> save(@RequestBody BancaPostDTO banca){
-        return ResponseEntity.ok(service.save(banca));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(banca));
     }
 
     @GetMapping

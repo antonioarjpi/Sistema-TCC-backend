@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.OffsetDateTime;
+import java.util.Locale;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -26,9 +29,9 @@ public class ControllerExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<StandardError> sqlIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e, HttpServletRequest request) {
-        StandardError err = new StandardError(OffsetDateTime.now(), HttpStatus.BAD_REQUEST.value(), "SQLIntegrityConstraintViolationException", e.getMessage(), request.getRequestURI());
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<StandardError> sqlException(SQLException e, HttpServletRequest request) {
+        StandardError err = new StandardError(OffsetDateTime.now(), HttpStatus.BAD_REQUEST.value(), "SQLIntegrityConstraintViolationException", "Existe itens atrelados", request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 

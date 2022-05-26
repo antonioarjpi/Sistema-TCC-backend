@@ -11,17 +11,15 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AcompanhamentoOrientacaoPostDTO {
+public class AcompanhamentoDTO {
 
-    private Long orientacao;
+    private Long id;
     private String statusOrientacao;
-    @NotBlank
     private String descricaoDaDevolutiva;
-    @NotBlank
     private String versaoDoc;
     private String localDeCorrecao;
     private String correcaoSugerida;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date dataMudanca;
+    @JsonFormat(pattern="dd/MM/yyyy")
+    private Date dataMudancao;
 
 }

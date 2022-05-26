@@ -5,6 +5,7 @@ import com.estacio.tcc.dto.DefesaPostDTO;
 import com.estacio.tcc.model.Defesa;
 import com.estacio.tcc.service.DefesaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class DefesaController {
 
     @PostMapping
     public ResponseEntity<Defesa> save(@RequestBody DefesaPostDTO dto){
-        return ResponseEntity.ok(service.save(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
     }
 
     @DeleteMapping("/{id}")
