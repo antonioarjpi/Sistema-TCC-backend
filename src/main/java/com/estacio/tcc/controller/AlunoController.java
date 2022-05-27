@@ -39,6 +39,11 @@ public class AlunoController {
         }
     }
 
+    @GetMapping("/matricula/{matricula}")
+    public ResponseEntity<Aluno> findMatricula(@PathVariable String matricula){
+        return ResponseEntity.ok(alunoService.findByMatricula(matricula));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Aluno> findMatricula(@PathVariable Long id){
         return ResponseEntity.ok(alunoService.search(id));
