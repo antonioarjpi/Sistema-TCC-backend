@@ -43,7 +43,7 @@ public class AlunoService {
     }
 
     @Transactional
-    public Aluno findById(Long id){
+    public Aluno search(Long id){
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Aluno não encontrado"));
     }
@@ -82,9 +82,9 @@ public class AlunoService {
 
     @Transactional
     public Aluno put(Aluno aluno){
-        Aluno novoAluno = findByMatricula(aluno.getMatricula());
-        aluno.setId(novoAluno.getId());
+        Aluno novoAluno = search(aluno.getId());
         update(novoAluno, aluno);
+        aluno.setMatricula(novoAluno.getMatricula());
         return repository.save(aluno);
     }
 

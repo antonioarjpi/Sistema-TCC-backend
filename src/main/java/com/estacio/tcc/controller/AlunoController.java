@@ -29,7 +29,7 @@ public class AlunoController {
         return ResponseEntity.ok().body("Usuário logado");
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/email/{email}")
     public ResponseEntity findByMatricula(@PathVariable String email){
         try{
             Aluno aluno = alunoService.findByEmail(email);
@@ -39,9 +39,9 @@ public class AlunoController {
         }
     }
 
-    @GetMapping("/matricula/{matricula}")
-    public ResponseEntity<Aluno> findMatricula(@PathVariable String matricula){
-        return ResponseEntity.ok(alunoService.findByMatricula(matricula));
+    @GetMapping("/{id}")
+    public ResponseEntity<Aluno> findMatricula(@PathVariable Long id){
+        return ResponseEntity.ok(alunoService.search(id));
     }
 
     @PostMapping
@@ -51,16 +51,15 @@ public class AlunoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
-        Aluno aluno = alunoService.findById(id);
+        Aluno aluno = alunoService.search(id);
         alunoService.delete(aluno);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/atualizar/{matricula}")
-    public ResponseEntity<Aluno> update(@PathVariable String matricula, @RequestBody Aluno aluno){
-        aluno.setMatricula(matricula);
-        aluno = alunoService.put(aluno);
-        return ResponseEntity.ok().body(aluno);
+    @PutMapping("/{id}")
+    public ResponseEntity update(@PathVariable Long id, @RequestBody Aluno aluno){
+        aluno.setId(id);
+        return ResponseEntity.ok(alunoService.put(aluno));
     }
 
 }

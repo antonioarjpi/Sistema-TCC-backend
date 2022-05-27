@@ -1,5 +1,6 @@
 package com.estacio.tcc.controller.exceptionHandler;
 
+import com.estacio.tcc.service.exceptions.AuthenticateErrorException;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,12 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(RuleOfBusinessException.class)
     public ResponseEntity<StandardError> ruleOfBusinessException(RuleOfBusinessException e, HttpServletRequest request) {
         StandardError err = new StandardError(OffsetDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Rule Of Business Exception.", e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
+    @ExceptionHandler(AuthenticateErrorException.class)
+    public ResponseEntity<StandardError> authenticateErrorException(AuthenticateErrorException e, HttpServletRequest request) {
+        StandardError err = new StandardError(OffsetDateTime.now(), HttpStatus.BAD_REQUEST.value(), "AuthenticateErrorException.", e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
