@@ -4,6 +4,7 @@ import com.estacio.tcc.model.Aluno;
 import com.estacio.tcc.repository.AlunoRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,15 +15,19 @@ import java.util.Objects;
 import java.util.Random;
 
 @Service
+@AllArgsConstructor
 public class AlunoService {
 
-    @Autowired
     private AlunoRepository repository;
 
     @Transactional
     public Aluno save(Aluno aluno){
+        String matricula = matriculaValidada();
+        aluno.setMatricula(matricula);
+        return repository.save(aluno);
+    }
 
-        //Gera matrícula automática de 8 dígitos
+    public String gerarMatricula(){
         Random random = new Random();
         LocalDate dateTime = LocalDate.now();
 
@@ -32,10 +37,16 @@ public class AlunoService {
             String valueRandom = String.valueOf(random.nextInt(9));
             matricula +=  valueRandom;
         }
+        return matricula;
+    }
 
-        aluno.setMatricula(matricula);
-
-        return repository.save(aluno);
+    public String matriculaValidada(){
+        String matricula = gerarMatricula();
+        boolean exists = repository.existsByMatricula(matricula);
+        while (exists){
+            matriculaValidada();
+        }
+        return matricula;
     }
 
     public List<Aluno> list(){

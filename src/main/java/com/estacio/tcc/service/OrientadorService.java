@@ -11,8 +11,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,8 +54,36 @@ public class OrientadorService {
     @Transactional
     public Orientador save(OrientadorPostDTO dto){
         Orientador orientador = modelToDto(dto);
+        String matricula = matriculaValidada();
+        orientador.setMatricula(matricula);
         orientador = repository.save(orientador);
         return orientador;
+    }
+
+    @Transactional
+    public Orientador updateDTO(Orientador orientador){
+        Objects.requireNonNull(orientador.getId());
+        titulacaoRepository.save(orientador.getTitulacao());
+        return repository.save(orientador);
+    }
+
+    public String geraMatricula(){
+        Random random = new Random();
+        String matricula = new String();
+        for (int i=0; i<4; i++){ //Gera 4 digitos aleatórios do final da matrícula
+            String valueRandom = String.valueOf(random.nextInt(9));
+            matricula +=  valueRandom;
+        }
+        return matricula;
+    }
+
+    public String matriculaValidada(){
+        String matricula = geraMatricula();
+        boolean exists = repository.existsByMatricula(matricula);
+        while (exists){
+            matriculaValidada();
+        }
+        return matricula;
     }
 
     public OrientadorDTO dtoToModel(Orientador orientador){
@@ -84,4 +114,5 @@ public class OrientadorService {
 
         return orientador;
     }
+
 }
