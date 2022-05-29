@@ -16,12 +16,12 @@ public class OrientacaoDTO {
     @JsonFormat(pattern="dd/MM/yyyy")
     private Date dataOrientacao;
     //Orientador
-    private String nome;
+    private String nomeOrientador;
     private String matriculaOrientador;
     //Estrutura do tcc
     private String descricaoTCC;
     //Tipo do tcc
-    private String tipoTCC;
+    private String tccDescricao;
 
 
 }

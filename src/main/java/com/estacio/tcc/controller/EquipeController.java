@@ -28,6 +28,11 @@ public class EquipeController {
         return ResponseEntity.ok(service.list());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Equipe> findById(@PathVariable Long id){
+        return ResponseEntity.ok(service.findById(id));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
         Equipe equipe = service.findById(id);

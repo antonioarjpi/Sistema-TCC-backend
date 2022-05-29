@@ -11,6 +11,7 @@ import com.estacio.tcc.repository.OrientacaoRepository;
 import com.estacio.tcc.repository.TipoTccRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +27,12 @@ public class OrientacaoService {
     private EstruturaTccRepository estruturaTccRepository;
     private TipoTccRepository tipoTccRepository;
     private OrientadorService service;
+    private ModelMapper modelMapper;
 
     public List<OrientacaoDTO> list(){
         return repository.findAll()
                 .stream()
-                .map(x -> dtoToModel(x))
+                .map(x -> dtoToEntity(x))
                 .collect(Collectors.toList());
     }
 
@@ -68,15 +70,8 @@ public class OrientacaoService {
         return orientacao;
     }
 
-    public OrientacaoDTO dtoToModel(Orientacao orientacao){
-        OrientacaoDTO dto = new OrientacaoDTO();
-        dto.setId(orientacao.getId());
-        dto.setNome(orientacao.getOrientador().getNome());
-        dto.setMatriculaOrientador(orientacao.getOrientador().getMatricula());
-        dto.setDataOrientacao(orientacao.getDataOrientacao());
-        dto.setDescricaoTCC(orientacao.getEstruturaTcc().getDescricao());
-        dto.setTipoTCC(orientacao.getEstruturaTcc().getTipoTcc().getDescricao());
-        return dto;
+    public OrientacaoDTO dtoToEntity(Orientacao orientacao){
+        return modelMapper.map(orientacao, OrientacaoDTO.class);
     }
 
 }

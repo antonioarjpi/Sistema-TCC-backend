@@ -93,9 +93,9 @@ public class EquipeService {
         dto.setId(equipe.getId());
         dto.setNome(equipe.getNome());
         dto.setDataCadastro(equipe.getDataCadastro());
-        dto.setDelimitacao(equipe.getTema().getDelimitacao());
-        dto.setDescricaoLinha(equipe.getTema().getLinhaPesquisa().getDescricao());
-        dto.setDescricaoConhecimento(equipe.getTema().getDelimitacao());
+        dto.setTema(equipe.getTema().getDelimitacao());
+        dto.setLinhaPesquisa(equipe.getTema().getLinhaPesquisa().getDescricao());
+        dto.setConhecimento(equipe.getTema().getDelimitacao());
         dto.setAlunos(equipe.getAlunos()
                 .stream()
                 .map(aluno -> aluno.getNome())
