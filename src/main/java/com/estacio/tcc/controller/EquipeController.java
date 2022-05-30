@@ -29,13 +29,13 @@ public class EquipeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Equipe> findById(@PathVariable Long id){
+    public ResponseEntity<EquipeDTO> findById(@PathVariable Long id){
         return ResponseEntity.ok(service.findById(id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
-        Equipe equipe = service.findById(id);
+        Equipe equipe = service.search(id);
         service.delete(equipe);
         return ResponseEntity.noContent().build();
     }

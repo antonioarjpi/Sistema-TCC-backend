@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,7 +25,12 @@ public class Equipe{
     private Integer quantidade;
     private Date dataCadastro;
 
-    @OneToMany(mappedBy = "equipe", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinTable(
+            name = "aluno_equipe",
+            joinColumns = @JoinColumn(name = "equipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "aluno_id"))
     private List<Aluno> alunos;
 
     @ManyToOne(cascade=CascadeType.PERSIST)

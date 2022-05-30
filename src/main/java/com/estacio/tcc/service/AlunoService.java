@@ -6,6 +6,8 @@ import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,6 +105,14 @@ public class AlunoService {
         novoAluno.setNome(aluno.getNome());
         novoAluno.setSenha(aluno.getSenha());
         novoAluno.setEmail(aluno.getEmail());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Aluno> search(Aluno aluno) {
+        Example example = Example.of(aluno, ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+        return repository.findAll(example);
     }
 
 }

@@ -6,6 +6,7 @@ import com.estacio.tcc.model.*;
 import com.estacio.tcc.repository.*;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +24,19 @@ public class EquipeService {
     private LinhaPesquisaRepository linhaPesquisaRepository;
     private TemaRepository temaRepository;
     private AreaConhecimentoRepository areaConhecimentoRepository;
+    private ModelMapper modelMapper;
 
     private AlunoRepository alunoRepository;
 
-    public Equipe findById(Long id){
+    public Equipe search(Long id){
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Equipe não encontrada."));
+    }
+
+    public EquipeDTO findById(Long id){
+        Equipe equipe = repository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Equipe não encontrada."));
+        return dtoToEntiy(equipe);
     }
 
     @Transactional
@@ -51,10 +59,6 @@ public class EquipeService {
         equipe.setAlunos(alunos);
         equipe = repository.save(equipe);
 
-        for (Aluno aluno : alunos){
-            aluno.setEquipe(equipe);
-        }
-
         alunoRepository.saveAll(alunos);
         return equipe;
     }
@@ -71,8 +75,12 @@ public class EquipeService {
     public List<EquipeDTO> list(){
         return repository.findAll()
                 .stream()
-                .map(x -> dtoToModel(x))
+                .map(x -> dtoToEntiy(x))
                 .collect(Collectors.toList());
+    }
+
+    public EquipeDTO dtoToEntiy(Equipe equipe){
+        return modelMapper.map(equipe, EquipeDTO.class);
     }
 
     public Equipe modelToDto(EquipePostDTO dto){
@@ -86,20 +94,5 @@ public class EquipeService {
         equipe.setQuantidade(dto.getQuantidade());
         equipe.setTema(tema);
         return equipe;
-    }
-
-    public EquipeDTO dtoToModel(Equipe equipe){
-        EquipeDTO dto = new EquipeDTO();
-        dto.setId(equipe.getId());
-        dto.setNome(equipe.getNome());
-        dto.setDataCadastro(equipe.getDataCadastro());
-        dto.setTema(equipe.getTema().getDelimitacao());
-        dto.setLinhaPesquisa(equipe.getTema().getLinhaPesquisa().getDescricao());
-        dto.setConhecimento(equipe.getTema().getDelimitacao());
-        dto.setAlunos(equipe.getAlunos()
-                .stream()
-                .map(aluno -> aluno.getNome())
-                .collect(Collectors.toList()));
-        return dto;
     }
 }

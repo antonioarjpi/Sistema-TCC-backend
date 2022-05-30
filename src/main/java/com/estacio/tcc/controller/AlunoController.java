@@ -19,8 +19,15 @@ public class AlunoController {
     private AlunoService alunoService;
 
     @GetMapping
-    public ResponseEntity<List<Aluno>> findAll(){
-        return ResponseEntity.ok(alunoService.list());
+    public ResponseEntity search(@RequestParam(required = false) String nome,
+                                 @RequestParam(required = false) String matricula,
+                                 @RequestParam(required = false) String email){
+        Aluno filter = new Aluno();
+        filter.setNome(nome);
+        filter.setMatricula(matricula);
+        filter.setEmail(email);
+        List<Aluno> search = alunoService.search(filter);
+        return ResponseEntity.ok(search);
     }
 
     @PostMapping("/autenticar")

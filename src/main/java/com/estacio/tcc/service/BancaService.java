@@ -38,7 +38,7 @@ public class BancaService {
         Orientador orientador = orientadorService.findByMatricula(dto.getMatriculaOrientador());
         banca.setOrientador(orientador);
 
-        Equipe equipe = equipeService.findById(dto.getEquipe());
+        Equipe equipe = equipeService.search(dto.getEquipe());
         banca.setEquipe(equipe);
 
         banca = repository.save(banca);

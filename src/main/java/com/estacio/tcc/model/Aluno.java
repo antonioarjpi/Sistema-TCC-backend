@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data @AllArgsConstructor @Builder
@@ -22,9 +23,8 @@ public class Aluno{
     private String matricula;
 
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "equipe_id")
-    private Equipe equipe;
+    @ManyToMany(mappedBy = "alunos")
+    private List<Equipe> equipe;
 
 
 }

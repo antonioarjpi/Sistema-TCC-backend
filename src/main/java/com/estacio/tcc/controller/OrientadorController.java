@@ -2,6 +2,7 @@ package com.estacio.tcc.controller;
 
 import com.estacio.tcc.dto.OrientadorDTO;
 import com.estacio.tcc.dto.OrientadorPostDTO;
+import com.estacio.tcc.model.Aluno;
 import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.model.Titulacao;
 import com.estacio.tcc.service.OrientadorService;
@@ -32,9 +33,24 @@ public class OrientadorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrientadorDTO>> list(){
-        return ResponseEntity.ok(service.list());
+    public ResponseEntity search(@RequestParam(required = false) String nome,
+                                 @RequestParam(required = false) String matricula,
+                                 @RequestParam(required = false) String grau,
+                                 @RequestParam(required = false) String ies,
+                                 @RequestParam(required = false) String descricaoTitulacao,
+                                 @RequestParam(required = false) String email){
+        Orientador filter = new Orientador();
+        Titulacao titulacao = new Titulacao(null, descricaoTitulacao, grau, ies);
+        filter.setNome(nome);
+        filter.setMatricula(matricula);
+        filter.setEmail(email);
+        filter.setTitulacao(titulacao);
+
+        List<OrientadorDTO> search = service.list(filter);
+        return ResponseEntity.ok(search);
     }
+
+
 
     @PutMapping("/{id}")
     public ResponseEntity atualizar (@PathVariable Long id, @RequestBody OrientadorPostDTO dto){

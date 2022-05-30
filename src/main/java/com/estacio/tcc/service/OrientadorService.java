@@ -2,12 +2,15 @@ package com.estacio.tcc.service;
 
 import com.estacio.tcc.dto.OrientadorDTO;
 import com.estacio.tcc.dto.OrientadorPostDTO;
+import com.estacio.tcc.model.Aluno;
 import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.model.Titulacao;
 import com.estacio.tcc.repository.OrientadorRepository;
 import com.estacio.tcc.repository.TitulacaoRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,10 +35,14 @@ public class OrientadorService {
         return orientador;
     }
 
-    public List<OrientadorDTO> list(){
-        return repository.findAll()
+    @Transactional(readOnly = true)
+    public List<OrientadorDTO> list(Orientador orientador) {
+        Example example = Example.of(orientador, ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+        return (List<OrientadorDTO>) repository.findAll(example)
                 .stream()
-                .map(x -> dtoToModel(x))
+                .map(x -> dtoToModel((Orientador) x))
                 .collect(Collectors.toList());
     }
 

@@ -19,7 +19,7 @@ public class EquipeDTO {
     @JsonFormat(pattern="dd/MM/yyyy")
     private Date dataCadastro;
     private String tema;
-    private List<String> alunos;
+    private List<Aluno> alunos;
     private String linhaPesquisa;
     private String conhecimento;
 
