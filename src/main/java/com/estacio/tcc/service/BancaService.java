@@ -2,14 +2,17 @@ package com.estacio.tcc.service;
 
 import com.estacio.tcc.dto.BancaDTO;
 import com.estacio.tcc.dto.BancaPostDTO;
+import com.estacio.tcc.dto.OrientadorDTO;
 import com.estacio.tcc.model.Banca;
 import com.estacio.tcc.model.Equipe;
-import com.estacio.tcc.model.MembroBanca;
 import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.repository.BancaRepository;
 import com.estacio.tcc.repository.MembroBancaRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,20 +28,27 @@ public class BancaService {
     private OrientadorService orientadorService;
     private EquipeService equipeService;
     private MembroBancaRepository membroBancaRepository;
+    private ModelMapper modelMapper;
 
-    public Banca findById(Long id){
+    public BancaDTO findById(Long id){
+        Banca banca = repository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Banca não encontrada"));
+        return dtoToModel(banca);
+    }
+
+    public Banca search(Long id){
         return repository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException("Banca não localizada"));
+                .orElseThrow(() -> new ObjectNotFoundException("Banca não encontrada"));
     }
 
     @Transactional
     public Banca save(BancaPostDTO dto){
         Banca banca = modelToDto(dto);
 
-        Orientador orientador = orientadorService.findByMatricula(dto.getMatriculaOrientador());
+        Orientador orientador = orientadorService.findByMatricula(dto.getOrientadorMatricula());
         banca.setOrientador(orientador);
 
-        Equipe equipe = equipeService.search(dto.getEquipe());
+        Equipe equipe = equipeService.search(dto.getEquipeId());
         banca.setEquipe(equipe);
 
         banca = repository.save(banca);
@@ -52,42 +62,27 @@ public class BancaService {
         membroBancaRepository.delete(banca.getMembroBanca());
     }
 
-    public List<BancaDTO> list(){
-        return repository.findAll()
+    public List<BancaDTO> list(Banca banca){
+        Example example = Example.of(banca, ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+        return (List<BancaDTO>) repository.findAll(example)
                 .stream()
-                .map(x -> dtoToModel(x))
+                .map(x -> dtoToModel((Banca) x))
                 .collect(Collectors.toList());
     }
 
+    public Banca update(Banca banca){
+        Objects.requireNonNull(banca.getId());
+        return repository.save(banca);
+    }
+
     public Banca modelToDto(BancaPostDTO dto){
-        Banca banca = new Banca();
-        banca.setDescricao(dto.getDescricao());
-        banca.setDataBanca(dto.getDataBanca());
-        banca.setOrdemApresentacao(dto.getOrdemApresentacao());
-        banca.setMembroBanca(MembroBanca
-                .builder()
-                .matricula(dto.getMembroMatricula())
-                .build());
-        return banca;
+        return modelMapper.map(dto, Banca.class);
     }
 
     public BancaDTO dtoToModel(Banca banca){
-        BancaDTO dto = new BancaDTO();
-        dto.setId(banca.getId());
-        dto.setDescricao(banca.getDescricao());
-        dto.setDataBanca(banca.getDataBanca());
-        dto.setOrdemDeApresentacao(banca.getOrdemApresentacao());
-        dto.setNomeOrientador(banca.getOrientador().getNome());
-        dto.setNomeEquipe(banca.getEquipe().getNome());
-        dto.setTamanhoEquipe(banca.getEquipe().getQuantidade());
-        dto.setDataEquipe(banca.getEquipe().getDataCadastro());
-        dto.setIntegrantes(banca.getEquipe().getAlunos()
-                        .stream()
-                        .map(aluno -> aluno.getNome())
-                        .collect(Collectors.toList()));
-        dto.setMembroBanca(banca.getMembroBanca().getMatricula());
-        return dto;
-
+        return modelMapper.map(banca, BancaDTO.class);
     }
 
 }

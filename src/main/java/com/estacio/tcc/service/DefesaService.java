@@ -28,7 +28,7 @@ public class DefesaService {
 
     public Defesa save(DefesaPostDTO dto){
         Defesa defesa = modelToDTO(dto);
-        Banca banca = bancaService.findById(dto.getBanca());
+        Banca banca = bancaService.search(dto.getBanca());
         defesa.setBanca(banca);
         defesa = repository.save(defesa);
         return defesa;

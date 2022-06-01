@@ -1,7 +1,6 @@
 package com.estacio.tcc.dto;
 
 import com.estacio.tcc.model.Aluno;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +15,6 @@ public class EquipeDTO {
     private Long id;
     private String nome;
     private Long quantidade;
-    @JsonFormat(pattern="dd/MM/yyyy")
     private Date dataCadastro;
     private String tema;
     private List<Aluno> alunos;

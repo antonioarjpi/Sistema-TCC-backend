@@ -9,6 +9,7 @@ import com.estacio.tcc.repository.OrientadorRepository;
 import com.estacio.tcc.repository.TitulacaoRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class OrientadorService {
 
     private OrientadorRepository repository;
     private TitulacaoRepository titulacaoRepository;
+    private ModelMapper modelMapper;
 
     public Orientador findByMatricula(String matricula){
         Orientador orientador = repository.findByMatricula(matricula);
@@ -94,32 +96,11 @@ public class OrientadorService {
     }
 
     public OrientadorDTO dtoToModel(Orientador orientador){
-        OrientadorDTO dto = new OrientadorDTO();
-        dto.setId(orientador.getId());
-        dto.setNome(orientador.getNome());
-        dto.setEmail(orientador.getEmail());
-        dto.setMatricula(orientador.getMatricula());
-        dto.setDescricaoTitulacao(orientador.getTitulacao().getDescricao());
-        dto.setGrau(orientador.getTitulacao().getGrau());
-        dto.setIES(orientador.getTitulacao().getIes());
-        return dto;
+        return modelMapper.map(orientador, OrientadorDTO.class);
     }
 
     public Orientador modelToDto(OrientadorPostDTO dto){
-        Orientador orientador = new Orientador();
-        orientador.setMatricula(dto.getMatricula());
-        orientador.setNome(dto.getNome());
-        orientador.setEmail(dto.getEmail());
-        orientador.setSenha(dto.getSenha());
-
-        orientador.setTitulacao(Titulacao
-                .builder()
-                .descricao(dto.getDescricaoTitulacao())
-                .grau(dto.getGrau())
-                .ies(dto.getIES())
-                .build());
-
-        return orientador;
+        return modelMapper.map(dto, Orientador.class);
     }
 
 }

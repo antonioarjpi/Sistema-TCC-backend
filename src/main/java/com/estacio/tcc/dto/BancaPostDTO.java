@@ -1,6 +1,5 @@
 package com.estacio.tcc.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,20 +11,10 @@ import java.util.Date;
 public class BancaPostDTO {
 
     private String descricao;
-
-    @JsonFormat(pattern="yyyy-MM-dd")
     private Date dataBanca;
     private Integer ordemApresentacao;
-
-    //orientador
-    private String matriculaOrientador;
-
-    //Equipe
-    private Long equipe;
-
-    //memrbo banca
+    private String orientadorMatricula;
+    private Long equipeId;
     private String membroMatricula;
-
-
 
 }

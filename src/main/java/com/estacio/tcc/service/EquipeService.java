@@ -7,6 +7,8 @@ import com.estacio.tcc.repository.*;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +38,7 @@ public class EquipeService {
     public EquipeDTO findById(Long id){
         Equipe equipe = repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Equipe não encontrada."));
-        return dtoToEntiy(equipe);
+        return dtoToModel(equipe);
     }
 
     @Transactional
@@ -72,14 +74,30 @@ public class EquipeService {
         areaConhecimentoRepository.delete(equipe.getTema().getLinhaPesquisa().getAreaConhecimento());
     }
 
+    public Equipe updateDTO(Equipe equipe){
+        Objects.requireNonNull(equipe.getId());
+        return repository.save(equipe);
+    }
+
     public List<EquipeDTO> list(){
         return repository.findAll()
                 .stream()
-                .map(x -> dtoToEntiy(x))
+                .map(x -> dtoToModel(x))
                 .collect(Collectors.toList());
     }
 
-    public EquipeDTO dtoToEntiy(Equipe equipe){
+    @Transactional(readOnly = true)
+    public List<EquipeDTO> list(Equipe equipe) {
+        Example example = Example.of(equipe, ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+        return (List<EquipeDTO>) repository.findAll(example)
+                .stream()
+                .map(x -> dtoToModel((Equipe) x))
+                .collect(Collectors.toList());
+    }
+
+    public EquipeDTO dtoToModel(Equipe equipe){
         return modelMapper.map(equipe, EquipeDTO.class);
     }
 

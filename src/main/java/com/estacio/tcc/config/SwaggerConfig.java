@@ -49,8 +49,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "API da Loja Virtual",
-                "Esta API é utilizada no curso de Spring Boot do prof. Nelio Alves",
+                "API de gerenciamento de TCC",
+                "Esta API é utilizada pra controles de TCC",
                 "Versão 2.0",
                 "http://github.com/terms",
                 new Contact("Antônio Sousa", "github.com/antonioarjpi", "antonioarjpi@gmail.com"),

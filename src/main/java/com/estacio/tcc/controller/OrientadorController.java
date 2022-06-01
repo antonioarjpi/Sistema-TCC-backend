@@ -50,18 +50,19 @@ public class OrientadorController {
         return ResponseEntity.ok(search);
     }
 
-
-
     @PutMapping("/{id}")
     public ResponseEntity atualizar (@PathVariable Long id, @RequestBody OrientadorPostDTO dto){
         Orientador byId = service.findById(id);
-        Titulacao byId1 = titulaçãoService.findById(byId.getTitulacao().getId());
+        Titulacao titulacao = titulaçãoService.findById(byId.getTitulacao().getId());
+        titulacao.setDescricao(dto.getTitulacaoDescricao());
+        titulacao.setGrau(dto.getTitulacaoGrau());
+        titulacao.setIes(dto.getTitulacaoIes());
         Orientador orientador = service.modelToDto(dto);
         orientador.setId(byId.getId());
-        orientador.setTitulacao(byId1);
+        orientador.setTitulacao(titulacao);
         orientador.setMatricula(byId.getMatricula());
         service.updateDTO(orientador);
-        return ResponseEntity.ok(orientador);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
