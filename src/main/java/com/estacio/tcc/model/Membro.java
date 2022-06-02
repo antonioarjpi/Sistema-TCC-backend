@@ -15,7 +15,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class MembroBanca {
+public class Membro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,6 +14,4 @@ public class DefesaPostDTO {
     @JsonFormat(pattern="yyyy-MM-dd")
     public Date data;
 
-    public Long banca;
-
 }

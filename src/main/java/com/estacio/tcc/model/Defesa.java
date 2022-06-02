@@ -19,9 +19,5 @@ public class Defesa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "banca_id")
-    private Banca banca;
-
     private Date dataDefesa;
 }

@@ -1,6 +1,5 @@
 package com.estacio.tcc.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +33,11 @@ public class Banca {
     private Orientador orientador;
 
     @ManyToOne(cascade=CascadeType.PERSIST)
-    @JoinColumn(name = "membro_banca_id")
-    private MembroBanca membroBanca;
+    @JoinColumn(name = "membro_id")
+    private Membro membro;
+
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "defesa_id")
+    public Defesa defesa;
 
 }

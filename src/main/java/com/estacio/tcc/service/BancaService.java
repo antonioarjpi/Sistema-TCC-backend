@@ -2,22 +2,22 @@ package com.estacio.tcc.service;
 
 import com.estacio.tcc.dto.BancaDTO;
 import com.estacio.tcc.dto.BancaPostDTO;
-import com.estacio.tcc.dto.OrientadorDTO;
+import com.estacio.tcc.dto.DefesaPostDTO;
 import com.estacio.tcc.model.Banca;
+import com.estacio.tcc.model.Defesa;
 import com.estacio.tcc.model.Equipe;
 import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.repository.BancaRepository;
-import com.estacio.tcc.repository.MembroBancaRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,7 +27,7 @@ public class BancaService {
     private BancaRepository repository;
     private OrientadorService orientadorService;
     private EquipeService equipeService;
-    private MembroBancaRepository membroBancaRepository;
+    private MembroService membroService;
     private ModelMapper modelMapper;
 
     public BancaDTO findById(Long id){
@@ -45,21 +45,24 @@ public class BancaService {
     public Banca save(BancaPostDTO dto){
         Banca banca = modelToDto(dto);
 
-        Orientador orientador = orientadorService.findByMatricula(dto.getOrientadorMatricula());
+        Orientador orientador = orientadorService.findByMatricula(dto.getMatriculaOrientador());
         banca.setOrientador(orientador);
 
-        Equipe equipe = equipeService.search(dto.getEquipeId());
+        Equipe equipe = equipeService.search(dto.getEquipe());
         banca.setEquipe(equipe);
 
-        banca = repository.save(banca);
-        return banca;
+        return repository.save(banca);
     }
 
     @Transactional
-    public void delete(Banca banca){
-        Objects.requireNonNull(banca.getId());
-        repository.delete(banca);
-        membroBancaRepository.delete(banca.getMembroBanca());
+    public void delete(Long id){
+        Banca banca = search(id);
+        try {
+            repository.deleteById(id);
+            membroService.delete(banca.getMembro());
+        }catch (DataIntegrityViolationException e){
+            throw new DataIntegrityViolationException("Erro! Banca Possui Defesas cadastradas");
+        }
     }
 
     public List<BancaDTO> list(Banca banca){
@@ -72,9 +75,43 @@ public class BancaService {
                 .collect(Collectors.toList());
     }
 
-    public Banca update(Banca banca){
-        Objects.requireNonNull(banca.getId());
+    @Transactional
+    public Banca attBanca(BancaPostDTO dto){
+        Banca banca = modelToDto(dto);
+        Banca novaBanca = search(banca.getId());
+
+        Orientador orientador = orientadorService.findByMatricula(dto.getMatriculaOrientador());
+        banca.setOrientador(orientador);
+
+        Equipe equipe = equipeService.search(dto.getEquipe());
+        banca.setEquipe(equipe);
+
+        putBanca(novaBanca, banca);
         return repository.save(banca);
+    }
+
+    @Transactional
+    public Banca schedule(Long id, DefesaPostDTO dto){
+        Banca banca = search(id);
+        if (banca.getDefesa() == null) {
+            Defesa defesa = new Defesa();
+            defesa.setDataDefesa(dto.getData());
+            banca.setDefesa(defesa);
+        }else {
+            banca.getDefesa().setDataDefesa(dto.getData());
+        }
+        return repository.save(banca);
+    }
+
+
+    private void putBanca(Banca novaBanca, Banca banca){
+        novaBanca.setDataBanca(banca.getDataBanca());
+        novaBanca.setDescricao(banca.getDescricao());
+        novaBanca.setOrdemApresentacao(banca.getOrdemApresentacao());
+        novaBanca.setEquipe(banca.getEquipe());
+        novaBanca.setOrientador(banca.getOrientador());
+        novaBanca.setMembro(banca.getMembro());
+
     }
 
     public Banca modelToDto(BancaPostDTO dto){

@@ -19,10 +19,12 @@ public class BancaDTO {
     private Date dataBanca;
     private Integer ordemApresentacao;
     private String orientadorNome;
+    private String orientadorMatricula;
     private List equipeAlunos;
-    private String equipeNome;
+    private String equipeId;
     private Integer equipeQuantidade;
     private Date equipeDataCadastro;
-    private String membroBancaMatricula;
+    private String membroMatricula;
+    private Date defesaDataDefesa;
 
 }

@@ -10,11 +10,12 @@ import java.util.Date;
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class BancaPostDTO {
 
+    private Long id;
     private String descricao;
     private Date dataBanca;
     private Integer ordemApresentacao;
-    private String orientadorMatricula;
-    private Long equipeId;
+    private String matriculaOrientador;
+    private Long equipe;
     private String membroMatricula;
 
 }
