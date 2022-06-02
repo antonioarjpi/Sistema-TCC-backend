@@ -21,7 +21,7 @@ public class Orientacao {
 
     private Date dataOrientacao;
 
-    @ManyToOne(cascade=CascadeType.PERSIST)
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "estrutura_tcc_id")
     private EstruturaTcc estruturaTcc;
 

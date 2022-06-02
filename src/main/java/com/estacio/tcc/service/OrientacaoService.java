@@ -12,6 +12,8 @@ import com.estacio.tcc.repository.TipoTccRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,15 +31,23 @@ public class OrientacaoService {
     private OrientadorService service;
     private ModelMapper modelMapper;
 
-    public List<OrientacaoDTO> list(){
-        return repository.findAll()
+    public List<OrientacaoDTO> list(Orientacao orientacao){
+        Example<Orientacao> example = Example.of(orientacao, ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+        return repository.findAll(example)
                 .stream()
-                .map(x -> dtoToEntity(x))
+                .map(x -> dtoToModel(x))
                 .collect(Collectors.toList());
     }
 
     public Orientacao findById(Long id){
         return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Orientação não encontrada"));
+    }
+
+    public OrientacaoDTO search(Long id){
+        Orientacao orientacao = findById(id);
+        return dtoToModel(orientacao);
     }
 
     @Transactional
@@ -49,15 +59,29 @@ public class OrientacaoService {
     }
 
     @Transactional
+    public Orientacao update(OrientacaoPostDTO dto){
+        Orientacao novaOrientacao = modelToDto(dto);
+        Orientacao orientacao = findById(novaOrientacao.getId());
+
+        Orientador orientador = service.findByMatricula(dto.getMatriculaOrientador());
+        novaOrientacao.setOrientador(orientador);
+
+        novaOrientacao.getEstruturaTcc().setId(orientacao.getEstruturaTcc().getId());
+        novaOrientacao.getEstruturaTcc().getTipoTcc()
+                .setId(orientacao.getEstruturaTcc().getTipoTcc().getId());
+        putOrientacao(orientacao, orientacao);
+        return repository.save(orientacao);
+    }
+
+    @Transactional
     public void delete(Orientacao orientacao){
         Objects.requireNonNull(orientacao);
         repository.delete(orientacao);
-        estruturaTccRepository.delete(orientacao.getEstruturaTcc());
-        tipoTccRepository.delete(orientacao.getEstruturaTcc().getTipoTcc());
     }
 
     public Orientacao modelToDto(OrientacaoPostDTO dto){
         Orientacao orientacao = new Orientacao();
+        orientacao.setId(dto.getId());
         orientacao.setDataOrientacao(dto.getDataOrientacao());
         orientacao.setEstruturaTcc(EstruturaTcc
                 .builder()
@@ -70,8 +94,14 @@ public class OrientacaoService {
         return orientacao;
     }
 
-    public OrientacaoDTO dtoToEntity(Orientacao orientacao){
+    public OrientacaoDTO dtoToModel(Orientacao orientacao){
         return modelMapper.map(orientacao, OrientacaoDTO.class);
+    }
+
+    private void putOrientacao(Orientacao nova, Orientacao orientacao){
+        nova.setDataOrientacao(orientacao.getDataOrientacao());
+        nova.setOrientador(orientacao.getOrientador());
+        nova.setEstruturaTcc(orientacao.getEstruturaTcc());
     }
 
 }
