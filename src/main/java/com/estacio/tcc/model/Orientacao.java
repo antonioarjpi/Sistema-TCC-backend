@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Entity
@@ -19,6 +20,7 @@ public class Orientacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     private Date dataOrientacao;
 
     @ManyToOne(cascade=CascadeType.ALL)
@@ -28,6 +30,12 @@ public class Orientacao {
     @ManyToOne
     @JoinColumn(name = "orientador_id")
     private Orientador orientador;
+
+    private Long equipe;
+
+    @ManyToOne
+    @JoinColumn(name = "acompanhamento_id")
+    private AcompanhamentoOrientacao acompanhamentoOrientacao;
 
 
 }

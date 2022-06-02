@@ -20,5 +20,6 @@ public class EquipeDTO {
     private List<Aluno> alunos;
     private String linhaPesquisa;
     private String conhecimento;
+    private Long orientacaoId;
 
 }

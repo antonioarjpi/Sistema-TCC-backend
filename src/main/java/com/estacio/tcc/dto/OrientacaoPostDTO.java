@@ -16,5 +16,5 @@ public class OrientacaoPostDTO {
     private String matriculaOrientador;
     private String tipoTCC;
     private String descricaoTCC;
-
+    private Long equipe;
 }

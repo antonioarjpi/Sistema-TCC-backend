@@ -1,22 +1,18 @@
 package com.estacio.tcc.controller;
 
+import com.estacio.tcc.dto.AcompanhamentoDTO;
 import com.estacio.tcc.dto.EquipeDTO;
 import com.estacio.tcc.dto.EquipePostDTO;
-import com.estacio.tcc.dto.OrientadorDTO;
 import com.estacio.tcc.model.*;
-import com.estacio.tcc.repository.TemaRepository;
 import com.estacio.tcc.service.EquipeService;
 import com.estacio.tcc.service.TemaService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/equipes")
@@ -54,6 +50,11 @@ public class EquipeController {
     @GetMapping("/{id}")
     public ResponseEntity<EquipeDTO> findById(@PathVariable Long id){
         return ResponseEntity.ok(service.findById(id));
+    }
+
+    @GetMapping("/devolutivas/{id}")
+    public ResponseEntity<AcompanhamentoDTO> findByIdFullSearch(@PathVariable Long id){
+        return ResponseEntity.ok(service.findByIdFullSearch(id));
     }
 
     @PutMapping("/{id}")

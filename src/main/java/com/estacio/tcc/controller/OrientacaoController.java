@@ -38,7 +38,7 @@ public class OrientacaoController {
         orientador.setNome(nomeOrientador);
         orientador.setMatricula(matriculaOrientador);
 
-        Orientacao orientacao = new Orientacao(null, dataOrientacao, estruturaTcc, orientador);
+        Orientacao orientacao = new Orientacao(null, dataOrientacao, estruturaTcc, orientador, null, null);
         List<OrientacaoDTO> filter = service.list(orientacao);
         return ResponseEntity.ok(filter);
     }

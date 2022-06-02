@@ -1,5 +1,6 @@
 package com.estacio.tcc.service;
 
+import com.estacio.tcc.dto.AcompanhamentoDTO;
 import com.estacio.tcc.dto.EquipeDTO;
 import com.estacio.tcc.dto.EquipePostDTO;
 import com.estacio.tcc.model.*;
@@ -97,8 +98,19 @@ public class EquipeService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public AcompanhamentoDTO findByIdFullSearch(Long id){
+        Equipe equipe = repository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Equipe não encontrada."));
+        return dtoToModelFull(equipe);
+    }
+
     public EquipeDTO dtoToModel(Equipe equipe){
         return modelMapper.map(equipe, EquipeDTO.class);
+    }
+
+    public AcompanhamentoDTO dtoToModelFull(Equipe equipe){
+        return modelMapper.map(equipe, AcompanhamentoDTO.class);
     }
 
     public Equipe modelToDto(EquipePostDTO dto){

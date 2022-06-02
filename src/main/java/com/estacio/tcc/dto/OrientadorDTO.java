@@ -15,6 +15,8 @@ public class OrientadorDTO {
     private String titulacaoDescricao;
     private String titulacaoGrau;
     private String titulacaoIes;
+    private String linhaPesquisaDescricao;
+    private String areaConhecimento;
 
 
 }

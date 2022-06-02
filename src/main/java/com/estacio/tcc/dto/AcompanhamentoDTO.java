@@ -1,25 +1,42 @@
 package com.estacio.tcc.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.estacio.tcc.model.Aluno;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class AcompanhamentoDTO {
 
     private Long id;
+    private String nome;
+    private Long quantidade;
+    private Date dataCadastro;
+    private String temaDelimitacao;
+    private String temaLinhaPesquisaDescricao;
+    private String temaLinhaPesquisaAreaConhecimentoDescricao;
+    private List<Aluno> alunos;
+    private Long orientacaoId;
+    private Date orientacaoDataOrientacao;
+    private String orientacaoOrientadorNome;
+    private String orientacaoOrientadorEmail;
+    private String estruturaTCC;
+    private String tipoTCC;
+
+    //Devolutivas
     private String statusOrientacao;
-    private String descricaoDaDevolutiva;
-    private String versaoDoc;
-    private String localDeCorrecao;
-    private String correcaoSugerida;
-    @JsonFormat(pattern="dd/MM/yyyy")
-    private Date dataMudancao;
+    private String dataMudanca;
+    private String devolutivaDescricao;
+    private String devolutivaVersaoDoc;
+    private String devolutivaLocalCorrecao;
+    private String devolutivaCorrecaoSugerida;
+
 
 }

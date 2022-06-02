@@ -1,15 +1,15 @@
 package com.estacio.tcc.service;
 
+import com.estacio.tcc.dto.EquipeDTO;
 import com.estacio.tcc.dto.OrientacaoDTO;
 import com.estacio.tcc.dto.OrientacaoPostDTO;
-import com.estacio.tcc.model.EstruturaTcc;
-import com.estacio.tcc.model.Orientacao;
-import com.estacio.tcc.model.Orientador;
-import com.estacio.tcc.model.TipoTcc;
+import com.estacio.tcc.model.*;
+import com.estacio.tcc.repository.EquipeRepository;
 import com.estacio.tcc.repository.EstruturaTccRepository;
 import com.estacio.tcc.repository.OrientacaoRepository;
 import com.estacio.tcc.repository.TipoTccRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
+import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,8 +27,7 @@ import java.util.stream.Collectors;
 public class OrientacaoService {
 
     private OrientacaoRepository repository;
-    private EstruturaTccRepository estruturaTccRepository;
-    private TipoTccRepository tipoTccRepository;
+    private EquipeRepository equipeRepository;
     private OrientadorService service;
     private ModelMapper modelMapper;
 
@@ -55,6 +55,16 @@ public class OrientacaoService {
         Orientacao orientacao = modelToDto(dto);
         Orientador orientador = service.findByMatricula(dto.getMatriculaOrientador());
         orientacao.setOrientador(orientador);
+
+        Equipe equipe = equipeRepository.findById(dto.getEquipe())
+                .orElseThrow(() -> new ObjectNotFoundException("Equipe não localizada!"));
+        if (equipe.getOrientacao() != null){
+            throw new RuleOfBusinessException("Equipe já cadastrada em outra orientação");
+        }
+        equipe.setOrientacao(orientacao);
+        orientacao.setEquipe(equipe.getId());
+        equipeRepository.save(equipe);
+
         return repository.save(orientacao);
     }
 
@@ -69,13 +79,17 @@ public class OrientacaoService {
         novaOrientacao.getEstruturaTcc().setId(orientacao.getEstruturaTcc().getId());
         novaOrientacao.getEstruturaTcc().getTipoTcc()
                 .setId(orientacao.getEstruturaTcc().getTipoTcc().getId());
-        putOrientacao(orientacao, orientacao);
+        putOrientacao(orientacao, novaOrientacao);
         return repository.save(orientacao);
     }
 
     @Transactional
     public void delete(Orientacao orientacao){
         Objects.requireNonNull(orientacao);
+        Equipe equipe = equipeRepository.findById(orientacao.getEquipe())
+                .orElseThrow(() -> new ObjectNotFoundException("Equipe não localizada!"));
+        equipe.setOrientacao(null);
+        equipeRepository.save(equipe);
         repository.delete(orientacao);
     }
 

@@ -1,9 +1,9 @@
 package com.estacio.tcc.controller;
 
-import com.estacio.tcc.dto.AcompanhamentoDTO;
-import com.estacio.tcc.dto.AcompanhamentoOrientacaoPostDTO;
+import com.estacio.tcc.dto.DevolutivaDTO;
+import com.estacio.tcc.dto.DevolutivaPostDTO;
 import com.estacio.tcc.model.AcompanhamentoOrientacao;
-import com.estacio.tcc.service.AcompanhamentoOrientacaoService;
+import com.estacio.tcc.service.DevolutivaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,18 +13,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/acompanhamentos")
-public class AcompanhamentoOrientacaoController {
+public class DevolutivaController {
 
     @Autowired
-    private AcompanhamentoOrientacaoService service;
+    private DevolutivaService service;
 
     @GetMapping
-    public ResponseEntity<List<AcompanhamentoDTO>> list(){
+    public ResponseEntity<List<DevolutivaDTO>> list(){
         return ResponseEntity.ok(service.list());
     }
 
     @PostMapping
-    public ResponseEntity<AcompanhamentoOrientacao> save(@RequestBody AcompanhamentoOrientacaoPostDTO dto){
+    public ResponseEntity<AcompanhamentoOrientacao> save(@RequestBody DevolutivaPostDTO dto){
         AcompanhamentoOrientacao acompanhamento = service.save(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(acompanhamento);
     }

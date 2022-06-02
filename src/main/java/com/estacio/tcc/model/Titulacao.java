@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Data
@@ -20,8 +22,17 @@ public class Titulacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank
+    @Size(min = 5, max = 255, message = "Tamanho tem que ser entre 5 a 255 caracteres")
     private String descricao;
+
+    @NotBlank
+    @Size(min = 5, max = 255, message = "Tamanho tem que ser entre 5 a 255 caracteres")
     private String grau;
+
+    @NotBlank
+    @Size(min = 5, max = 255, message = "Tamanho tem que ser entre 5 a 255 caracteres")
     private String ies;
 
 }
