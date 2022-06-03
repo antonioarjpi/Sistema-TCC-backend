@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -24,12 +25,12 @@ public class BancaController {
     private BancaService service;
 
     @PostMapping
-    public ResponseEntity<Banca> save(@RequestBody BancaPostDTO banca){
+    public ResponseEntity<Banca> save(@RequestBody @Valid BancaPostDTO banca){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(banca));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody BancaPostDTO dto){
+    public ResponseEntity update(@PathVariable Long id, @RequestBody @Valid BancaPostDTO dto){
         dto.setId(id);
         Banca banca = service.attBanca(dto);
         return ResponseEntity.ok(banca);

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -19,7 +21,7 @@ public class UsuarioController {
     private UsuarioService service;
 
     @PostMapping
-    public ResponseEntity save(@RequestBody UsuarioDTO userDTO){
+    public ResponseEntity save(@RequestBody @Valid UsuarioDTO userDTO){
         Usuario usuario = Usuario.builder()
                 .nome(userDTO.getNome())
                 .email(userDTO.getEmail())
@@ -30,7 +32,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity autheticate(@RequestBody UsuarioDTO dto){
+    public ResponseEntity autheticate(@RequestBody @Valid UsuarioDTO dto){
         Usuario authenticate = service.authenticate(dto.getEmail(), dto.getSenha());
         return ResponseEntity.ok(authenticate);
     }

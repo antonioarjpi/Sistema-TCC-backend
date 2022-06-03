@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,7 +25,7 @@ public class DevolutivaController {
     }
 
     @PostMapping
-    public ResponseEntity<AcompanhamentoOrientacao> save(@RequestBody DevolutivaPostDTO dto){
+    public ResponseEntity<AcompanhamentoOrientacao> save(@RequestBody @Valid DevolutivaPostDTO dto){
         AcompanhamentoOrientacao acompanhamento = service.save(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(acompanhamento);
     }

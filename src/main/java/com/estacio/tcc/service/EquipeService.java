@@ -6,6 +6,7 @@ import com.estacio.tcc.dto.EquipePostDTO;
 import com.estacio.tcc.model.*;
 import com.estacio.tcc.repository.*;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
+import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
@@ -69,6 +70,9 @@ public class EquipeService {
     @Transactional
     public void delete(Equipe equipe){
         Objects.requireNonNull(equipe.getId());
+        if (equipe.getOrientacao() != null){
+            throw new RuleOfBusinessException("Equipe com Orientação cadastrada, exclua a orientação primeiro.");
+        }
         repository.delete(equipe);
         temaRepository.delete(equipe.getTema());
         linhaPesquisaRepository.delete(equipe.getTema().getLinhaPesquisa());
@@ -121,7 +125,6 @@ public class EquipeService {
         Equipe equipe = new Equipe();
         equipe.setNome(dto.getNome());
         equipe.setDataCadastro(dto.getDataCadastro());
-        equipe.setQuantidade(dto.getQuantidade());
         equipe.setTema(tema);
         return equipe;
     }

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,7 @@ public class OrientadorController {
     private TitulaçãoService titulaçãoService;
 
     @PostMapping
-    public ResponseEntity<Orientador> save(@RequestBody OrientadorPostDTO orientador){
+    public ResponseEntity<Orientador> save(@RequestBody @Valid OrientadorPostDTO orientador){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(orientador));
     }
 
@@ -54,7 +55,7 @@ public class OrientadorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity atualizar (@PathVariable Long id, @RequestBody OrientadorPostDTO dto){
+    public ResponseEntity atualizar (@PathVariable Long id, @RequestBody @Valid OrientadorPostDTO dto){
         Orientador byId = service.findById(id);
         Titulacao titulacao = titulaçãoService.findById(byId.getTitulacao().getId());
         titulacao.setDescricao(dto.getTitulacaoDescricao());

@@ -22,7 +22,7 @@ public class Aluno{
     private Long id;
 
     @NotBlank
-    @Size(min = 5, max = 255, message = "Tamanho tem que ser entre 5 a 255 caracteres")
+    @Size(min = 2, max = 255, message = "Tamanho do nome tem que ser entre 5 a 255 caracteres")
     private String nome;
 
     @NotBlank
@@ -30,7 +30,7 @@ public class Aluno{
     private String email;
 
     @NotBlank
-    @Size(min = 6, max = 16, message = "Tamanho tem que ser entre 6 a 16 caracteres")
+    @Size(min = 6, max = 16, message = "Tamanho da senha tem que ser entre 6 a 16 caracteres")
     private String senha;
 
     private String matricula;

@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Data
@@ -12,9 +16,23 @@ import java.util.Date;
 public class OrientacaoPostDTO {
 
     private Long id;
+
+    @NotNull
+    @FutureOrPresent
     private Date dataOrientacao;
+
+    @NotBlank
+    @Size(min = 3, max = 255, message = "Matrícula do orientador tem que ter entre 3 a 255 caracteres")
     private String matriculaOrientador;
+
+    @NotBlank
+    @Size(min = 3, max = 255, message = "Tipo de TCC tem que ter entre 3 a 255 caracteres")
     private String tipoTCC;
+
+    @NotBlank
+    @Size(min = 3, max = 255, message = "Descrição de TCC tem que ter entre 3 a 255 caracteres")
     private String descricaoTCC;
+
+    @NotNull
     private Long equipe;
 }

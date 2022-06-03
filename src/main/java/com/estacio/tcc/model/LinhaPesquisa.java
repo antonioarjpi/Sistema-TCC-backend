@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Entity
 @Data
@@ -20,8 +18,6 @@ public class LinhaPesquisa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(min = 10, max = 5000, message = "Tamanho tem que ser entre 5 a 5000 caracteres")
     private String descricao;
 
     @ManyToOne(cascade=CascadeType.PERSIST)

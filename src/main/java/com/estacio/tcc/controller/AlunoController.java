@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,7 +32,7 @@ public class AlunoController {
     }
 
     @PostMapping("/autenticar")
-    public ResponseEntity autenticar(@RequestBody AlunoDTO aluno){
+    public ResponseEntity autenticar(@RequestBody @Valid AlunoDTO aluno){
         alunoService.autenticar(aluno.getMatricula(), aluno.getSenha());
         return ResponseEntity.ok().body("Usuário logado");
     }
@@ -57,7 +58,7 @@ public class AlunoController {
     }
 
     @PostMapping
-    public ResponseEntity<Aluno> save(@RequestBody Aluno aluno){
+    public ResponseEntity<Aluno> save(@RequestBody @Valid Aluno aluno){
         return ResponseEntity.status(HttpStatus.CREATED).body(alunoService.save(aluno));
     }
 

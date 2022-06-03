@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -49,12 +50,12 @@ public class OrientacaoController {
     }
 
     @PostMapping
-    public ResponseEntity<Orientacao> save(@RequestBody OrientacaoPostDTO dto){
+    public ResponseEntity<Orientacao> save(@RequestBody @Valid OrientacaoPostDTO dto){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody OrientacaoPostDTO dto){
+    public ResponseEntity update(@PathVariable Long id, @RequestBody @Valid OrientacaoPostDTO dto){
         dto.setId(id);
         Orientacao orientacao = service.update(dto);
         return ResponseEntity.ok(orientacao);

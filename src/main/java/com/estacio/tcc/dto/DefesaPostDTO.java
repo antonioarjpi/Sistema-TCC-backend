@@ -1,17 +1,19 @@
 package com.estacio.tcc.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class DefesaPostDTO {
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @NotNull
+    @FutureOrPresent(message = "Data banca menor que dia atual. ")
     public Date data;
 
 }

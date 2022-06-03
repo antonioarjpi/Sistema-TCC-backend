@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class EquipeController {
     private TemaService temaService;
 
     @PostMapping
-    public ResponseEntity<Equipe> save(@RequestBody EquipePostDTO dto){
+    public ResponseEntity<Equipe> save(@RequestBody @Valid EquipePostDTO dto){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
     }
 
@@ -58,7 +59,7 @@ public class EquipeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody EquipePostDTO dto){
+    public ResponseEntity update(@PathVariable Long id, @RequestBody @Valid EquipePostDTO dto){
         Equipe search = service.search(id);
         Tema tema = temaService.findById(search.getTema().getId());
         tema.setDelimitacao(dto.getDelimitacao());

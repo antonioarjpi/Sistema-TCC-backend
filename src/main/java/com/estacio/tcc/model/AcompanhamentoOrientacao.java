@@ -7,9 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -22,12 +19,7 @@ public class AcompanhamentoOrientacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank
-    @Size(min = 5, max = 255, message = "Tamanho tem que ser entre 5 a 255 caracteres")
     private String statusOrientacao;
-
-    @NotBlank
     private Date dataMudanca;
 
     @JsonIgnore

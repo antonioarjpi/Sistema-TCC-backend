@@ -9,8 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Entity
 @Data
@@ -23,12 +21,7 @@ public class LocalCorrecao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(min = 5, max = 255, message = "Tamanho tem que ser entre 5 a 255 caracteres")
     private String local;
-
-    @NotBlank
-    @Size(min = 5, max = 1000, message = "Tamanho tem que ser entre 5 a 1000 caracteres")
     private String correcaoSugerida;
 
 }
