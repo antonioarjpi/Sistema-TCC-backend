@@ -20,7 +20,7 @@ public class Orientador {
     private String email;
     private String senha;
 
-    @ManyToOne(cascade=CascadeType.PERSIST)
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "titulacao_id")
     private Titulacao titulacao;
 

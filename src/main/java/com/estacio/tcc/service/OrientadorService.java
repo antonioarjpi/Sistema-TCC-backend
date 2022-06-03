@@ -2,12 +2,11 @@ package com.estacio.tcc.service;
 
 import com.estacio.tcc.dto.OrientadorDTO;
 import com.estacio.tcc.dto.OrientadorPostDTO;
-import com.estacio.tcc.model.Aluno;
 import com.estacio.tcc.model.Orientador;
-import com.estacio.tcc.model.Titulacao;
 import com.estacio.tcc.repository.OrientadorRepository;
 import com.estacio.tcc.repository.TitulacaoRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
+import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -35,6 +33,13 @@ public class OrientadorService {
             throw new ObjectNotFoundException("Orientador não encontrado");
         }
         return orientador;
+    }
+
+    public void validateEmail(String email) {
+        boolean exist = repository.existsByEmail(email);
+        if (exist){
+            throw new RuleOfBusinessException("E-mail já está cadastrado por outro orientador.");
+        }
     }
 
     @Transactional(readOnly = true)
@@ -63,6 +68,7 @@ public class OrientadorService {
     @Transactional
     public Orientador save(OrientadorPostDTO dto){
         Orientador orientador = modelToDto(dto);
+        validateEmail(orientador.getEmail());
         String matricula = matriculaValidada();
         orientador.setMatricula(matricula);
         orientador = repository.save(orientador);
@@ -70,10 +76,22 @@ public class OrientadorService {
     }
 
     @Transactional
-    public Orientador updateDTO(Orientador orientador){
-        Objects.requireNonNull(orientador.getId());
-        titulacaoRepository.save(orientador.getTitulacao());
+    public Orientador update(OrientadorPostDTO dto){
+        Orientador novoOrientador = modelToDto(dto);
+        Orientador orientador = findById(novoOrientador.getId());
+        novoOrientador.getTitulacao().setId(orientador.getTitulacao().getId());
+        novoOrientador.getLinhaPesquisa().setId(orientador.getLinhaPesquisa().getId());
+        novoOrientador.getLinhaPesquisa().getAreaConhecimento().setId(orientador.getLinhaPesquisa().getAreaConhecimento().getId());
+        putOrientador(orientador, novoOrientador);
         return repository.save(orientador);
+    }
+
+    private void putOrientador(Orientador novo, Orientador orientador){
+        novo.setNome(orientador.getNome());
+        novo.setEmail(orientador.getEmail());
+        novo.setLinhaPesquisa(orientador.getLinhaPesquisa());
+        novo.setTitulacao(orientador.getTitulacao());
+        novo.getLinhaPesquisa().setAreaConhecimento(orientador.getLinhaPesquisa().getAreaConhecimento());
     }
 
     public String geraMatricula(){

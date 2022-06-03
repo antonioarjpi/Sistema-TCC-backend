@@ -24,6 +24,7 @@ public class AlunoService {
 
     @Transactional
     public Aluno save(Aluno aluno){
+        validateEmail(aluno.getEmail());
         String matricula = matriculaValidada();
         aluno.setMatricula(matricula);
         return repository.save(aluno);
@@ -49,6 +50,13 @@ public class AlunoService {
             matriculaValidada();
         }
         return matricula;
+    }
+
+    public void validateEmail(String email) {
+        boolean exist = repository.existsByEmail(email);
+        if (exist){
+            throw new RuleOfBusinessException("E-mail já está cadastrado por outro aluno.");
+        }
     }
 
     public List<Aluno> list(){
@@ -96,8 +104,13 @@ public class AlunoService {
     @Transactional
     public Aluno put(Aluno aluno){
         Aluno novoAluno = search(aluno.getId());
+        if (!aluno.getEmail().equals(novoAluno.getEmail())){
+            validateEmail(aluno.getEmail());
+        }
         update(novoAluno, aluno);
         aluno.setMatricula(novoAluno.getMatricula());
+        System.out.println("Aluno: "+aluno.getEmail());
+        System.out.println("Novo: "+novoAluno.getEmail());
         return repository.save(aluno);
     }
 

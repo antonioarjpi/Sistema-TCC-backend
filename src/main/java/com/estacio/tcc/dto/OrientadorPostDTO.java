@@ -12,6 +12,8 @@ import javax.validation.constraints.Size;
 @Data @Builder @AllArgsConstructor @NoArgsConstructor
 public class OrientadorPostDTO {
 
+    private Long id;
+
     @NotBlank
     @Size(min = 3, max = 255, message = "Campo tem que ter entre 3 a 255 caracteres")
     private String nome;

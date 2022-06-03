@@ -7,5 +7,7 @@ public interface OrientadorRepository extends JpaRepository<Orientador, Long> {
 
     Orientador findByMatricula(String matricula);
 
+    boolean existsByEmail(String email);
+
     boolean existsByMatricula(String matricula);
 }
