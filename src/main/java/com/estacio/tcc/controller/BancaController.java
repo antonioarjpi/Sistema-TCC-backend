@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class BancaController {
 
     @GetMapping
     public ResponseEntity list(@RequestParam(required = false) String descricao,
-                               @RequestParam(required = false) Date dataBanca,
+                               @RequestParam(required = false) LocalDate dataBanca,
                                @RequestParam(required = false) String orientadorNome,
                                @RequestParam(required = false) Long equipeId,
                                @RequestParam(required = false) Long id,

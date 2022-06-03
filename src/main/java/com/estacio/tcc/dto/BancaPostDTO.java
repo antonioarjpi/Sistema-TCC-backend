@@ -9,7 +9,7 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class BancaPostDTO {
@@ -22,7 +22,7 @@ public class BancaPostDTO {
 
     @NotNull
     @FutureOrPresent(message = "Data banca menor que dia atual. ")
-    private Date dataBanca;
+    private LocalDate dataBanca;
 
     @NotNull
     private Integer ordemApresentacao;

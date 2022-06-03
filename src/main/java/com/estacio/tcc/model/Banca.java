@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -20,7 +20,7 @@ public class Banca {
     private Long id;
 
     private String descricao;
-    private Date dataBanca;
+    private LocalDate dataBanca;
     private Integer ordemApresentacao;
 
     @ManyToOne

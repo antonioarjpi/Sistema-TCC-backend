@@ -8,7 +8,7 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -23,7 +23,7 @@ public class DevolutivaPostDTO {
 
     @NotNull
     @FutureOrPresent(message = "Data não pode ser menor que dia atual. ")
-    private Date dataMudanca;
+    private LocalDate dataMudanca;
 
     @NotNull
     private Long orientacaoId;

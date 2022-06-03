@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -17,8 +17,8 @@ public class DefesaDTO {
     private Long id;
     private String descricao;
     @JsonFormat(pattern="dd/MM/yyyy")
-    private Date dataBanca;
+    private LocalDate dataBanca;
     @JsonFormat(pattern="dd/MM/yyyy")
-    private Date dataDefesa;
+    private LocalDate dataDefesa;
 
 }

@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class DefesaPostDTO {
 
     @NotNull
     @FutureOrPresent(message = "Data banca menor que dia atual. ")
-    public Date data;
+    public LocalDate data;
 
 }

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class EquipeController {
     }
 
     @GetMapping
-    public ResponseEntity search(@RequestParam(required = false) Date dataCadastro,
+    public ResponseEntity search(@RequestParam(required = false) LocalDate dataCadastro,
                                  @RequestParam(required = false) String descricaoConhecimento,
                                  @RequestParam(required = false) String descricaoLinha,
                                  @RequestParam(required = false) String tema,

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
@@ -19,7 +19,7 @@ public class EquipePostDTO {
     private String nome;
 
     @NotNull
-    private Date dataCadastro;
+    private LocalDate dataCadastro;
 
     @NotBlank
     @Size(min = 3, max = 255, message = "Tema precisa ter entre 3 a 255 caracteres")

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class DevolutivaController {
 
     @GetMapping
     public ResponseEntity<List<DevolutivaDTO>> list(@RequestParam(required = false) String statusOrientacao,
-                                                    @RequestParam(required = false) Date dataMudanca,
+                                                    @RequestParam(required = false) LocalDate dataMudanca,
                                                     @RequestParam(required = false) Long orientacaoId,
                                                     @RequestParam(required = false) String devolutivaDescricao,
                                                     @RequestParam(required = false) String devolutivaVersaoDoc,

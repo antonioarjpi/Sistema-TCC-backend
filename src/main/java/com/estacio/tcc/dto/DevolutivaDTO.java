@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -13,7 +13,7 @@ public class DevolutivaDTO {
 
     private Long id;
     private String statusOrientacao;
-    private Date dataMudanca;
+    private LocalDate dataMudanca;
     private Long orientacaoId;
     private String devolutivaDescricao;
     private String devolutivaVersaoDoc;

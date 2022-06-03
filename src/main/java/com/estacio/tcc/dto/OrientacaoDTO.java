@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -12,7 +12,7 @@ import java.util.Date;
 public class OrientacaoDTO {
 
     private Long id;
-    private Date dataOrientacao;
+    private LocalDate dataOrientacao;
     //Orientador
     private String nomeOrientador;
     private String matriculaOrientador;

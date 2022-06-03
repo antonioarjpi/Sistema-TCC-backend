@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class OrientacaoController {
 
     @GetMapping
     public ResponseEntity list(@RequestParam(required = false) String nomeOrientador,
-                               @RequestParam(required = false) Date dataOrientacao,
+                               @RequestParam(required = false) LocalDate dataOrientacao,
                                @RequestParam(required = false) String matriculaOrientador,
                                @RequestParam(required = false) String tccDescricao,
                                @RequestParam(required = false) String descricaoTCC){
@@ -55,7 +56,7 @@ public class OrientacaoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody @Valid OrientacaoPostDTO dto){
+    public ResponseEntity update(@PathVariable Long id, @RequestBody OrientacaoPostDTO dto){
         dto.setId(id);
         Orientacao orientacao = service.update(dto);
         return ResponseEntity.ok(orientacao);

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -19,7 +19,7 @@ public class Orientacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date dataOrientacao;
+    private LocalDate dataOrientacao;
 
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "estrutura_tcc_id")

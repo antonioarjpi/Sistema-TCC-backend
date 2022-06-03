@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
@@ -15,7 +15,7 @@ public class EquipeDTO {
     private Long id;
     private String nome;
     private Long quantidade;
-    private Date dataCadastro;
+    private LocalDate dataCadastro;
     private String tema;
     private List<Aluno> alunos;
     private String linhaPesquisa;

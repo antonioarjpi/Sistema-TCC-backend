@@ -8,7 +8,7 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -19,7 +19,7 @@ public class OrientacaoPostDTO {
 
     @NotNull
     @FutureOrPresent
-    private Date dataOrientacao;
+    private LocalDate dataOrientacao;
 
     @NotBlank
     @Size(min = 3, max = 255, message = "Matrícula do orientador tem que ter entre 3 a 255 caracteres")

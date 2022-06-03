@@ -8,7 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -23,7 +23,7 @@ public class Equipe{
     private Long id;
     private String nome;
     private Integer quantidade;
-    private Date dataCadastro;
+    private LocalDate dataCadastro;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @OnDelete(action = OnDeleteAction.CASCADE)

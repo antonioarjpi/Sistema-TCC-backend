@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -20,7 +20,7 @@ public class AcompanhamentoOrientacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String statusOrientacao;
-    private Date dataMudanca;
+    private LocalDate dataMudanca;
 
     @JsonIgnore
     @ManyToOne

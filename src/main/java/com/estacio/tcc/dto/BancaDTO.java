@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -16,15 +17,15 @@ public class BancaDTO {
 
     private Long id;
     private String descricao;
-    private Date dataBanca;
+    private LocalDate dataBanca;
     private Integer ordemApresentacao;
     private String orientadorNome;
     private String orientadorMatricula;
     private List equipeAlunos;
     private String equipeId;
     private Integer equipeQuantidade;
-    private Date equipeDataCadastro;
+    private LocalDate equipeDataCadastro;
     private String membroMatricula;
-    private Date defesaDataDefesa;
+    private LocalDate defesaDataDefesa;
 
 }
