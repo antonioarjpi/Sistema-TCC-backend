@@ -22,7 +22,7 @@ public class DevolutivaPostDTO {
     private String statusOrientacao;
 
     @NotNull
-    @FutureOrPresent(message = "Data banca menor que dia atual. ")
+    @FutureOrPresent(message = "Data não pode ser menor que dia atual. ")
     private Date dataMudanca;
 
     @NotNull

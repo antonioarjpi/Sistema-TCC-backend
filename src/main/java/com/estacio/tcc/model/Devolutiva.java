@@ -26,7 +26,7 @@ public class Devolutiva {
     @JoinColumn(name = "orientacao_id")
     private Orientacao orientacao;
 
-    @ManyToOne(cascade=CascadeType.PERSIST)
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "local_correcao_id")
     private LocalCorrecao localCorrecao;
 

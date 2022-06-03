@@ -32,7 +32,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity autheticate(@RequestBody @Valid UsuarioDTO dto){
+    public ResponseEntity autheticate(@RequestBody UsuarioDTO dto){
         Usuario authenticate = service.authenticate(dto.getEmail(), dto.getSenha());
         return ResponseEntity.ok(authenticate);
     }

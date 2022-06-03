@@ -39,7 +39,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<StandardError> sqlException(SQLException e, HttpServletRequest request) {
-        StandardError err = new StandardError(OffsetDateTime.now(), HttpStatus.BAD_REQUEST.value(), "SQLIntegrityConstraintViolationException", "Existe itens atrelados", request.getRequestURI());
+        StandardError err = new StandardError(OffsetDateTime.now(), HttpStatus.BAD_REQUEST.value(), "SQLIntegrityConstraintViolationException", "Erro de validação (Pode existir itens filhos ativo)", request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
