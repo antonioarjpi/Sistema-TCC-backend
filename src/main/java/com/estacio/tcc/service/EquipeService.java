@@ -48,9 +48,9 @@ public class EquipeService {
         Equipe equipe = modelToDto(dto);
         List<Aluno> alunos = new ArrayList<>();
 
-        for (String matricula : dto.getMatricula()){
-            Aluno aluno = alunoService.findByMatricula(matricula);
-            if (aluno == null) throw new ObjectNotFoundException("Matrícula inexistente.");
+        for (Aluno a : dto.getAlunos()){
+            Aluno aluno = alunoService.findByMatricula(a.getMatricula());
+            if (aluno == null) throw new ObjectNotFoundException("Aluno inexistente.");
             alunos.add(aluno);
         }
 

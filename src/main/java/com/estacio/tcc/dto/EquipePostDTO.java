@@ -1,5 +1,6 @@
 package com.estacio.tcc.dto;
 
+import com.estacio.tcc.model.Aluno;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +26,7 @@ public class EquipePostDTO {
     private String delimitacao;
 
     @NotNull
-    private List<String> matricula;
+    private List<Aluno> alunos;
 
     @NotBlank
     @Size(min = 3, max = 5000, message = "Descrição da linha precisa ser entre 3 a 5000 caracteres")

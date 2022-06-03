@@ -32,15 +32,12 @@ public class EquipeController {
     public ResponseEntity search(@RequestParam(required = false) Date dataCadastro,
                                  @RequestParam(required = false) String descricaoConhecimento,
                                  @RequestParam(required = false) String descricaoLinha,
-                                 @RequestParam(required = false) String matricula,
                                  @RequestParam(required = false) String tema,
                                  @RequestParam(required = false) String nome){
         Equipe filter = new Equipe();
         AreaConhecimento area = new AreaConhecimento(null, descricaoConhecimento);
         LinhaPesquisa linha = new LinhaPesquisa(null, descricaoLinha, area );
         Tema tema1 = new Tema(null, tema, linha);
-        Aluno aluno = new Aluno();
-        aluno.setMatricula(matricula);
         filter.setNome(nome);
         filter.setDataCadastro(dataCadastro);
         filter.setTema(tema1);
@@ -59,7 +56,7 @@ public class EquipeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody @Valid EquipePostDTO dto){
+    public ResponseEntity update(@PathVariable Long id, @RequestBody EquipePostDTO dto){
         Equipe search = service.search(id);
         Tema tema = temaService.findById(search.getTema().getId());
         tema.setDelimitacao(dto.getDelimitacao());
@@ -68,7 +65,7 @@ public class EquipeController {
 
         Equipe equipe = service.modelToDto(dto);
         equipe.setId(search.getId());
-        equipe.setAlunos(search.getAlunos());
+        equipe.setAlunos(dto.getAlunos());
         equipe.setTema(tema);
         equipe.setDataCadastro(search.getDataCadastro());
         equipe = service.updateDTO(equipe);
