@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -18,13 +19,13 @@ public class AcompanhamentoDTO {
     private Long id;
     private String nome;
     private Long quantidade;
-    private Date dataCadastro;
+    private LocalDate dataCadastro;
     private String temaDelimitacao;
     private String temaLinhaPesquisaDescricao;
     private String temaLinhaPesquisaAreaConhecimentoDescricao;
     private List<Aluno> alunos;
     private Long orientacaoId;
-    private Date orientacaoDataOrientacao;
+    private LocalDate orientacaoDataOrientacao;
     private String orientacaoOrientadorNome;
     private String orientacaoOrientadorEmail;
     private String estruturaTCC;
