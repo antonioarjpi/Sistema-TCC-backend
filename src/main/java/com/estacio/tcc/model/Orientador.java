@@ -19,6 +19,7 @@ public class Orientador {
     private String matricula;
     private String email;
     private String senha;
+    private String imagem;
 
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "titulacao_id")

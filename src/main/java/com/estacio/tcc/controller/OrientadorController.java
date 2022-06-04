@@ -9,8 +9,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -59,6 +61,13 @@ public class OrientadorController {
         dto.setId(id);
         Orientador orientador = service.update(dto);
         return ResponseEntity.ok(orientador);
+    }
+
+    @PostMapping("/imagem/{id}")
+    public ResponseEntity<Void> uploadFotoOrientador(@RequestParam MultipartFile file, @PathVariable Long id){
+        URI uri = service.uploadFotoPerfil(file, id);
+        return ResponseEntity.created(uri).build();
+
     }
 
     @DeleteMapping("/{id}")

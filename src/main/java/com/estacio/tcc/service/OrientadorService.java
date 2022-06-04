@@ -13,7 +13,9 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -26,6 +28,7 @@ public class OrientadorService {
     private OrientadorRepository repository;
     private TitulacaoRepository titulacaoRepository;
     private ModelMapper modelMapper;
+    private S3Service s3Service;
 
     public Orientador findByMatricula(String matricula){
         Orientador orientador = repository.findByMatricula(matricula);
@@ -111,6 +114,15 @@ public class OrientadorService {
             matriculaValidada();
         }
         return matricula;
+    }
+
+    public URI uploadFotoPerfil(MultipartFile file, Long id){
+        URI uri = s3Service.uploadFile(file);
+        Orientador orientador = findById(id);
+        orientador.setId(orientador.getId());
+        orientador.setImagem(uri.toString());
+        repository.save(orientador);
+        return uri;
     }
 
     public OrientadorDTO dtoToModel(Orientador orientador){
