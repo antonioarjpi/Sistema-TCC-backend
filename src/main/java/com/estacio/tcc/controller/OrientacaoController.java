@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -25,7 +24,7 @@ public class OrientacaoController {
     private OrientacaoService service;
 
     @GetMapping
-    public ResponseEntity list(@RequestParam(required = false) String nomeOrientador,
+    public ResponseEntity listar(@RequestParam(required = false) String nomeOrientador,
                                @RequestParam(required = false) LocalDate dataOrientacao,
                                @RequestParam(required = false) String matriculaOrientador,
                                @RequestParam(required = false) String tccDescricao,
@@ -41,31 +40,31 @@ public class OrientacaoController {
         orientador.setMatricula(matriculaOrientador);
 
         Orientacao orientacao = new Orientacao(null, dataOrientacao, estruturaTcc, orientador, null, null);
-        List<OrientacaoDTO> filter = service.list(orientacao);
-        return ResponseEntity.ok(filter);
+        List<OrientacaoDTO> filtro = service.lista(orientacao);
+        return ResponseEntity.ok(filtro);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrientacaoDTO> search(@PathVariable Long id){
-        return ResponseEntity.ok(service.search(id));
+    public ResponseEntity<OrientacaoDTO> encontrarId(@PathVariable Long id){
+        return ResponseEntity.ok(service.encontraIdDTO(id));
     }
 
     @PostMapping
-    public ResponseEntity<Orientacao> save(@RequestBody @Valid OrientacaoPostDTO dto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
+    public ResponseEntity<Orientacao> salvar(@RequestBody @Valid OrientacaoPostDTO dto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody OrientacaoPostDTO dto){
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody OrientacaoPostDTO dto){
         dto.setId(id);
-        Orientacao orientacao = service.update(dto);
+        Orientacao orientacao = service.atualizar(dto);
         return ResponseEntity.ok(orientacao);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
         Orientacao orientacao = service.findById(id);
-        service.delete(orientacao);
+        service.deletar(orientacao);
         return ResponseEntity.noContent().build();
     }
 }

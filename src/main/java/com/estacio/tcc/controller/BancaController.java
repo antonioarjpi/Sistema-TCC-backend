@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -26,29 +25,29 @@ public class BancaController {
     private BancaService service;
 
     @PostMapping
-    public ResponseEntity<Banca> save(@RequestBody @Valid BancaPostDTO banca){
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(banca));
+    public ResponseEntity<Banca> salvar(@RequestBody @Valid BancaPostDTO banca){
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(banca));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody @Valid BancaPostDTO dto){
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid BancaPostDTO dto){
         dto.setId(id);
-        Banca banca = service.attBanca(dto);
+        Banca banca = service.atualizar(dto);
         return ResponseEntity.ok(banca);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BancaDTO> findById(@PathVariable Long id){
-        return ResponseEntity.ok(service.findById(id));
+    public ResponseEntity<BancaDTO> encontrarId(@PathVariable Long id){
+        return ResponseEntity.ok(service.encontrarIdDTO(id));
     }
 
     @GetMapping
-    public ResponseEntity list(@RequestParam(required = false) String descricao,
-                               @RequestParam(required = false) LocalDate dataBanca,
-                               @RequestParam(required = false) String orientadorNome,
-                               @RequestParam(required = false) Long equipeId,
-                               @RequestParam(required = false) Long id,
-                               @RequestParam(required = false) String membroMatricula){
+    public ResponseEntity listar(@RequestParam(required = false) String descricao,
+                                 @RequestParam(required = false) LocalDate dataBanca,
+                                 @RequestParam(required = false) String orientadorNome,
+                                 @RequestParam(required = false) Long equipeId,
+                                 @RequestParam(required = false) Long id,
+                                 @RequestParam(required = false) String membroMatricula){
         Equipe equipe = new Equipe();
         equipe.setId(equipeId);
         Orientador orientador = new Orientador();
@@ -62,19 +61,19 @@ public class BancaController {
         banca.setEquipe(equipe);
         banca.setOrientador(orientador);
         banca.setMembro(membro);
-        List<BancaDTO> filter = service.list(banca);
-        return ResponseEntity.ok(filter);
+        List<BancaDTO> filtro = service.lista(banca);
+        return ResponseEntity.ok(filtro);
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<Banca> schedule(@PathVariable Long id, @RequestBody DefesaPostDTO dto){
-        Banca schedule = service.schedule(id, dto);
-        return ResponseEntity.ok(schedule);
+    public ResponseEntity<Banca> agendarDataBanca(@PathVariable Long id, @RequestBody DefesaPostDTO dto){
+        Banca banca = service.agendamentoDefesa(id, dto);
+        return ResponseEntity.ok(banca);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
-        service.delete(id);
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
+        service.deletar(id);
         return ResponseEntity.noContent().build();
     }
 }

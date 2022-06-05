@@ -1,6 +1,7 @@
 package com.estacio.tcc.controller;
 
 import com.estacio.tcc.dto.AlunoDTO;
+import com.estacio.tcc.dto.AlunoPostDTO;
 import com.estacio.tcc.model.Aluno;
 import com.estacio.tcc.service.AlunoService;
 import org.hibernate.ObjectNotFoundException;
@@ -22,15 +23,15 @@ public class AlunoController {
     private AlunoService alunoService;
 
     @GetMapping
-    public ResponseEntity search(@RequestParam(required = false) String nome,
+    public ResponseEntity listar(@RequestParam(required = false) String nome,
                                  @RequestParam(required = false) String matricula,
                                  @RequestParam(required = false) String email){
-        Aluno filter = new Aluno();
-        filter.setNome(nome);
-        filter.setMatricula(matricula);
-        filter.setEmail(email);
-        List<Aluno> search = alunoService.search(filter);
-        return ResponseEntity.ok(search);
+        Aluno aluno = new Aluno();
+        aluno.setNome(nome);
+        aluno.setMatricula(matricula);
+        aluno.setEmail(email);
+        List<AlunoDTO> filtro = alunoService.listaFiltrada(aluno);
+        return ResponseEntity.ok(filtro);
     }
 
     @PostMapping("/autenticar")
@@ -40,9 +41,9 @@ public class AlunoController {
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity findByMatricula(@PathVariable String email){
+    public ResponseEntity encontrarEmail(@PathVariable String email){
         try{
-            Aluno aluno = alunoService.findByEmail(email);
+            Aluno aluno = alunoService.encontraEmail(email);
             return ResponseEntity.ok(aluno.getMatricula());
         }catch (ObjectNotFoundException e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -50,24 +51,24 @@ public class AlunoController {
     }
 
     @GetMapping("/matricula/{matricula}")
-    public ResponseEntity<Aluno> findMatricula(@PathVariable String matricula){
-        return ResponseEntity.ok(alunoService.findByMatricula(matricula));
+    public ResponseEntity<Aluno> encontrarMatricula(@PathVariable String matricula){
+        return ResponseEntity.ok(alunoService.encontraMatricula(matricula));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Aluno> findMatricula(@PathVariable Long id){
-        return ResponseEntity.ok(alunoService.search(id));
+    public ResponseEntity<AlunoDTO> encontrarId(@PathVariable Long id){
+        return ResponseEntity.ok(alunoService.encontrarIdDTO(id));
     }
 
     @PostMapping
-    public ResponseEntity<Aluno> save(@RequestBody @Valid Aluno aluno){
-        return ResponseEntity.status(HttpStatus.CREATED).body(alunoService.save(aluno));
+    public ResponseEntity<Aluno> salvar(@RequestBody @Valid AlunoPostDTO alunoPostDTO){
+        return ResponseEntity.status(HttpStatus.CREATED).body(alunoService.salvar(alunoPostDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
-        Aluno aluno = alunoService.search(id);
-        alunoService.delete(aluno);
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
+        Aluno aluno = alunoService.encontraId(id);
+        alunoService.deletar(aluno);
         return ResponseEntity.noContent().build();
     }
 
@@ -75,13 +76,12 @@ public class AlunoController {
     public ResponseEntity<Void> uploadFotoOrientador(@RequestParam MultipartFile file, @PathVariable Long id){
         URI uri = alunoService.uploadFotoPerfil(file, id);
         return ResponseEntity.created(uri).build();
-
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody Aluno aluno){
-        aluno.setId(id);
-        return ResponseEntity.ok(alunoService.put(aluno));
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody AlunoPostDTO alunoPostDTO){
+        alunoPostDTO.setId(id);
+        return ResponseEntity.ok(alunoService.atualiza(alunoPostDTO));
     }
 
 }

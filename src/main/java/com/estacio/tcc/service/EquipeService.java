@@ -3,7 +3,9 @@ package com.estacio.tcc.service;
 import com.estacio.tcc.dto.AcompanhamentoDTO;
 import com.estacio.tcc.dto.EquipeDTO;
 import com.estacio.tcc.dto.EquipePostDTO;
-import com.estacio.tcc.model.*;
+import com.estacio.tcc.model.Aluno;
+import com.estacio.tcc.model.Equipe;
+import com.estacio.tcc.model.Tema;
 import com.estacio.tcc.repository.*;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
@@ -29,27 +31,27 @@ public class EquipeService {
     private TemaRepository temaRepository;
     private AreaConhecimentoRepository areaConhecimentoRepository;
     private ModelMapper modelMapper;
-
+    private TemaService temaService;
     private AlunoRepository alunoRepository;
 
-    public Equipe search(Long id){
+    public Equipe encontraId(Long id){
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Equipe não encontrada."));
     }
 
-    public EquipeDTO findById(Long id){
+    public EquipeDTO encontraIdDTO(Long id){
         Equipe equipe = repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Equipe não encontrada."));
-        return dtoToModel(equipe);
+        return entidadeParaDTO(equipe);
     }
 
     @Transactional
-    public Equipe save(EquipePostDTO dto){
-        Equipe equipe = modelToDto(dto);
+    public Equipe salvar(EquipePostDTO dto){
+        Equipe equipe = dtoParaEntidade(dto);
         List<Aluno> alunos = new ArrayList<>();
 
         for (Aluno a : dto.getAlunos()){
-            Aluno aluno = alunoService.findByMatricula(a.getMatricula());
+            Aluno aluno = alunoService.encontraMatricula(a.getMatricula());
             if (aluno == null) throw new ObjectNotFoundException("Aluno inexistente.");
             alunos.add(aluno);
         }
@@ -67,8 +69,31 @@ public class EquipeService {
         return equipe;
     }
 
+    public Equipe atualizar(EquipePostDTO dto){
+        Equipe novaEquipe = dtoParaEntidade(dto);
+        Equipe equipe = encontraId(novaEquipe.getId());
+
+        Tema tema = temaService.encontraId(equipe.getTema().getId());
+        tema.setDelimitacao(novaEquipe.getTema().getDelimitacao());
+        tema.getLinhaPesquisa().setDescricao(novaEquipe.getTema().getLinhaPesquisa().getDescricao());
+        tema.getLinhaPesquisa().getAreaConhecimento().setDescricao(dto.getTemaLinhaPesquisaAreaConhecimentoDescricao());
+
+        equipe.setQuantidade(equipe.getAlunos().size());
+        equipe.setTema(tema);
+
+        atualizaDados(equipe, novaEquipe);
+        return repository.save(equipe);
+    }
+
+    private void atualizaDados (Equipe novaEquipe, Equipe equipe){
+        novaEquipe.getTema().setId(novaEquipe.getTema().getId());
+        novaEquipe.setNome(equipe.getNome());
+        novaEquipe.setDataCadastro(equipe.getDataCadastro());
+        novaEquipe.setAlunos(equipe.getAlunos());
+    }
+
     @Transactional
-    public void delete(Equipe equipe){
+    public void deletar(Equipe equipe){
         Objects.requireNonNull(equipe.getId());
         if (equipe.getOrientacao() != null){
             throw new RuleOfBusinessException("Equipe com Orientação cadastrada, exclua a orientação primeiro.");
@@ -79,53 +104,34 @@ public class EquipeService {
         areaConhecimentoRepository.delete(equipe.getTema().getLinhaPesquisa().getAreaConhecimento());
     }
 
-    public Equipe updateDTO(Equipe equipe){
-        Objects.requireNonNull(equipe.getId());
-        return repository.save(equipe);
-    }
-
-    public List<EquipeDTO> list(){
-        return repository.findAll()
-                .stream()
-                .map(x -> dtoToModel(x))
-                .collect(Collectors.toList());
-    }
-
     @Transactional(readOnly = true)
-    public List<EquipeDTO> list(Equipe equipe) {
+    public List<EquipeDTO> lista(Equipe equipe) {
         Example example = Example.of(equipe, ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
         return (List<EquipeDTO>) repository.findAll(example)
                 .stream()
-                .map(x -> dtoToModel((Equipe) x))
+                .map(x -> entidadeParaDTO((Equipe) x))
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public AcompanhamentoDTO findByIdFullSearch(Long id){
+    public AcompanhamentoDTO mostrarTodaEquipePeloId(Long id){
         Equipe equipe = repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Equipe não encontrada."));
-        return dtoToModelFull(equipe);
+        return entidadeParaDTOCompleto(equipe);
     }
 
-    public EquipeDTO dtoToModel(Equipe equipe){
+    public EquipeDTO entidadeParaDTO(Equipe equipe){
         return modelMapper.map(equipe, EquipeDTO.class);
     }
 
-    public AcompanhamentoDTO dtoToModelFull(Equipe equipe){
+    public AcompanhamentoDTO entidadeParaDTOCompleto(Equipe equipe){
         return modelMapper.map(equipe, AcompanhamentoDTO.class);
     }
 
-    public Equipe modelToDto(EquipePostDTO dto){
-        AreaConhecimento area = new AreaConhecimento(null, dto.getDescricaoConhecimento());
-        LinhaPesquisa linha = new LinhaPesquisa(null, dto.getDescricaoLinha(), area );
-        Tema tema = new Tema(null, dto.getDelimitacao(), linha);
-
-        Equipe equipe = new Equipe();
-        equipe.setNome(dto.getNome());
-        equipe.setDataCadastro(dto.getDataCadastro());
-        equipe.setTema(tema);
-        return equipe;
+    public Equipe dtoParaEntidade(EquipePostDTO dto){
+        return modelMapper.map(dto, Equipe.class);
     }
+
 }

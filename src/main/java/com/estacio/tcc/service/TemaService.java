@@ -14,7 +14,7 @@ public class TemaService {
     private TemaRepository repository;
 
     @Transactional
-    public Tema findById(Long id){
+    public Tema encontraId(Long id){
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Tema não localizado"));
     }

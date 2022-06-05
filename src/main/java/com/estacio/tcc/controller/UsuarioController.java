@@ -21,19 +21,19 @@ public class UsuarioController {
     private UsuarioService service;
 
     @PostMapping
-    public ResponseEntity save(@RequestBody @Valid UsuarioDTO userDTO){
+    public ResponseEntity salvar(@RequestBody @Valid UsuarioDTO userDTO){
         Usuario usuario = Usuario.builder()
                 .nome(userDTO.getNome())
                 .email(userDTO.getEmail())
                 .senha(userDTO.getSenha())
                 .build();
-        Usuario save = service.save(usuario);
+        Usuario save = service.salva(usuario);
         return new ResponseEntity(save, HttpStatus.CREATED);
     }
 
     @PostMapping("/auth")
-    public ResponseEntity autheticate(@RequestBody UsuarioDTO dto){
-        Usuario authenticate = service.authenticate(dto.getEmail(), dto.getSenha());
+    public ResponseEntity autenticar(@RequestBody UsuarioDTO dto){
+        Usuario authenticate = service.autentica(dto.getEmail(), dto.getSenha());
         return ResponseEntity.ok(authenticate);
     }
 }

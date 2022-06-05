@@ -18,18 +18,18 @@ public class UsuarioService {
     private UsuarioRepository repository;
 
     @Transactional
-    public Usuario save(Usuario usuario){
-        validateEmail(usuario.getEmail());
+    public Usuario salva(Usuario usuario){
+        validaEmail(usuario.getEmail());
         return repository.save(usuario);
     }
 
     @Transactional
-    public Usuario findById(Long id){
+    public Usuario encontraId(Long id){
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado."));
     }
 
-    public Usuario authenticate(String email, String senha) {
+    public Usuario autentica(String email, String senha) {
         Optional<Usuario> user = repository.findByEmail(email);
         if (!user.isPresent()){
             throw new AuthenticateErrorException("Usuário não encontrado.");
@@ -41,7 +41,7 @@ public class UsuarioService {
         return user.get();
     }
 
-    public void validateEmail(String email) {
+    public void validaEmail(String email) {
         boolean exist = repository.existsByEmail(email);
         if (exist){
             throw new RuleOfBusinessException("E-mail já está cadastrado.");

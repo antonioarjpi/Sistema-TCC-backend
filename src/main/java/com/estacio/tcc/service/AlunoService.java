@@ -1,10 +1,13 @@
 package com.estacio.tcc.service;
 
+import com.estacio.tcc.dto.AlunoDTO;
+import com.estacio.tcc.dto.AlunoPostDTO;
 import com.estacio.tcc.model.Aluno;
 import com.estacio.tcc.repository.AlunoRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -23,16 +27,95 @@ public class AlunoService {
 
     private AlunoRepository repository;
     private S3Service s3Service;
+    private ModelMapper modelMapper;
+
+    public Aluno encontraId(Long id){
+        return repository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Aluno não encontrado"));
+    }
+
+    public AlunoDTO encontrarIdDTO(Long id){
+        Aluno aluno = repository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Aluno não encontrado"));
+        return entidadeParaDTO(aluno);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<AlunoDTO> listaFiltrada(Aluno aluno) {
+        Example example = Example.of(aluno, ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+        return (List<AlunoDTO>) repository.findAll(example)
+                .stream()
+                .map(x -> entidadeParaDTO((Aluno) x))
+                .collect(Collectors.toList());
+    }
 
     @Transactional
-    public Aluno save(Aluno aluno){
-        validateEmail(aluno.getEmail());
+    public Aluno salvar(AlunoPostDTO dto){
+        Aluno aluno = dtoParaEntidade(dto);
+        validaEmail(aluno.getEmail());
         String matricula = matriculaValidada();
         aluno.setMatricula(matricula);
         return repository.save(aluno);
     }
 
-    public String gerarMatricula(){
+    @Transactional
+    public void deletar(Aluno aluno){
+        Objects.requireNonNull(aluno.getId());
+        repository.delete(aluno);
+    }
+
+    @Transactional
+    public Aluno atualiza(AlunoPostDTO dto){
+        Aluno aluno = dtoParaEntidade(dto);
+        Aluno novoAluno = encontraId(aluno.getId());
+        if (!aluno.getEmail().equals(novoAluno.getEmail())){
+            validaEmail(aluno.getEmail());
+        }
+        atualizaDados(novoAluno, aluno);
+        aluno.setMatricula(novoAluno.getMatricula());
+        return repository.save(aluno);
+    }
+
+    @Transactional
+    public Aluno encontraMatricula(String matricula){
+        Aluno aluno = repository.findByMatricula(matricula);
+        if (aluno == null){
+            throw new ObjectNotFoundException("Matricula inexistente");
+        }
+        return aluno;
+    }
+
+    @Transactional
+    public Aluno encontraEmail(String email){
+        Aluno aluno = repository.findByEmail(email);
+        return aluno;
+    }
+
+    public Aluno autenticar(String matricula, String senha){
+        Aluno aluno = encontraMatricula(matricula);
+        if (aluno == null){
+            throw new ObjectNotFoundException("Matrícula não encontrada.");
+        }
+        if (!aluno.getSenha().equals(senha)){
+            throw new RuleOfBusinessException("Senha incorreta!");
+        }
+        return aluno;
+    }
+
+    @Transactional
+    public URI uploadFotoPerfil(MultipartFile file, Long id){
+        URI uri = s3Service.uploadFile(file);
+        Aluno aluno = encontraId(id);
+        aluno.setId(aluno.getId());
+        aluno.setImagem(uri.toString());
+        repository.save(aluno);
+        return uri;
+    }
+
+    private String gerarMatricula(){
         Random random = new Random();
         LocalDate dateTime = LocalDate.now();
 
@@ -45,7 +128,7 @@ public class AlunoService {
         return matricula;
     }
 
-    public String matriculaValidada(){
+    private String matriculaValidada(){
         String matricula = gerarMatricula();
         boolean exists = repository.existsByMatricula(matricula);
         while (exists){
@@ -54,90 +137,25 @@ public class AlunoService {
         return matricula;
     }
 
-    public void validateEmail(String email) {
+    private void validaEmail(String email) {
         boolean exist = repository.existsByEmail(email);
         if (exist){
             throw new RuleOfBusinessException("E-mail já está cadastrado por outro aluno.");
         }
     }
 
-    public List<Aluno> list(){
-        return repository.findAll();
-    }
-
-    @Transactional
-    public Aluno search(Long id){
-        return repository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException("Aluno não encontrado"));
-    }
-
-    @Transactional
-    public Aluno findByMatricula(String matricula){
-        Aluno aluno = repository.findByMatricula(matricula);
-        if (aluno == null){
-            throw new ObjectNotFoundException("Matricula inexistente");
-        }
-        return aluno;
-    }
-
-    @Transactional
-    public Aluno findByEmail(String email){
-        Aluno aluno = repository.findByEmail(email);
-        return aluno;
-    }
-
-    public Aluno autenticar(String matricula, String senha){
-        Aluno aluno = findByMatricula(matricula);
-        if (aluno == null){
-            throw new ObjectNotFoundException("Matrícula não encontrada.");
-        }
-        if (!aluno.getSenha().equals(senha)){
-            throw new RuleOfBusinessException("Senha incorreta!");
-        }
-        return aluno;
-    }
-
-    @Transactional
-    public void delete(Aluno aluno){
-        Objects.requireNonNull(aluno.getId());
-        repository.delete(aluno);
-    }
-
-    @Transactional
-    public Aluno put(Aluno aluno){
-        Aluno novoAluno = search(aluno.getId());
-        if (!aluno.getEmail().equals(novoAluno.getEmail())){
-            validateEmail(aluno.getEmail());
-        }
-        update(novoAluno, aluno);
-        aluno.setMatricula(novoAluno.getMatricula());
-        System.out.println("Aluno: "+aluno.getEmail());
-        System.out.println("Novo: "+novoAluno.getEmail());
-        return repository.save(aluno);
-    }
-
-    public void update(Aluno novoAluno, Aluno aluno){
+    private void atualizaDados(Aluno novoAluno, Aluno aluno){
         novoAluno.setNome(aluno.getNome());
         novoAluno.setSenha(aluno.getSenha());
         novoAluno.setEmail(aluno.getEmail());
     }
 
-    @Transactional(readOnly = true)
-    public List<Aluno> search(Aluno aluno) {
-        Example example = Example.of(aluno, ExampleMatcher.matching()
-                .withIgnoreCase()
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
-        return repository.findAll(example);
+    public Aluno dtoParaEntidade(AlunoPostDTO dto){
+        return modelMapper.map(dto, Aluno.class);
     }
 
-    @Transactional
-    public URI uploadFotoPerfil(MultipartFile file, Long id){
-        URI uri = s3Service.uploadFile(file);
-        Aluno aluno = search(id);
-        aluno.setId(aluno.getId());
-        aluno.setImagem(uri.toString());
-        repository.save(aluno);
-        return uri;
+    public AlunoDTO entidadeParaDTO(Aluno aluno){
+        return modelMapper.map(aluno, AlunoDTO.class);
     }
 
 }

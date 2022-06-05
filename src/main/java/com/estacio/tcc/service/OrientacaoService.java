@@ -1,13 +1,10 @@
 package com.estacio.tcc.service;
 
-import com.estacio.tcc.dto.EquipeDTO;
 import com.estacio.tcc.dto.OrientacaoDTO;
 import com.estacio.tcc.dto.OrientacaoPostDTO;
 import com.estacio.tcc.model.*;
 import com.estacio.tcc.repository.EquipeRepository;
-import com.estacio.tcc.repository.EstruturaTccRepository;
 import com.estacio.tcc.repository.OrientacaoRepository;
-import com.estacio.tcc.repository.TipoTccRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
 import lombok.AllArgsConstructor;
@@ -19,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,13 +27,13 @@ public class OrientacaoService {
     private OrientadorService service;
     private ModelMapper modelMapper;
 
-    public List<OrientacaoDTO> list(Orientacao orientacao){
+    public List<OrientacaoDTO> lista(Orientacao orientacao){
         Example<Orientacao> example = Example.of(orientacao, ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
         return repository.findAll(example)
                 .stream()
-                .map(x -> dtoToModel(x))
+                .map(x -> entidadeParaDTO(x))
                 .collect(Collectors.toList());
     }
 
@@ -45,15 +41,15 @@ public class OrientacaoService {
         return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Orientação não encontrada"));
     }
 
-    public OrientacaoDTO search(Long id){
+    public OrientacaoDTO encontraIdDTO(Long id){
         Orientacao orientacao = findById(id);
-        return dtoToModel(orientacao);
+        return entidadeParaDTO(orientacao);
     }
 
     @Transactional
-    public Orientacao save(OrientacaoPostDTO dto){
-        Orientacao orientacao = modelToDto(dto);
-        Orientador orientador = service.findByMatricula(dto.getMatriculaOrientador());
+    public Orientacao salvar(OrientacaoPostDTO dto){
+        Orientacao orientacao = dtoParaEntidade(dto);
+        Orientador orientador = service.encontraMatricula(dto.getMatriculaOrientador());
         orientacao.setOrientador(orientador);
 
         Equipe equipe = equipeRepository.findById(dto.getEquipe())
@@ -69,22 +65,23 @@ public class OrientacaoService {
     }
 
     @Transactional
-    public Orientacao update(OrientacaoPostDTO dto){
-        Orientacao novaOrientacao = modelToDto(dto);
+    public Orientacao atualizar(OrientacaoPostDTO dto){
+        Orientacao novaOrientacao = dtoParaEntidade(dto);
         Orientacao orientacao = findById(novaOrientacao.getId());
 
-        Orientador orientador = service.findByMatricula(dto.getMatriculaOrientador());
+        Orientador orientador = service.encontraMatricula(dto.getMatriculaOrientador());
         novaOrientacao.setOrientador(orientador);
 
         novaOrientacao.getEstruturaTcc().setId(orientacao.getEstruturaTcc().getId());
         novaOrientacao.getEstruturaTcc().getTipoTcc()
                 .setId(orientacao.getEstruturaTcc().getTipoTcc().getId());
-        putOrientacao(orientacao, novaOrientacao);
+        orientacao.getEstruturaTcc().getTipoTcc().setDescricao(dto.getTipoTCC());
+        attOrientacao(orientacao, novaOrientacao);
         return repository.save(orientacao);
     }
 
     @Transactional
-    public void delete(Orientacao orientacao){
+    public void deletar(Orientacao orientacao){
         Objects.requireNonNull(orientacao);
         Equipe equipe = equipeRepository.findById(orientacao.getEquipe())
                 .orElseThrow(() -> new ObjectNotFoundException("Equipe não localizada!"));
@@ -93,7 +90,7 @@ public class OrientacaoService {
         repository.delete(orientacao);
     }
 
-    public Orientacao modelToDto(OrientacaoPostDTO dto){
+    public Orientacao dtoParaEntidade(OrientacaoPostDTO dto){
         Orientacao orientacao = new Orientacao();
         orientacao.setId(dto.getId());
         orientacao.setDataOrientacao(dto.getDataOrientacao());
@@ -108,11 +105,11 @@ public class OrientacaoService {
         return orientacao;
     }
 
-    public OrientacaoDTO dtoToModel(Orientacao orientacao){
+    public OrientacaoDTO entidadeParaDTO(Orientacao orientacao){
         return modelMapper.map(orientacao, OrientacaoDTO.class);
     }
 
-    private void putOrientacao(Orientacao nova, Orientacao orientacao){
+    private void attOrientacao(Orientacao nova, Orientacao orientacao){
         nova.setDataOrientacao(orientacao.getDataOrientacao());
         nova.setOrientador(orientacao.getOrientador());
         nova.setEstruturaTcc(orientacao.getEstruturaTcc());

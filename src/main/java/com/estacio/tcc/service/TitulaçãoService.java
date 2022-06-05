@@ -12,7 +12,7 @@ public class TitulaçãoService {
 
     private TitulacaoRepository repository;
 
-    public Titulacao findById(Long id){
+    public Titulacao encontraId(Long id){
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Titulação não encontrada"));
     }

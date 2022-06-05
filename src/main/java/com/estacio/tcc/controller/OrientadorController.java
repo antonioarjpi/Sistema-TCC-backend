@@ -2,7 +2,10 @@ package com.estacio.tcc.controller;
 
 import com.estacio.tcc.dto.OrientadorDTO;
 import com.estacio.tcc.dto.OrientadorPostDTO;
-import com.estacio.tcc.model.*;
+import com.estacio.tcc.model.AreaConhecimento;
+import com.estacio.tcc.model.LinhaPesquisa;
+import com.estacio.tcc.model.Orientador;
+import com.estacio.tcc.model.Titulacao;
 import com.estacio.tcc.service.OrientadorService;
 import com.estacio.tcc.service.TitulaçãoService;
 import lombok.AllArgsConstructor;
@@ -24,17 +27,17 @@ public class OrientadorController {
     private TitulaçãoService titulaçãoService;
 
     @PostMapping
-    public ResponseEntity<Orientador> save(@RequestBody @Valid OrientadorPostDTO orientador){
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(orientador));
+    public ResponseEntity<Orientador> salvar(@RequestBody @Valid OrientadorPostDTO orientador){
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(orientador));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Orientador> findById(@PathVariable Long id){
-        return ResponseEntity.ok(service.findById(id));
+    public ResponseEntity<Orientador> encontrarId(@PathVariable Long id){
+        return ResponseEntity.ok(service.encontraId(id));
     }
 
     @GetMapping
-    public ResponseEntity search(@RequestParam(required = false) String nome,
+    public ResponseEntity listar(@RequestParam(required = false) String nome,
                                  @RequestParam(required = false) String matricula,
                                  @RequestParam(required = false) String grau,
                                  @RequestParam(required = false) String ies,
@@ -42,18 +45,18 @@ public class OrientadorController {
                                  @RequestParam(required = false) String conhecimento,
                                  @RequestParam(required = false) String linhaPesquisa,
                                  @RequestParam(required = false) String email){
-        Orientador filter = new Orientador();
+        Orientador orientador = new Orientador();
         Titulacao titulacao = new Titulacao(null, descricaoTitulacao, grau, ies);
         AreaConhecimento areaConhecimento = new AreaConhecimento(null, conhecimento);
         LinhaPesquisa linha = new LinhaPesquisa(null, linhaPesquisa, areaConhecimento);
-        filter.setNome(nome);
-        filter.setMatricula(matricula);
-        filter.setEmail(email);
-        filter.setTitulacao(titulacao);
-        filter.setLinhaPesquisa(linha);
+        orientador.setNome(nome);
+        orientador.setMatricula(matricula);
+        orientador.setEmail(email);
+        orientador.setTitulacao(titulacao);
+        orientador.setLinhaPesquisa(linha);
 
-        List<OrientadorDTO> search = service.list(filter);
-        return ResponseEntity.ok(search);
+        List<OrientadorDTO> filtro = service.lista(orientador);
+        return ResponseEntity.ok(filtro);
     }
 
     @PutMapping("/{id}")
@@ -71,8 +74,8 @@ public class OrientadorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
-        Orientador orientador = service.findById(id);
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
+        Orientador orientador = service.encontraId(id);
         service.delete(orientador);
         return ResponseEntity.noContent().build();
     }

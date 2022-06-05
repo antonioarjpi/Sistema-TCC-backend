@@ -30,7 +30,7 @@ public class OrientadorService {
     private ModelMapper modelMapper;
     private S3Service s3Service;
 
-    public Orientador findByMatricula(String matricula){
+    public Orientador encontraMatricula(String matricula){
         Orientador orientador = repository.findByMatricula(matricula);
         if (orientador == null) {
             throw new ObjectNotFoundException("Orientador não encontrado");
@@ -38,7 +38,7 @@ public class OrientadorService {
         return orientador;
     }
 
-    public void validateEmail(String email) {
+    public void validaEmail(String email) {
         boolean exist = repository.existsByEmail(email);
         if (exist){
             throw new RuleOfBusinessException("E-mail já está cadastrado por outro orientador.");
@@ -46,17 +46,17 @@ public class OrientadorService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrientadorDTO> list(Orientador orientador) {
+    public List<OrientadorDTO> lista(Orientador orientador) {
         Example example = Example.of(orientador, ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
         return (List<OrientadorDTO>) repository.findAll(example)
                 .stream()
-                .map(x -> dtoToModel((Orientador) x))
+                .map(x -> entidadeParaDTO((Orientador) x))
                 .collect(Collectors.toList());
     }
 
-    public Orientador findById(Long id){
+    public Orientador encontraId(Long id){
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Orientador não encontrado."));
     }
@@ -69,9 +69,9 @@ public class OrientadorService {
     }
 
     @Transactional
-    public Orientador save(OrientadorPostDTO dto){
-        Orientador orientador = modelToDto(dto);
-        validateEmail(orientador.getEmail());
+    public Orientador salvar(OrientadorPostDTO dto){
+        Orientador orientador = dtoParaEntidade(dto);
+        validaEmail(orientador.getEmail());
         String matricula = matriculaValidada();
         orientador.setMatricula(matricula);
         orientador = repository.save(orientador);
@@ -80,8 +80,8 @@ public class OrientadorService {
 
     @Transactional
     public Orientador update(OrientadorPostDTO dto){
-        Orientador novoOrientador = modelToDto(dto);
-        Orientador orientador = findById(novoOrientador.getId());
+        Orientador novoOrientador = dtoParaEntidade(dto);
+        Orientador orientador = encontraId(novoOrientador.getId());
         novoOrientador.getTitulacao().setId(orientador.getTitulacao().getId());
         novoOrientador.getLinhaPesquisa().setId(orientador.getLinhaPesquisa().getId());
         novoOrientador.getLinhaPesquisa().getAreaConhecimento().setId(orientador.getLinhaPesquisa().getAreaConhecimento().getId());
@@ -118,18 +118,18 @@ public class OrientadorService {
 
     public URI uploadFotoPerfil(MultipartFile file, Long id){
         URI uri = s3Service.uploadFile(file);
-        Orientador orientador = findById(id);
+        Orientador orientador = encontraId(id);
         orientador.setId(orientador.getId());
         orientador.setImagem(uri.toString());
         repository.save(orientador);
         return uri;
     }
 
-    public OrientadorDTO dtoToModel(Orientador orientador){
+    public OrientadorDTO entidadeParaDTO(Orientador orientador){
         return modelMapper.map(orientador, OrientadorDTO.class);
     }
 
-    public Orientador modelToDto(OrientadorPostDTO dto){
+    public Orientador dtoParaEntidade(OrientadorPostDTO dto){
         return modelMapper.map(dto, Orientador.class);
     }
 

@@ -1,5 +1,6 @@
 package com.estacio.tcc.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +26,8 @@ public class Equipe{
     private Integer quantidade;
     private LocalDate dataCadastro;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JsonIgnore
+    @ManyToMany
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(
             name = "aluno_equipe",
@@ -33,10 +35,12 @@ public class Equipe{
             inverseJoinColumns = @JoinColumn(name = "aluno_id"))
     private List<Aluno> alunos;
 
-    @ManyToOne(cascade=CascadeType.PERSIST)
+    @JsonIgnore
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "tema_id")
     private Tema tema;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "orientacao_id")
     private Orientacao orientacao;

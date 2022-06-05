@@ -14,13 +14,13 @@ public class MembroService {
     private MembroRepository repository;
 
     @Transactional
-    public Membro findById(Long id){
+    public Membro encontrarId(Long id){
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Membro da banca não encontrada"));
     }
 
     @Transactional
-    public void delete(Membro membro){
+    public void deletar(Membro membro){
         repository.delete(membro);
     }
 }
