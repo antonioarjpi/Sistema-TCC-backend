@@ -5,12 +5,13 @@ import com.estacio.tcc.repository.AlunoRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +22,7 @@ import java.util.Random;
 public class AlunoService {
 
     private AlunoRepository repository;
+    private S3Service s3Service;
 
     @Transactional
     public Aluno save(Aluno aluno){
@@ -126,6 +128,16 @@ public class AlunoService {
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
         return repository.findAll(example);
+    }
+
+    @Transactional
+    public URI uploadFotoPerfil(MultipartFile file, Long id){
+        URI uri = s3Service.uploadFile(file);
+        Aluno aluno = search(id);
+        aluno.setId(aluno.getId());
+        aluno.setImagem(uri.toString());
+        repository.save(aluno);
+        return uri;
     }
 
 }

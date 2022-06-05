@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -67,6 +69,13 @@ public class AlunoController {
         Aluno aluno = alunoService.search(id);
         alunoService.delete(aluno);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/imagem/{id}")
+    public ResponseEntity<Void> uploadFotoOrientador(@RequestParam MultipartFile file, @PathVariable Long id){
+        URI uri = alunoService.uploadFotoPerfil(file, id);
+        return ResponseEntity.created(uri).build();
+
     }
 
     @PutMapping("/{id}")

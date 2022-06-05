@@ -33,6 +33,7 @@ public class Aluno{
     @Size(min = 6, max = 16, message = "Tamanho da senha tem que ser entre 6 a 16 caracteres")
     private String senha;
 
+    private String imagem;
     private String matricula;
 
     @JsonIgnore
