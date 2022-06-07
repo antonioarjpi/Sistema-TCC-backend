@@ -34,12 +34,6 @@ public class AlunoController {
         return ResponseEntity.ok(filtro);
     }
 
-    @PostMapping("/autenticar")
-    public ResponseEntity autenticar(@RequestBody @Valid AlunoDTO aluno){
-        alunoService.autenticar(aluno.getMatricula(), aluno.getSenha());
-        return ResponseEntity.ok().body("Usuário logado");
-    }
-
     @GetMapping("/email/{email}")
     public ResponseEntity encontrarEmail(@PathVariable String email){
         try{
@@ -83,5 +77,4 @@ public class AlunoController {
         alunoPostDTO.setId(id);
         return ResponseEntity.ok(alunoService.atualiza(alunoPostDTO));
     }
-
 }

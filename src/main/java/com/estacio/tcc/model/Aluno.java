@@ -7,9 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,24 +19,22 @@ public class Aluno{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(min = 2, max = 255, message = "Tamanho do nome tem que ser entre 5 a 255 caracteres")
     private String nome;
 
-    @NotBlank
-    @Email
+    @Column(unique = true)
     private String email;
 
-    @NotBlank
-    @Size(min = 6, max = 16, message = "Tamanho da senha tem que ser entre 6 a 16 caracteres")
+    @JsonIgnore
     private String senha;
 
     private String imagem;
+
+    @Column(unique = true)
     private String matricula;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "alunos")
-    private List<Equipe> equipe;
+    private List<Equipe> equipe = new ArrayList<>();
 
 
 }

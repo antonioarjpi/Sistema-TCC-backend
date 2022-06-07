@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class OrientadorService {
 
+    private BCryptPasswordEncoder passwordEncoder;
     private OrientadorRepository repository;
     private TitulacaoRepository titulacaoRepository;
     private ModelMapper modelMapper;
@@ -70,6 +72,7 @@ public class OrientadorService {
 
     @Transactional
     public Orientador salvar(OrientadorPostDTO dto){
+        criptografarSenha(dto);
         Orientador orientador = dtoParaEntidade(dto);
         validaEmail(orientador.getEmail());
         String matricula = matriculaValidada();
@@ -78,10 +81,18 @@ public class OrientadorService {
         return orientador;
     }
 
+    private void criptografarSenha(OrientadorPostDTO dto) {
+        String encode = passwordEncoder.encode(dto.getSenha());
+        dto.setSenha(encode);
+    }
+
     @Transactional
     public Orientador update(OrientadorPostDTO dto){
         Orientador novoOrientador = dtoParaEntidade(dto);
         Orientador orientador = encontraId(novoOrientador.getId());
+        if (!orientador.getEmail().equals(novoOrientador.getEmail())){
+            validaEmail(orientador.getEmail());
+        }
         novoOrientador.getTitulacao().setId(orientador.getTitulacao().getId());
         novoOrientador.getLinhaPesquisa().setId(orientador.getLinhaPesquisa().getId());
         novoOrientador.getLinhaPesquisa().getAreaConhecimento().setId(orientador.getLinhaPesquisa().getAreaConhecimento().getId());

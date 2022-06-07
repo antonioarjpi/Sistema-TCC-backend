@@ -1,5 +1,6 @@
 package com.estacio.tcc.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +17,14 @@ public class Orientador {
     private Long id;
 
     private String nome;
+
+    @Column(unique = true)
     private String matricula;
+
+    @Column(unique = true)
     private String email;
+
+    @JsonIgnore
     private String senha;
     private String imagem;
 

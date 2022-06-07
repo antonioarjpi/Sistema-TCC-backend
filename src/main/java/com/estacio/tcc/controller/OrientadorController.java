@@ -60,7 +60,7 @@ public class OrientadorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity atualizar (@PathVariable Long id, @RequestBody @Valid OrientadorPostDTO dto){
+    public ResponseEntity atualizar (@PathVariable Long id, @RequestBody OrientadorPostDTO dto){
         dto.setId(id);
         Orientador orientador = service.update(dto);
         return ResponseEntity.ok(orientador);

@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AlunoService {
 
+    private BCryptPasswordEncoder passwordEncoder;
     private AlunoRepository repository;
     private S3Service s3Service;
     private ModelMapper modelMapper;
@@ -54,11 +56,17 @@ public class AlunoService {
 
     @Transactional
     public Aluno salvar(AlunoPostDTO dto){
+        criptografarSenha(dto);
         Aluno aluno = dtoParaEntidade(dto);
         validaEmail(aluno.getEmail());
         String matricula = matriculaValidada();
         aluno.setMatricula(matricula);
         return repository.save(aluno);
+    }
+
+    private void criptografarSenha(AlunoPostDTO dto) {
+        String encode = passwordEncoder.encode(dto.getSenha());
+        dto.setSenha(encode);
     }
 
     @Transactional
@@ -76,6 +84,7 @@ public class AlunoService {
         }
         atualizaDados(novoAluno, aluno);
         aluno.setMatricula(novoAluno.getMatricula());
+        aluno.setSenha(novoAluno.getSenha());
         return repository.save(aluno);
     }
 
@@ -91,17 +100,6 @@ public class AlunoService {
     @Transactional
     public Aluno encontraEmail(String email){
         Aluno aluno = repository.findByEmail(email);
-        return aluno;
-    }
-
-    public Aluno autenticar(String matricula, String senha){
-        Aluno aluno = encontraMatricula(matricula);
-        if (aluno == null){
-            throw new ObjectNotFoundException("Matrícula não encontrada.");
-        }
-        if (!aluno.getSenha().equals(senha)){
-            throw new RuleOfBusinessException("Senha incorreta!");
-        }
         return aluno;
     }
 
@@ -146,7 +144,6 @@ public class AlunoService {
 
     private void atualizaDados(Aluno novoAluno, Aluno aluno){
         novoAluno.setNome(aluno.getNome());
-        novoAluno.setSenha(aluno.getSenha());
         novoAluno.setEmail(aluno.getEmail());
     }
 

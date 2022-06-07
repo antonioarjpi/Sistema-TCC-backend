@@ -88,7 +88,6 @@ public class EquipeService {
     private void atualizaDados (Equipe novaEquipe, Equipe equipe){
         novaEquipe.getTema().setId(novaEquipe.getTema().getId());
         novaEquipe.setNome(equipe.getNome());
-        novaEquipe.setDataCadastro(equipe.getDataCadastro());
         novaEquipe.setAlunos(equipe.getAlunos());
     }
 

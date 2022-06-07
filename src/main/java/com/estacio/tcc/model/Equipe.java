@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,7 @@ public class Equipe{
     private Long id;
     private String nome;
     private Integer quantidade;
-    private LocalDate dataCadastro;
+    private LocalDate dataCadastro = LocalDate.now();
 
     @JsonIgnore
     @ManyToMany
@@ -33,7 +34,7 @@ public class Equipe{
             name = "aluno_equipe",
             joinColumns = @JoinColumn(name = "equipe_id"),
             inverseJoinColumns = @JoinColumn(name = "aluno_id"))
-    private List<Aluno> alunos;
+    private List<Aluno> alunos = new ArrayList<>();
 
     @JsonIgnore
     @ManyToOne(cascade=CascadeType.ALL)

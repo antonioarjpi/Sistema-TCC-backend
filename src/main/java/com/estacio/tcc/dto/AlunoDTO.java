@@ -20,6 +20,5 @@ public class AlunoDTO {
     private String matricula;
     private String imagem;
     private List<Equipe> equipe;
-    private String senha;
 
 }

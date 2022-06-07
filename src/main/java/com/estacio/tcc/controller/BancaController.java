@@ -65,7 +65,7 @@ public class BancaController {
         return ResponseEntity.ok(filtro);
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/agendamento/{id}")
     public ResponseEntity<Banca> agendarDataBanca(@PathVariable Long id, @RequestBody DefesaPostDTO dto){
         Banca banca = service.agendamentoDefesa(id, dto);
         return ResponseEntity.ok(banca);

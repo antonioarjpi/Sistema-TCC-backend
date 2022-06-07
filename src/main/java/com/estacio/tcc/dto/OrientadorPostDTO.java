@@ -17,7 +17,7 @@ public class OrientadorPostDTO {
     @NotBlank
     @Size(min = 3, max = 255, message = "Campo tem que ter entre 3 a 255 caracteres")
     private String nome;
-    private String matricula;
+
     private String imagem;
 
     @NotBlank

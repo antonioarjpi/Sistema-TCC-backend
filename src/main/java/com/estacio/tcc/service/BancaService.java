@@ -3,11 +3,9 @@ package com.estacio.tcc.service;
 import com.estacio.tcc.dto.BancaDTO;
 import com.estacio.tcc.dto.BancaPostDTO;
 import com.estacio.tcc.dto.DefesaPostDTO;
-import com.estacio.tcc.model.Banca;
-import com.estacio.tcc.model.Defesa;
-import com.estacio.tcc.model.Equipe;
-import com.estacio.tcc.model.Orientador;
+import com.estacio.tcc.model.*;
 import com.estacio.tcc.repository.BancaRepository;
+import com.estacio.tcc.repository.DefesaRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +27,7 @@ public class BancaService {
     private OrientadorService orientadorService;
     private EquipeService equipeService;
     private MembroService membroService;
+    private DefesaRepository defesaRepository;
     private ModelMapper modelMapper;
 
     public BancaDTO encontrarIdDTO(Long id){
@@ -86,7 +86,11 @@ public class BancaService {
         Equipe equipe = equipeService.encontraId(dto.getEquipe());
         banca.setEquipe(equipe);
 
+        Membro membro = membroService.encontrarId(novaBanca.getMembro().getId());
+        banca.setMembro(membro);
         banca.getMembro().setMatricula(dto.getMembroMatricula());
+
+        banca.setDefesa(novaBanca.getDefesa());
 
         atualizaDados(novaBanca, banca);
         return repository.save(banca);
@@ -100,7 +104,10 @@ public class BancaService {
             defesa.setDataDefesa(dto.getData());
             banca.setDefesa(defesa);
         }else {
-            banca.getDefesa().setDataDefesa(dto.getData());
+            Optional<Defesa> defesa = defesaRepository.findById(banca.getDefesa().getId());
+            defesa.get().setId(defesa.get().getId());
+            defesa.get().setDataDefesa(dto.getData());
+            banca.setDefesa(defesa.get());
         }
         return repository.save(banca);
     }

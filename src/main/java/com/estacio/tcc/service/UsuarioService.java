@@ -6,6 +6,7 @@ import com.estacio.tcc.service.exceptions.AuthenticateErrorException;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +16,20 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UsuarioService {
 
+    private BCryptPasswordEncoder passwordEncoder;
     private UsuarioRepository repository;
 
     @Transactional
     public Usuario salva(Usuario usuario){
+        criptografarSenha(usuario);
         validaEmail(usuario.getEmail());
         return repository.save(usuario);
+    }
+
+    private void criptografarSenha(Usuario usuario) {
+        String senha = usuario.getSenha();
+        String enconder = passwordEncoder.encode(senha);
+        usuario.setSenha(enconder);
     }
 
     @Transactional
@@ -30,15 +39,19 @@ public class UsuarioService {
     }
 
     public Usuario autentica(String email, String senha) {
-        Optional<Usuario> user = repository.findByEmail(email);
-        if (!user.isPresent()){
+        Optional<Usuario> usuario = repository.findByEmail(email);
+
+        if (!usuario.isPresent()){
             throw new AuthenticateErrorException("Usuário não encontrado.");
         }
 
-        if (!user.get().getSenha().equals(senha)){
+        boolean senhas = passwordEncoder.matches(senha, usuario.get().getSenha());
+
+        if (!senhas){
             throw new AuthenticateErrorException("Senha incorreta.");
         }
-        return user.get();
+
+        return usuario.get();
     }
 
     public void validaEmail(String email) {
