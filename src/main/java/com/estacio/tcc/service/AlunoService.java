@@ -78,13 +78,14 @@ public class AlunoService {
     @Transactional
     public Aluno atualiza(AlunoPostDTO dto){
         Aluno aluno = dtoParaEntidade(dto);
-        Aluno novoAluno = encontraId(aluno.getId());
-        if (!aluno.getEmail().equals(novoAluno.getEmail())){
+        Aluno achou = encontraId(aluno.getId());
+        if (!aluno.getEmail().equals(achou.getEmail())){
             validaEmail(aluno.getEmail());
         }
-        atualizaDados(novoAluno, aluno);
-        aluno.setMatricula(novoAluno.getMatricula());
-        aluno.setSenha(novoAluno.getSenha());
+        atualizaDados(achou, aluno);
+        aluno.setImagem(achou.getImagem());
+        aluno.setMatricula(achou.getMatricula());
+        aluno.setSenha(achou.getSenha());
         return repository.save(aluno);
     }
 

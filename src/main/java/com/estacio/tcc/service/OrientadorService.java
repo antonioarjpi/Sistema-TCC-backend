@@ -90,8 +90,8 @@ public class OrientadorService {
     public Orientador update(OrientadorPostDTO dto){
         Orientador novoOrientador = dtoParaEntidade(dto);
         Orientador orientador = encontraId(novoOrientador.getId());
-        if (!orientador.getEmail().equals(novoOrientador.getEmail())){
-            validaEmail(orientador.getEmail());
+        if (!novoOrientador.getEmail().equals(orientador.getEmail())){
+            validaEmail(novoOrientador.getEmail());
         }
         novoOrientador.getTitulacao().setId(orientador.getTitulacao().getId());
         novoOrientador.getLinhaPesquisa().setId(orientador.getLinhaPesquisa().getId());
