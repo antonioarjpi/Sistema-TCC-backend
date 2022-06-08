@@ -1,17 +1,18 @@
 package com.estacio.tcc.controller;
 
 import com.estacio.tcc.dto.UsuarioDTO;
+import com.estacio.tcc.dto.TokenDTO;
 import com.estacio.tcc.model.Usuario;
+import com.estacio.tcc.repository.UsuarioRepository;
+import com.estacio.tcc.config.security.JwtUtil;
 import com.estacio.tcc.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -19,6 +20,12 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService service;
+
+    @Autowired
+    private UsuarioRepository repository;
+
+    @Autowired
+    private JwtUtil jwtService;
 
     @PostMapping
     public ResponseEntity salvar(@RequestBody @Valid UsuarioDTO userDTO){
@@ -33,7 +40,15 @@ public class UsuarioController {
 
     @PostMapping("/auth")
     public ResponseEntity autenticar(@RequestBody UsuarioDTO dto){
-        Usuario authenticate = service.autentica(dto.getEmail(), dto.getSenha());
-        return ResponseEntity.ok(authenticate);
+        Usuario usuario = service.autentica(dto.getEmail(), dto.getSenha());
+        String token = jwtService.gerarToken(usuario);
+        TokenDTO tokenDTO = new TokenDTO(token);
+        return ResponseEntity.ok(tokenDTO);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity findBYid(){
+        List<Usuario> all = repository.findAll();
+        return ResponseEntity.ok(all);
     }
 }
