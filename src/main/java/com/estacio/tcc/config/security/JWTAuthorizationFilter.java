@@ -1,5 +1,7 @@
 package com.estacio.tcc.config.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +19,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private JwtUtil jwtUtil;
 
+    @Autowired
     private UserDetailsService userDetailsService;
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserDetailsService userDetailsService) {
@@ -31,7 +34,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                                     FilterChain chain) throws IOException, ServletException{
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer")){
+            System.out.println(header);
             UsernamePasswordAuthenticationToken auth = getAuthentication(header.substring(7));
+
             if (auth != null){
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }

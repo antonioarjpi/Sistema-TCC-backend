@@ -62,11 +62,6 @@ public class JwtUtil {
         }
     }
 
-    public String obterLoginUsuario(String token) {
-        Claims claims = getClaims(token);
-        return claims.getSubject();
-    }
-
     public String getUsername(String token) {
         Claims claims = getClaims(token);
         if (claims != null) {

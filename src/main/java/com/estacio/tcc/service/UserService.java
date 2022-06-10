@@ -2,7 +2,9 @@ package com.estacio.tcc.service;
 
 import com.estacio.tcc.config.security.UserSS;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService {
 
     public static UserSS authenticated() {
