@@ -51,7 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] PUBLIC_MATCHERS_POST = {
             "/usuarios/cadastrar",
-            "/usuarios/autenticar"
+            "/usuarios/autenticar",
+            "/alunos/imagem/**",
+            "/orientadores/imagem/**"
     };
 
     @Override
