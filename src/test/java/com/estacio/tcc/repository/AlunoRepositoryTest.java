@@ -1,6 +1,6 @@
 package com.estacio.tcc.repository;
 
-import com.estacio.tcc.builder.AlunoDTObuilder;
+import com.estacio.tcc.builder.AlunoBuilder;
 import com.estacio.tcc.model.Aluno;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ class AlunoRepositoryTest {
     @Test
     @DisplayName("Retorna aluno, quando sucesso")
     void findByEmail_RetornaAluno_QuandoForSucesso() {
-        Aluno aluno = AlunoDTObuilder.criaAluno();
+        Aluno aluno = AlunoBuilder.criaAluno();
 
         Aluno save = repository.save(aluno);
 
@@ -52,7 +52,7 @@ class AlunoRepositoryTest {
     @Test
     @DisplayName("Retorna aluno quando existir matricula, quando sucesso")
     void findByMatricula_RetornaAluno_QuandoForSucesso() {
-        Aluno aluno = AlunoDTObuilder.criaAluno();
+        Aluno aluno = AlunoBuilder.criaAluno();
 
         Aluno save = repository.save(aluno);
 
@@ -64,7 +64,7 @@ class AlunoRepositoryTest {
     @Test
     @DisplayName("Retorna verdadeiro quando for sucesso")
     void existsByEmail_RetornaVerdadeiro_QuandoSucesso() {
-        Aluno aluno = repository.save(AlunoDTObuilder.criaAluno());
+        Aluno aluno = repository.save(AlunoBuilder.criaAluno());
 
         boolean exists = repository.existsByEmail(aluno.getEmail());
 
@@ -74,7 +74,7 @@ class AlunoRepositoryTest {
     @Test
     @DisplayName("Retorna falso quando não existir e-mail")
     void existsByEmail_RetornaFalso_QuandoSucesso() {
-        Aluno aluno = repository.save(AlunoDTObuilder.criaAluno());
+        Aluno aluno = repository.save(AlunoBuilder.criaAluno());
 
         repository.deleteAll();
 
@@ -86,7 +86,7 @@ class AlunoRepositoryTest {
     @Test
     @DisplayName("Retorna verdadeiro quando for sucesso")
     void existsByMatricula_RetornaVerdadeiro_QuandoSucesso() {
-        Aluno aluno = repository.save(AlunoDTObuilder.criaAluno());
+        Aluno aluno = repository.save(AlunoBuilder.criaAluno());
 
         boolean exists = repository.existsByMatricula(aluno.getMatricula());
 
@@ -96,7 +96,7 @@ class AlunoRepositoryTest {
     @Test
     @DisplayName("Retorna falso quando não existir e-mail")
     void existsByMatricula_RetornaFalso_QuandoSucesso() {
-        Aluno aluno = repository.save(AlunoDTObuilder.criaAluno());
+        Aluno aluno = repository.save(AlunoBuilder.criaAluno());
 
         repository.deleteAll();
 
@@ -108,7 +108,7 @@ class AlunoRepositoryTest {
     @Test
     @DisplayName("Persist aluno quando for suecsso")
     void save_RetornaAlunoSalvo_QuandoSucesso(){
-        Aluno aluno = AlunoDTObuilder.criaAluno();
+        Aluno aluno = AlunoBuilder.criaAluno();
 
         Aluno save = repository.save(aluno);
 
@@ -131,7 +131,7 @@ class AlunoRepositoryTest {
     @Test
     @DisplayName("Remove aluno quando sucesso")
     void delete_RemoveAluno_QuandoSucesso(){
-        Aluno aluno = repository.save(AlunoDTObuilder.criaAluno());
+        Aluno aluno = repository.save(AlunoBuilder.criaAluno());
 
         repository.delete(aluno);
 
@@ -143,7 +143,7 @@ class AlunoRepositoryTest {
     @Test
     @DisplayName("Atualiza aluno quando for sucesso")
     void update_AtualizaAluno_QuandoSuceso(){
-        Aluno aluno = AlunoDTObuilder.criaAluno();
+        Aluno aluno = AlunoBuilder.criaAluno();
 
         Aluno novoAluno = repository.save(aluno);
 
