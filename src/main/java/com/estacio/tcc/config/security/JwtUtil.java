@@ -1,6 +1,5 @@
 package com.estacio.tcc.config.security;
 
-import com.estacio.tcc.model.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -22,23 +21,17 @@ public class JwtUtil {
     @Value("${jwt.chave-assinatura}")
     private String chaveAssinatura;
 
-    public String gerarToken(Usuario usuario) {
+    public String gerarToken(String usuario) {
         long exp = Long.valueOf(expiracao);
         LocalDateTime dataHoraExpiracao = LocalDateTime.now().plusMinutes(exp);
         Instant instant = dataHoraExpiracao.atZone( ZoneId.systemDefault() ).toInstant();
         java.util.Date data = Date.from(instant);
 
-        String token = Jwts
-                .builder()
+        return Jwts.builder()
                 .setExpiration(data)
-                .setSubject(usuario.getEmail())
-                .claim("id", usuario.getId())
-                .claim("nome", usuario.getNome())
-                .claim("email", usuario.getEmail())
-                .signWith( SignatureAlgorithm.HS512 , chaveAssinatura )
+                .setSubject(usuario)
+                .signWith(SignatureAlgorithm.HS512, chaveAssinatura)
                 .compact();
-
-        return token;
     }
 
     public Claims getClaims(String token) throws ExpiredJwtException {

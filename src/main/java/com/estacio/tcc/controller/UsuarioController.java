@@ -1,10 +1,12 @@
 package com.estacio.tcc.controller;
 
 import com.estacio.tcc.config.security.JwtUtil;
+import com.estacio.tcc.config.security.UserSS;
 import com.estacio.tcc.dto.TokenDTO;
 import com.estacio.tcc.dto.UsuarioDTO;
 import com.estacio.tcc.model.Usuario;
 import com.estacio.tcc.repository.UsuarioRepository;
+import com.estacio.tcc.service.UserService;
 import com.estacio.tcc.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -43,8 +46,17 @@ public class UsuarioController {
     @PostMapping("/autenticar")
     public ResponseEntity autenticar(@RequestBody UsuarioDTO dto){
         Usuario usuario = service.autentica(dto.getEmail(), dto.getSenha());
-        String token = jwtService.gerarToken(usuario);
+        String token = jwtService.gerarToken(usuario.getEmail());
         TokenDTO tokenDTO = new TokenDTO(token, usuario.getNome(), usuario.getEmail());
         return ResponseEntity.ok(tokenDTO);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity refreshToken(HttpServletResponse response){
+        UserSS userSS = UserService.authenticated();
+        String token = jwtService.gerarToken(userSS.getUsername());
+        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader("access-control-expose-headers", "Authorization");
+        return ResponseEntity.ok(token);
     }
 }

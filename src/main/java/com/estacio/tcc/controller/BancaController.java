@@ -45,22 +45,19 @@ public class BancaController {
     public ResponseEntity listar(@RequestParam(required = false) String descricao,
                                  @RequestParam(required = false) LocalDate dataBanca,
                                  @RequestParam(required = false) String orientadorNome,
-                                 @RequestParam(required = false) Long equipeId,
+                                 @RequestParam(required = false) String equipeId,
                                  @RequestParam(required = false) Long id,
                                  @RequestParam(required = false) String membroMatricula){
         Equipe equipe = new Equipe();
-        equipe.setId(equipeId);
+        equipe.setNome(equipeId);
+
         Orientador orientador = new Orientador();
         orientador.setNome(orientadorNome);
-        Membro membro = new Membro(null, membroMatricula);
 
-        Banca banca = new Banca();
-        banca.setId(id);
-        banca.setDataBanca(dataBanca);
-        banca.setDescricao(descricao);
-        banca.setEquipe(equipe);
-        banca.setOrientador(orientador);
-        banca.setMembro(membro);
+        Membro membro = new Membro();
+        membro.setMatricula(membroMatricula);
+
+        Banca banca = new Banca(id, descricao, dataBanca, null, equipe, orientador, membro, null);
         List<BancaDTO> filtro = service.lista(banca);
         return ResponseEntity.ok(filtro);
     }
