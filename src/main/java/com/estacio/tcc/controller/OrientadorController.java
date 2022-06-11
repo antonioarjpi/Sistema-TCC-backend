@@ -7,7 +7,6 @@ import com.estacio.tcc.model.LinhaPesquisa;
 import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.model.Titulacao;
 import com.estacio.tcc.service.OrientadorService;
-import com.estacio.tcc.service.TitulaçãoService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,6 @@ import java.util.List;
 public class OrientadorController {
 
     private OrientadorService service;
-    private TitulaçãoService titulaçãoService;
 
     @PostMapping
     public ResponseEntity<Orientador> salvar(@RequestBody @Valid OrientadorPostDTO orientador){

@@ -20,7 +20,6 @@ public class BancaDTO {
     private Integer ordemApresentacao;
     private String orientadorNome;
     private String orientadorMatricula;
-    private List equipeAlunos;
     private String equipeId;
     private Integer equipeQuantidade;
     private LocalDate equipeDataCadastro;
