@@ -10,9 +10,6 @@ public class BancaBuilder {
         return Banca.builder()
                 .id(null)
                 .ordemApresentacao(1)
-                .defesa(DefesaBuilder.criaDefesa())
-                .orientador(OrientadorBuilder.orientadorValido())
-                .equipe(EquipeBuilder.equipeValida())
                 .membro(MembroBuilder.criaMembro())
                 .dataBanca(LocalDate.of(2022, 06, 11))
                 .build();
