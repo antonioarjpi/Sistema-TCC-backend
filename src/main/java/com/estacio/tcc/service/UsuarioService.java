@@ -26,7 +26,7 @@ public class UsuarioService {
         return repository.save(usuario);
     }
 
-    private void criptografarSenha(Usuario usuario) {
+    public void criptografarSenha(Usuario usuario) {
         String senha = usuario.getSenha();
         String enconder = passwordEncoder.encode(senha);
         usuario.setSenha(enconder);

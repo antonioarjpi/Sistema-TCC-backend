@@ -1,9 +1,6 @@
 package com.estacio.tcc.config;
 
-import com.estacio.tcc.dto.AcompanhamentoDTO;
-import com.estacio.tcc.dto.EquipeDTO;
-import com.estacio.tcc.dto.OrientacaoDTO;
-import com.estacio.tcc.dto.OrientadorDTO;
+import com.estacio.tcc.dto.*;
 import com.estacio.tcc.model.Equipe;
 import com.estacio.tcc.model.Orientacao;
 import com.estacio.tcc.model.Orientador;
@@ -28,6 +25,10 @@ public class ModelMapperConfig {
                 .<String>addMapping(src -> src.getTema().getLinhaPesquisa().getAreaConhecimento().getDescricao(),
                         (x, value) -> x.setConhecimento(value))
                 .<List>addMapping(src -> src.getAlunos(), (x, value) -> x.getAlunos());
+
+        modelMapper.createTypeMap(EquipePostDTO.class, Equipe.class)
+                .<String>addMapping(src -> src.getTemaLinhapesquisaDescricao(),
+                        (x, value) -> x.getTema().getLinhaPesquisa().setDescricao(value));
 
         modelMapper.createTypeMap(Equipe.class, AcompanhamentoDTO.class)
                 .<String>addMapping(src -> src.getOrientacao().getEstruturaTcc().getDescricao(),
