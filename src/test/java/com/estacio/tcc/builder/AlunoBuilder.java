@@ -25,4 +25,15 @@ public class AlunoBuilder {
                 .build();
     }
 
+    public static Aluno alunoValido2(){
+        return Aluno.builder()
+                .id(1l)
+                .nome("nome teste")
+                .email("email@email.com")
+                .senha("123456")
+                .imagem("teste.png")
+                .matricula("123456")
+                .build();
+    }
+
 }
