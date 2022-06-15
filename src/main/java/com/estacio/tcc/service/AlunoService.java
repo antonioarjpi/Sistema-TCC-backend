@@ -101,6 +101,9 @@ public class AlunoService {
     @Transactional
     public Aluno encontraEmail(String email){
         Aluno aluno = repository.findByEmail(email);
+        if (aluno == null){
+            throw new ObjectNotFoundException("E-mail inexistente");
+        }
         return aluno;
     }
 
@@ -136,7 +139,7 @@ public class AlunoService {
         return matricula;
     }
 
-    private void validaEmail(String email) {
+    public void validaEmail(String email) {
         boolean exist = repository.existsByEmail(email);
         if (exist){
             throw new RuleOfBusinessException("E-mail já está cadastrado por outro aluno.");

@@ -45,11 +45,12 @@ public class BancaController {
     public ResponseEntity listar(@RequestParam(required = false) String descricao,
                                  @RequestParam(required = false) LocalDate dataBanca,
                                  @RequestParam(required = false) String orientadorNome,
-                                 @RequestParam(required = false) String equipeId,
+                                 @RequestParam(required = false) Long equipeId,
                                  @RequestParam(required = false) Long id,
                                  @RequestParam(required = false) String membroMatricula){
         Equipe equipe = new Equipe();
-        equipe.setNome(equipeId);
+        equipe.setId(equipeId);
+        equipe.setDataCadastro(null);
 
         Orientador orientador = new Orientador();
         orientador.setNome(orientadorNome);
