@@ -3,10 +3,12 @@ package com.estacio.tcc.service;
 import com.estacio.tcc.dto.AcompanhamentoDTO;
 import com.estacio.tcc.dto.EquipeDTO;
 import com.estacio.tcc.dto.EquipePostDTO;
-import com.estacio.tcc.model.Aluno;
 import com.estacio.tcc.model.Equipe;
 import com.estacio.tcc.model.Tema;
-import com.estacio.tcc.repository.*;
+import com.estacio.tcc.repository.AreaConhecimentoRepository;
+import com.estacio.tcc.repository.EquipeRepository;
+import com.estacio.tcc.repository.LinhaPesquisaRepository;
+import com.estacio.tcc.repository.TemaRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
 import lombok.AllArgsConstructor;
@@ -16,7 +18,6 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -26,13 +27,11 @@ import java.util.stream.Collectors;
 public class EquipeService {
 
     private EquipeRepository repository;
-    private AlunoService alunoService;
     private LinhaPesquisaRepository linhaPesquisaRepository;
     private TemaRepository temaRepository;
     private AreaConhecimentoRepository areaConhecimentoRepository;
     private ModelMapper modelMapper;
     private TemaService temaService;
-    private AlunoRepository alunoRepository;
 
     public Equipe encontraId(Long id){
         return repository.findById(id)
@@ -48,24 +47,7 @@ public class EquipeService {
     @Transactional
     public Equipe salvar(EquipePostDTO dto){
         Equipe equipe = dtoParaEntidade(dto);
-        List<Aluno> alunos = new ArrayList<>();
-
-        for (Aluno a : dto.getAlunos()){
-            Aluno aluno = alunoService.encontraMatricula(a.getMatricula());
-            if (aluno == null) throw new ObjectNotFoundException("Aluno inexistente.");
-            alunos.add(aluno);
-        }
-
-        if (alunos.isEmpty()){
-            throw new ObjectNotFoundException("Não pode ter equipe sem aluno.");
-        }
-
-        equipe.setQuantidade(alunos.size());
-
-        equipe.setAlunos(alunos);
         equipe = repository.save(equipe);
-
-        alunoRepository.saveAll(alunos);
         return equipe;
     }
 

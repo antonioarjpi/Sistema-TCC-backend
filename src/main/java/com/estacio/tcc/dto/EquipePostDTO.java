@@ -7,9 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Set;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class EquipePostDTO {
@@ -20,8 +22,8 @@ public class EquipePostDTO {
     @Size(min = 3, max = 255, message = "Tema precisa ter entre 3 a 255 caracteres")
     private String nome;
 
-    @NotNull
-    private List<Aluno> alunos;
+    @NotEmpty(message = "Preenchimento obrigatório no campo alunos.")
+    private Set<Aluno> alunos;
 
     @NotBlank
     @Size(min = 3, max = 255, message = "Tema precisa ter entre 3 a 255 caracteres")

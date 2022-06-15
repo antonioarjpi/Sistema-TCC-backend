@@ -3,7 +3,7 @@ package com.estacio.tcc.builder;
 import com.estacio.tcc.model.Equipe;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.Collections;
 
 public class EquipeBuilder {
 
@@ -12,7 +12,7 @@ public class EquipeBuilder {
                 .id(null)
                 .nome("Equipe One")
                 .quantidade(3)
-                .alunos(Arrays.asList(AlunoBuilder.alunoValido()))
+                .alunos(Collections.singleton(AlunoBuilder.alunoValido()))
                 .tema(TemaBuilder.criaTema())
                 .dataCadastro(LocalDate.now())
                 .build();
@@ -23,7 +23,7 @@ public class EquipeBuilder {
                 .id(1l)
                 .nome("Equipe One")
                 .quantidade(3)
-                .alunos(Arrays.asList(AlunoBuilder.alunoValido()))
+                .alunos(Collections.singleton(AlunoBuilder.alunoValido()))
                 .tema(TemaBuilder.temaValido())
                 .dataCadastro(LocalDate.now())
                 .build();

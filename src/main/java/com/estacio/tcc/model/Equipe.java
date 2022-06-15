@@ -9,9 +9,12 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -28,13 +31,14 @@ public class Equipe{
     private LocalDate dataCadastro = LocalDate.now();
 
     @JsonIgnore
+    @NotEmpty(message = "Campo alunos não pode ser vazio")
     @ManyToMany
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(
             name = "aluno_equipe",
             joinColumns = @JoinColumn(name = "equipe_id"),
             inverseJoinColumns = @JoinColumn(name = "aluno_id"))
-    private List<Aluno> alunos = new ArrayList<>();
+    private Set<Aluno> alunos = new HashSet<>();
 
     @JsonIgnore
     @ManyToOne(cascade=CascadeType.ALL)
