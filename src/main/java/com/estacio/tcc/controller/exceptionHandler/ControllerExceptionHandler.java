@@ -36,10 +36,9 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticateErrorException.class)
-    public ResponseEntity<StandardError> authorization(AuthenticateErrorException e, HttpServletRequest request) {
-
-        StandardError err = new StandardError(OffsetDateTime.now(), HttpStatus.FORBIDDEN.value(), "AuthenticateErrorException", "Acesso Negado", request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
+    public ResponseEntity<StandardError> authentication(AuthenticateErrorException e, HttpServletRequest request) {
+        StandardError err = new StandardError(OffsetDateTime.now(), HttpStatus.UNAUTHORIZED.value(), "AuthenticateErrorException", e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
     }
 
     @ExceptionHandler(SQLException.class)
