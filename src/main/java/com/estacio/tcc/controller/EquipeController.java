@@ -3,19 +3,20 @@ package com.estacio.tcc.controller;
 import com.estacio.tcc.dto.AcompanhamentoDTO;
 import com.estacio.tcc.dto.EquipeDTO;
 import com.estacio.tcc.dto.EquipePostDTO;
-import com.estacio.tcc.model.AreaConhecimento;
-import com.estacio.tcc.model.Equipe;
-import com.estacio.tcc.model.LinhaPesquisa;
-import com.estacio.tcc.model.Tema;
+import com.estacio.tcc.model.*;
 import com.estacio.tcc.service.EquipeService;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/equipes")
@@ -30,7 +31,7 @@ public class EquipeController {
     }
 
     @GetMapping
-    public ResponseEntity listar(@RequestParam(required = false) LocalDate dataCadastro,
+    public ResponseEntity listar(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataCadastro,
                                  @RequestParam(required = false) String descricaoConhecimento,
                                  @RequestParam(required = false) String descricaoLinha,
                                  @RequestParam(required = false) String tema,

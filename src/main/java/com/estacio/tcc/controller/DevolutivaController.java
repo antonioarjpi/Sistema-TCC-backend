@@ -8,6 +8,7 @@ import com.estacio.tcc.model.LocalCorrecao;
 import com.estacio.tcc.model.Orientacao;
 import com.estacio.tcc.service.DevolutivaService;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class DevolutivaController {
 
     @GetMapping
     public ResponseEntity<List<DevolutivaDTO>> listar(@RequestParam(required = false) String statusOrientacao,
-                                                    @RequestParam(required = false) LocalDate dataMudanca,
+                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataMudanca,
                                                     @RequestParam(required = false) Long orientacaoId,
                                                     @RequestParam(required = false) String devolutivaDescricao,
                                                     @RequestParam(required = false) String devolutivaVersaoDoc,
@@ -35,7 +36,7 @@ public class DevolutivaController {
         orientacao.setId(orientacaoId);
         LocalCorrecao correcao = new LocalCorrecao(null, devolutivaLocalCorrecaoLocal, devolutivaLocalCorrecaoCorrecaoSugerida);
         Devolutiva devolutiva = new Devolutiva(null, devolutivaDescricao, devolutivaVersaoDoc, null, correcao);
-        AcompanhamentoOrientacao acompanhamento = new AcompanhamentoOrientacao(null, statusOrientacao, dataMudanca, null, devolutiva);
+        AcompanhamentoOrientacao acompanhamento = new AcompanhamentoOrientacao(null, statusOrientacao, dataMudanca, orientacao, devolutiva);
 
         List<DevolutivaDTO> filtro = service.lista(acompanhamento);
         return ResponseEntity.ok(filtro);
