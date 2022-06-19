@@ -61,7 +61,7 @@ public class AlunoServiceTest {
     }
 
     @Test
-    @DisplayName("Lista filtrada")
+    @DisplayName("Lista filtrada quando sucesso")
     void listaFiltrada_RetornaListaDeAlunos_QuandoSucesso(){
         Aluno alunos = AlunoBuilder.alunoValido();
         String nome = alunos.getNome();

@@ -4,13 +4,8 @@ import com.estacio.tcc.dto.AcompanhamentoDTO;
 import com.estacio.tcc.dto.EquipeDTO;
 import com.estacio.tcc.dto.EquipePostDTO;
 import com.estacio.tcc.model.Equipe;
-import com.estacio.tcc.model.Tema;
-import com.estacio.tcc.repository.AreaConhecimentoRepository;
 import com.estacio.tcc.repository.EquipeRepository;
-import com.estacio.tcc.repository.LinhaPesquisaRepository;
-import com.estacio.tcc.repository.TemaRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
-import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
@@ -27,11 +22,7 @@ import java.util.stream.Collectors;
 public class EquipeService {
 
     private EquipeRepository repository;
-    private LinhaPesquisaRepository linhaPesquisaRepository;
-    private TemaRepository temaRepository;
-    private AreaConhecimentoRepository areaConhecimentoRepository;
     private ModelMapper modelMapper;
-    private TemaService temaService;
 
     public Equipe encontraId(Long id){
         return repository.findById(id)
@@ -47,6 +38,7 @@ public class EquipeService {
     @Transactional
     public Equipe salvar(EquipePostDTO dto){
         Equipe equipe = dtoParaEntidade(dto);
+        equipe.setQuantidade(equipe.getAlunos().size());
         equipe = repository.save(equipe);
         return equipe;
     }
@@ -54,35 +46,27 @@ public class EquipeService {
     public Equipe atualizar(EquipePostDTO dto){
         Equipe novaEquipe = dtoParaEntidade(dto);
         Equipe equipe = encontraId(novaEquipe.getId());
-
-        Tema tema = temaService.encontraId(equipe.getTema().getId());
-        tema.setDelimitacao(novaEquipe.getTema().getDelimitacao());
-        tema.getLinhaPesquisa().setDescricao(novaEquipe.getTema().getLinhaPesquisa().getDescricao());
-        tema.getLinhaPesquisa().getAreaConhecimento().setDescricao(dto.getTemaLinhaPesquisaAreaConhecimentoDescricao());
-
-        equipe.setQuantidade(equipe.getAlunos().size());
-        equipe.setTema(tema);
-
         atualizaDados(equipe, novaEquipe);
         return repository.save(equipe);
     }
 
     private void atualizaDados (Equipe novaEquipe, Equipe equipe){
-        novaEquipe.getTema().setId(novaEquipe.getTema().getId());
+        Long idTema = novaEquipe.getTema().getId();
+        Long idLinha = novaEquipe.getTema().getLinhaPesquisa().getId();
+        Long idConhecimento = novaEquipe.getTema().getLinhaPesquisa().getAreaConhecimento().getId();
+        novaEquipe.setTema(equipe.getTema());
         novaEquipe.setNome(equipe.getNome());
         novaEquipe.setAlunos(equipe.getAlunos());
+        novaEquipe.getTema().setId(idTema);
+        novaEquipe.getTema().getLinhaPesquisa().setId(idLinha);
+        novaEquipe.getTema().getLinhaPesquisa().getAreaConhecimento().setId(idConhecimento);
+        novaEquipe.setQuantidade(equipe.getAlunos().size());
     }
 
     @Transactional
     public void deletar(Equipe equipe){
         Objects.requireNonNull(equipe.getId());
-        if (equipe.getOrientacao() != null){
-            throw new RuleOfBusinessException("Equipe com Orientação cadastrada, exclua a orientação primeiro.");
-        }
         repository.delete(equipe);
-        temaRepository.delete(equipe.getTema());
-        linhaPesquisaRepository.delete(equipe.getTema().getLinhaPesquisa());
-        areaConhecimentoRepository.delete(equipe.getTema().getLinhaPesquisa().getAreaConhecimento());
     }
 
     @Transactional(readOnly = true)

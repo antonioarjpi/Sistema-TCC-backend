@@ -87,7 +87,7 @@ public class OrientadorService {
     }
 
     @Transactional
-    public Orientador update(OrientadorPostDTO dto){
+    public Orientador atualiza(OrientadorPostDTO dto){
         Orientador novoOrientador = dtoParaEntidade(dto);
         Orientador orientador = encontraId(novoOrientador.getId());
         if (!novoOrientador.getEmail().equals(orientador.getEmail())){
