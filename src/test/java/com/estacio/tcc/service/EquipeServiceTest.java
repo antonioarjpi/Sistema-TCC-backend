@@ -1,19 +1,13 @@
 package com.estacio.tcc.service;
 
-import com.estacio.tcc.builder.AlunoBuilder;
 import com.estacio.tcc.builder.EquipeBuilder;
-import com.estacio.tcc.builderDTO.AlunoBuilderDTO;
 import com.estacio.tcc.builderDTO.EquipeBuilderDTO;
-import com.estacio.tcc.dto.AlunoDTO;
-import com.estacio.tcc.dto.AlunoPostDTO;
+import com.estacio.tcc.dto.AcompanhamentoDTO;
 import com.estacio.tcc.dto.EquipeDTO;
 import com.estacio.tcc.dto.EquipePostDTO;
-import com.estacio.tcc.model.Aluno;
 import com.estacio.tcc.model.Equipe;
-import com.estacio.tcc.repository.AlunoRepository;
 import com.estacio.tcc.repository.EquipeRepository;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
-import com.estacio.tcc.service.exceptions.RuleOfBusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +24,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +51,7 @@ public class EquipeServiceTest {
         BDDMockito.when(repository.findById(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.of(EquipeBuilder.equipeValida()));
         BDDMockito.when(repository.findAll(ArgumentMatchers.any(Example.class)))
-                        .thenReturn(equipes);
+                .thenReturn(equipes);
         BDDMockito.when(repository.save(ArgumentMatchers.any(Equipe.class)))
                 .thenReturn(EquipeBuilder.equipeValida());
     }
@@ -67,7 +60,7 @@ public class EquipeServiceTest {
     @DisplayName("Lista filtrada quando sucesso")
     void listaFiltrada_RetornaListaDeAlunos_QuandoSucesso(){
         Equipe equipes = EquipeBuilder.equipeValida();
-        String nome = equipes.getNome();
+        Long quantidade = Long.valueOf(equipes.getQuantidade());
 
         List<EquipeDTO> list = service.lista(equipes);
 
@@ -75,8 +68,46 @@ public class EquipeServiceTest {
 
         assertThat(list).isNotEmpty();
 
-        assertThat(list.get(0).getNome()).isEqualTo(nome);
+        assertThat(list.get(0).getNome()).isEqualTo(equipes.getNome());
+
+        assertThat(list.get(0).getQuantidade()).isEqualTo(quantidade);
+
+        assertThat(list.get(0).getDataCadastro()).isEqualTo(equipes.getDataCadastro());
+
+        assertThat(list.get(0).getTema()).isEqualTo(equipes.getTema().getDelimitacao());
+
+        assertThat(list.get(0).getConhecimento()).isEqualTo(equipes.getTema().getLinhaPesquisa().getAreaConhecimento().getDescricao());
+
+        assertThat(list.get(0).getLinhaPesquisa()).isEqualTo(equipes.getTema().getLinhaPesquisa().getDescricao());
+
+        assertThat(list.get(0).getOrientacaoId()).isEqualTo(equipes.getOrientacao().getId());
+
+        assertThat(list.get(0).getAlunos()).isEqualTo(equipes.getAlunos());
+
     }
+
+    @Test
+    @DisplayName("mostrarTodaEquipePeloId quando sucesso")
+    void mostrarTodaEquipePeloId_RetornaEquipeComDevolutivasAcompanhamentosEstruturaDeTCC_QuandoSucesso() {
+        Long id = EquipeBuilder.equipeValida().getId();
+
+        AcompanhamentoDTO resultado = service.mostrarTodaEquipePeloId(id);
+
+        assertThat(resultado).isNotNull();
+
+        assertThat(resultado.getId()).isNotNull().isEqualTo(id);
+    }
+
+    @Test
+    @DisplayName("mostrarTodaEquipePeloId quando falhar")
+    void mostrarTodaEquipePeloId_RetornaErroDeNaoEncontrado_QuandoFalhar() {
+        Long id = EquipeBuilder.equipeValida().getId();
+
+        Mockito.when(repository.findById(id)).thenReturn(Optional.empty());
+
+        catchThrowableOfType(() -> service.mostrarTodaEquipePeloId(id), ObjectNotFoundException.class);
+    }
+
 
     @Test
     @DisplayName("EncontraID quando sucesso")
@@ -103,13 +134,25 @@ public class EquipeServiceTest {
     @Test
     @DisplayName("EncontraID quando sucesso")
     void encontraIdDTO_RetornaAluno_QuandoSucesso() {
-        Long id = EquipeBuilder.equipeValida().getId();
+        Equipe equipe = EquipeBuilder.equipeValida();
 
-        EquipeDTO resultado = service.encontraIdDTO(id);
+        EquipeDTO resultado = service.encontraIdDTO(equipe.getId());
 
         assertThat(resultado).isNotNull();
 
-        assertThat(resultado.getId()).isNotNull().isEqualTo(id);
+        assertThat(resultado.getId()).isNotNull().isEqualTo(equipe.getId());
+
+        assertThat(resultado.getTema()).isEqualTo(equipe.getTema().getDelimitacao());
+
+        assertThat(resultado.getConhecimento()).isEqualTo(equipe.getTema().getLinhaPesquisa().getAreaConhecimento().getDescricao());
+
+        assertThat(resultado.getLinhaPesquisa()).isEqualTo(equipe.getTema().getLinhaPesquisa().getDescricao());
+
+        assertThat(resultado.getDataCadastro()).isEqualTo(equipe.getDataCadastro());
+
+        assertThat(resultado.getOrientacaoId()).isEqualTo(equipe.getOrientacao().getId());
+
+        assertThat(resultado.getAlunos()).isEqualTo(equipe.getAlunos());
     }
 
     @Test
@@ -132,13 +175,8 @@ public class EquipeServiceTest {
 
     @Test
     @DisplayName("Atualiza equipe quando sucesso")
-    void atualiza_SalvaEquipe_QuandoSucesso(){
-        EquipePostDTO dto = EquipeBuilderDTO.atualizaEquipDTO();
-        dto.setId(1l);
-        dto.setNome("Nome Atualizado");
-        dto.setTemaDelimitacao("atualizou");
-        dto.setTemaLinhaPesquisaAreaConhecimentoDescricao("atualizou");
-        dto.setTemaLinhapesquisaDescricao("atualizou");
+    void atualiza_SalvaEquipeAtualizada_QuandoSucesso(){
+        EquipePostDTO dto = EquipeBuilderDTO.atualizaEquipeDTO();
 
         Equipe equipe = service.dtoParaEntidade(dto);
 
@@ -153,7 +191,7 @@ public class EquipeServiceTest {
     @Test
     @DisplayName("atualiza retorna erro quando nao achar ID")
     void atualiza_RetornaErroQuandoNaoAcharId_QuandoFalhar() {
-        EquipePostDTO dto = EquipeBuilderDTO.atualizaEquipDTO();
+        EquipePostDTO dto = EquipeBuilderDTO.atualizaEquipeDTO();
 
         catchThrowableOfType(() -> service.atualizar(dto), ObjectNotFoundException.class);
     }

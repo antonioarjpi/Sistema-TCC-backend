@@ -4,12 +4,10 @@ import com.estacio.tcc.dto.BancaDTO;
 import com.estacio.tcc.dto.BancaPostDTO;
 import com.estacio.tcc.dto.DefesaPostDTO;
 import com.estacio.tcc.model.*;
-import com.estacio.tcc.repository.BancaRepository;
-import com.estacio.tcc.repository.DefesaRepository;
+import com.estacio.tcc.repository.*;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -24,9 +22,9 @@ import java.util.stream.Collectors;
 public class BancaService {
 
     private BancaRepository repository;
-    private OrientadorService orientadorService;
-    private EquipeService equipeService;
-    private MembroService membroService;
+    private OrientadorRepository orientadorRepository;
+    private EquipeRepository equipeRepository;
+    private MembroRepository membroRepository;
     private DefesaRepository defesaRepository;
     private ModelMapper modelMapper;
 
@@ -44,25 +42,22 @@ public class BancaService {
     @Transactional
     public Banca salvar(BancaPostDTO dto){
         Banca banca = dtoParaEntidade(dto);
-
-        Orientador orientador = orientadorService.encontraMatricula(dto.getMatriculaOrientador());
-        banca.setOrientador(orientador);
-
-        Equipe equipe = equipeService.encontraId(dto.getEquipe());
-        banca.setEquipe(equipe);
-
+        buscaOrientadorEquipe(dto, banca);
         return repository.save(banca);
+    }
+
+    private void buscaOrientadorEquipe(BancaPostDTO dto, Banca banca) {
+        Orientador orientador = orientadorRepository.findByMatricula(dto.getMatriculaOrientador());
+        banca.setOrientador(orientador);
+        Equipe equipe = equipeRepository.findById(dto.getEquipe())
+                .orElseThrow(() -> new ObjectNotFoundException("Equipe não localizada"));
+        banca.setEquipe(equipe);
     }
 
     @Transactional
     public void deletar(Long id){
         Banca banca = encontrarId(id);
-        try {
-            repository.deleteById(id);
-            membroService.deletar(banca.getMembro());
-        }catch (DataIntegrityViolationException e){
-            throw new DataIntegrityViolationException("Erro! Banca Possui Defesas cadastradas");
-        }
+        repository.delete(banca);
     }
 
     public List<BancaDTO> lista(Banca banca){
@@ -80,20 +75,25 @@ public class BancaService {
         Banca banca = dtoParaEntidade(dto);
         Banca novaBanca = encontrarId(banca.getId());
 
-        Orientador orientador = orientadorService.encontraMatricula(dto.getMatriculaOrientador());
-        banca.setOrientador(orientador);
-
-        Equipe equipe = equipeService.encontraId(dto.getEquipe());
-        banca.setEquipe(equipe);
-
-        Membro membro = membroService.encontrarId(novaBanca.getMembro().getId());
-        banca.setMembro(membro);
-        banca.getMembro().setMatricula(dto.getMembroMatricula());
-
-        banca.setDefesa(novaBanca.getDefesa());
+        buscaOrientadorEquipe(dto, banca);
 
         atualizaDados(novaBanca, banca);
         return repository.save(banca);
+    }
+
+    private void atualizaDados(Banca novaBanca, Banca banca){
+        //Guarda id de membro
+        Long idMembro = novaBanca.getMembro().getId();
+        //Bancas
+        novaBanca.setId(novaBanca.getId());
+        novaBanca.setDataBanca(banca.getDataBanca());
+        novaBanca.setDescricao(banca.getDescricao());
+        novaBanca.setOrdemApresentacao(banca.getOrdemApresentacao());
+        //Membros da bancas
+        novaBanca.setMembro(banca.getMembro());
+        novaBanca.getMembro().setId(idMembro);
+        //Defesa
+        banca.setDefesa(novaBanca.getDefesa());
     }
 
     @Transactional
@@ -110,16 +110,6 @@ public class BancaService {
             banca.setDefesa(defesa.get());
         }
         return repository.save(banca);
-    }
-
-
-    private void atualizaDados(Banca novaBanca, Banca banca){
-        novaBanca.setDataBanca(banca.getDataBanca());
-        novaBanca.setDescricao(banca.getDescricao());
-        novaBanca.setOrdemApresentacao(banca.getOrdemApresentacao());
-        novaBanca.setEquipe(banca.getEquipe());
-        novaBanca.setOrientador(banca.getOrientador());
-        novaBanca.setMembro(banca.getMembro());
     }
 
     public Banca dtoParaEntidade(BancaPostDTO dto){

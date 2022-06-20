@@ -26,6 +26,7 @@ public class EquipeBuilder {
                 .alunos(Collections.singleton(AlunoBuilder.alunoValido()))
                 .tema(TemaBuilder.temaValido())
                 .dataCadastro(LocalDate.now())
+                .orientacao(OrientacaoBuilder.orientacaoValida())
                 .build();
     }
 }

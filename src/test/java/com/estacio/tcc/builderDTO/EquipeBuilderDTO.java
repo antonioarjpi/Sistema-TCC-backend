@@ -5,7 +5,6 @@ import com.estacio.tcc.dto.EquipeDTO;
 import com.estacio.tcc.dto.EquipePostDTO;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Set;
 
 public class EquipeBuilderDTO {
@@ -21,7 +20,7 @@ public class EquipeBuilderDTO {
                 .build();
     }
 
-    public static EquipePostDTO atualizaEquipDTO(){
+    public static EquipePostDTO atualizaEquipeDTO(){
         return EquipePostDTO.builder()
                 .id(1l)
                 .nome("nome")
@@ -42,7 +41,7 @@ public class EquipeBuilderDTO {
                 .dataCadastro(LocalDate.now())
                 .orientacaoId(1l)
                 .linhaPesquisa("Linha pesquisa")
-                .alunos(Arrays.asList(AlunoBuilder.alunoValido()))
+                .alunos(Set.of(AlunoBuilder.alunoValido()))
                 .build();
     }
 }

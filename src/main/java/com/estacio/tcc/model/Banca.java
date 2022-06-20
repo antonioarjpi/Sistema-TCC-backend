@@ -31,7 +31,7 @@ public class Banca {
     @JoinColumn(name = "orientador_id")
     private Orientador orientador;
 
-    @ManyToOne(cascade=CascadeType.PERSIST)
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "membro_id")
     private Membro membro;
 

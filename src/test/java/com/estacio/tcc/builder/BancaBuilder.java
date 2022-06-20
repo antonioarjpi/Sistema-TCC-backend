@@ -18,6 +18,17 @@ public class BancaBuilder {
     public static Banca bancaValida(){
         return Banca.builder()
                 .id(1l)
+                .orientador(OrientadorBuilder.orientadorValido())
+                .equipe(EquipeBuilder.equipeValida())
+                .membro(MembroBuilder.membroValido())
+                .ordemApresentacao(1)
+                .dataBanca(LocalDate.of(2022, 06, 11))
+                .build();
+    }
+
+    public static Banca bancaValidaDefesa(){
+        return Banca.builder()
+                .id(1l)
                 .defesa(DefesaBuilder.defesaValida())
                 .orientador(OrientadorBuilder.orientadorValido())
                 .equipe(EquipeBuilder.equipeValida())
