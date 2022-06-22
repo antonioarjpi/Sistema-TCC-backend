@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -21,7 +20,6 @@ public class BancaPostDTO {
     private String descricao;
 
     @NotNull
-    @FutureOrPresent(message = "Data banca menor que dia atual. ")
     private LocalDate dataBanca;
 
     @NotNull
