@@ -29,4 +29,15 @@ public class EquipeBuilder {
                 .orientacao(OrientacaoBuilder.orientacaoValida())
                 .build();
     }
+
+    public static Equipe equipeValidaSemOrientacao(){
+        return Equipe.builder()
+                .id(1l)
+                .nome("Equipe One")
+                .quantidade(3)
+                .alunos(Collections.singleton(AlunoBuilder.alunoValido()))
+                .tema(TemaBuilder.temaValido())
+                .dataCadastro(LocalDate.now())
+                .build();
+    }
 }

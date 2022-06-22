@@ -2,6 +2,8 @@ package com.estacio.tcc.builder;
 
 import com.estacio.tcc.model.Aluno;
 
+import java.util.Arrays;
+
 public class AlunoBuilder {
 
     public static Aluno criaAluno(){
@@ -33,6 +35,7 @@ public class AlunoBuilder {
                 .senha("123456")
                 .imagem("teste.png")
                 .matricula("123456")
+                .equipe(Arrays.asList(EquipeBuilder.equipeValida()))
                 .build();
     }
 

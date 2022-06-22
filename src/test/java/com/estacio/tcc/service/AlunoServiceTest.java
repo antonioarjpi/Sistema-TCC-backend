@@ -23,12 +23,13 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -100,13 +101,26 @@ public class AlunoServiceTest {
     @Test
     @DisplayName("EncontraID quando sucesso")
     void encontraIdDTO_RetornaAluno_QuandoSucesso() {
-        Long id = AlunoBuilder.alunoValido().getId();;
+        BDDMockito.when(repository.findById(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.of(AlunoBuilder.alunoValido2()));
 
-        AlunoDTO resultado = service.encontrarIdDTO(id);
+        Aluno aluno = AlunoBuilder.alunoValido2();;
+
+        AlunoDTO resultado = service.encontrarIdDTO(aluno.getId());
 
         assertThat(resultado).isNotNull();
 
-        assertThat(resultado.getId()).isNotNull().isEqualTo(id);
+        assertThat(resultado.getId()).isNotNull().isEqualTo(aluno.getId());
+
+        assertThat(resultado.getNome()).isEqualTo(aluno.getNome());
+
+        assertThat(resultado.getEmail()).isEqualTo(aluno.getEmail());
+
+        assertThat(resultado.getImagem()).isEqualTo(aluno.getImagem());
+
+        assertThat(resultado.getMatricula()).isEqualTo(aluno.getMatricula());
+
+        assertThat(resultado.getEquipe()).isEqualTo(aluno.getEquipe());
     }
 
     @Test
@@ -252,4 +266,5 @@ public class AlunoServiceTest {
         assertThat(map.getImagem()).isEqualTo(aluno.getImagem());
         assertThat(map.getMatricula()).isEqualTo(aluno.getMatricula());
     }
+
 }

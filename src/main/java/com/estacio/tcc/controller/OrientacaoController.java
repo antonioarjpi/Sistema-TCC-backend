@@ -47,7 +47,7 @@ public class OrientacaoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<OrientacaoDTO> encontrarId(@PathVariable Long id){
-        return ResponseEntity.ok(service.encontraIdDTO(id));
+        return ResponseEntity.ok(service.encontrarIdDTO(id));
     }
 
     @PostMapping
@@ -64,7 +64,7 @@ public class OrientacaoController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id){
-        Orientacao orientacao = service.findById(id);
+        Orientacao orientacao = service.encontrarId(id);
         service.deletar(orientacao);
         return ResponseEntity.noContent().build();
     }

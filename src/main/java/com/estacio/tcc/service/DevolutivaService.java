@@ -49,7 +49,7 @@ public class DevolutivaService {
 
     @Transactional
     public AcompanhamentoOrientacao salvar(DevolutivaPostDTO dto){
-        Orientacao orientacao = orientacaoService.findById(dto.getOrientacaoId());
+        Orientacao orientacao = orientacaoService.encontrarId(dto.getOrientacaoId());
         if (orientacao.getAcompanhamentoOrientacao() != null){
             throw new RuleOfBusinessException("Orientação já possui acompanhamentos");
         }
@@ -64,7 +64,7 @@ public class DevolutivaService {
     @Transactional
     public void deletar(AcompanhamentoOrientacao acompanhamentoOrientacao){
         Objects.requireNonNull(acompanhamentoOrientacao.getId());
-        Orientacao orientacao = orientacaoService.findById(acompanhamentoOrientacao.getOrientacao().getId());
+        Orientacao orientacao = orientacaoService.encontrarId(acompanhamentoOrientacao.getOrientacao().getId());
         orientacao.setAcompanhamentoOrientacao(null);
         orientacaoRepository.save(orientacao);
         repository.delete(acompanhamentoOrientacao);
@@ -75,7 +75,7 @@ public class DevolutivaService {
         AcompanhamentoOrientacao novoAcompanhamento = dtoParaEntidade(dto);
         AcompanhamentoOrientacao acompanhamento = encontrarId(novoAcompanhamento.getId());
 
-        Orientacao orientacao = orientacaoService.findById(dto.getOrientacaoId());
+        Orientacao orientacao = orientacaoService.encontrarId(dto.getOrientacaoId());
         novoAcompanhamento.setOrientacao(orientacao);
 
         novoAcompanhamento.getDevolutiva().getLocalCorrecao().setId(acompanhamento.getDevolutiva().getLocalCorrecao().getId());

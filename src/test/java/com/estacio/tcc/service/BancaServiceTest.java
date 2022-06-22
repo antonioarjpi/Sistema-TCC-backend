@@ -5,7 +5,6 @@ import com.estacio.tcc.builder.DefesaBuilder;
 import com.estacio.tcc.builder.EquipeBuilder;
 import com.estacio.tcc.builder.OrientadorBuilder;
 import com.estacio.tcc.builderDTO.BancaBuilderDTO;
-import com.estacio.tcc.builderDTO.DefesaBuilderDTO;
 import com.estacio.tcc.dto.BancaDTO;
 import com.estacio.tcc.dto.BancaPostDTO;
 import com.estacio.tcc.model.Banca;
@@ -29,7 +28,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -81,7 +79,7 @@ public class BancaServiceTest {
 
     @Test
     @DisplayName("Lista filtrada quando sucesso")
-    void listaFiltrada_RetornaListaDeAlunos_QuandoSucesso(){
+    void listaFiltrada_RetornaListaDeBancas_QuandoSucesso(){
         Banca bancas = BancaBuilder.bancaValida();
 
         List<BancaDTO> list = service.lista(bancas);
@@ -89,6 +87,24 @@ public class BancaServiceTest {
         assertThat(list).isNotNull();
 
         assertThat(list).isNotEmpty();
+
+        assertThat(list.get(0).getDescricao()).isEqualTo(bancas.getDescricao());
+
+        assertThat(list.get(0).getEquipeId()).isEqualTo(bancas.getEquipe().getId());
+
+        assertThat(list.get(0).getDefesaDataDefesa()).isEqualTo(bancas.getDefesa().getDataDefesa());
+
+        assertThat(list.get(0).getOrientadorNome()).isEqualTo(bancas.getOrientador().getNome());
+
+        assertThat(list.get(0).getOrientadorMatricula()).isEqualTo(bancas.getOrientador().getMatricula());
+
+        assertThat(list.get(0).getDataBanca()).isEqualTo(bancas.getDataBanca());
+
+        assertThat(list.get(0).getMembroMatricula()).isEqualTo(bancas.getMembro().getMatricula());
+
+        assertThat(list.get(0).getOrdemApresentacao()).isEqualTo(bancas.getOrdemApresentacao());
+
+        assertThat(list.get(0).getEquipeQuantidade()).isEqualTo(bancas.getEquipe().getQuantidade());
 
         assertThat(list.get(0).getDescricao()).isEqualTo(bancas.getDescricao());
 
@@ -118,14 +134,34 @@ public class BancaServiceTest {
 
     @Test
     @DisplayName("EncontraID quando sucesso")
-    void encontraIdDTO_RetornaAluno_QuandoSucesso() {
-        Banca equipe = BancaBuilder.bancaValida();
+    void encontraIdDTO_RetornaBanca_QuandoSucesso() {
+        Banca banca = BancaBuilder.bancaValida();
 
-        BancaDTO resultado = service.encontrarIdDTO(equipe.getId());
+        BancaDTO resultado = service.encontrarIdDTO(banca.getId());
 
         assertThat(resultado).isNotNull();
 
-        assertThat(resultado.getId()).isNotNull().isEqualTo(equipe.getId());
+        assertThat(resultado.getId()).isNotNull().isEqualTo(banca.getId());
+
+        assertThat(resultado.getDescricao()).isEqualTo(banca.getDescricao());
+
+        assertThat(resultado.getDataBanca()).isEqualTo(banca.getDataBanca());
+
+        assertThat(resultado.getDefesaDataDefesa()).isEqualTo(banca.getDefesa().getDataDefesa());
+
+        assertThat(resultado.getEquipeId()).isEqualTo(banca.getEquipe().getId());
+
+        assertThat(resultado.getEquipeDataCadastro()).isEqualTo(banca.getEquipe().getDataCadastro());
+
+        assertThat(resultado.getEquipeQuantidade()).isEqualTo(banca.getEquipe().getQuantidade());
+
+        assertThat(resultado.getOrdemApresentacao()).isEqualTo(banca.getOrdemApresentacao());
+
+        assertThat(resultado.getMembroMatricula()).isEqualTo(banca.getMembro().getMatricula());
+
+        assertThat(resultado.getOrientadorMatricula()).isEqualTo(banca.getOrientador().getMatricula());
+
+        assertThat(resultado.getOrientadorNome()).isEqualTo(banca.getOrientador().getNome());
     }
 
     @Test
@@ -139,7 +175,7 @@ public class BancaServiceTest {
     }
 
     @Test
-    @DisplayName("Salva equipe quando sucesso")
+    @DisplayName("Salva banca quando sucesso")
     void salva_SalvaBanca_QuandoSucesso(){
         Banca salvar = service.salvar(BancaBuilderDTO.criaBancaDTO());
 
@@ -147,7 +183,7 @@ public class BancaServiceTest {
     }
 
     @Test
-    @DisplayName("Atualiza equipe quando sucesso")
+    @DisplayName("Atualiza banca quando sucesso")
     void atualiza_SalvaBancaAtualizada_QuandoSucesso(){
         BancaPostDTO dto = BancaBuilderDTO.atualizaBancaPostDTO();
 
@@ -156,9 +192,9 @@ public class BancaServiceTest {
         BDDMockito.when(repository.findById(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.of(banca));
 
-        service.atualizar(dto);
+        Banca atualizar = service.atualizar(dto);
 
-        Mockito.verify(repository, Mockito.times(1)).save(banca);
+        assertThat(atualizar.getId()).isNotNull().isEqualTo(atualizar.getId());
     }
 
     @Test
@@ -180,7 +216,7 @@ public class BancaServiceTest {
     }
 
     @Test
-    @DisplayName("deleta de equipe quando der erro")
+    @DisplayName("deleta de banca quando der erro")
     void deleta_ErroAoDeletar_QuandoFalhar(){
         Banca banca = BancaBuilder.criaBanca();
 
@@ -188,16 +224,5 @@ public class BancaServiceTest {
 
         Mockito.verify(repository, Mockito.never()).delete(banca);
     }
-
-    @Test
-    @DisplayName("AgendamentoDefesa Quando for sucesso")
-    void agendamentoDefesa_SalvaDefesa_QuandoSucesso(){
-        Banca banca = BancaBuilder.bancaValida();
-
-        Banca agendamento = service.agendamentoDefesa(banca.getId(), DefesaBuilderDTO.criaDefesa());
-
-        Mockito.verify(repository, Mockito.times(1)).save(agendamento);
-    }
-
 
 }

@@ -58,7 +58,7 @@ public class EquipeServiceTest {
 
     @Test
     @DisplayName("Lista filtrada quando sucesso")
-    void listaFiltrada_RetornaListaDeAlunos_QuandoSucesso(){
+    void listaFiltrada_RetornaListaDeEquipes_QuandoSucesso(){
         Equipe equipes = EquipeBuilder.equipeValida();
         Long quantidade = Long.valueOf(equipes.getQuantidade());
 
@@ -133,7 +133,7 @@ public class EquipeServiceTest {
 
     @Test
     @DisplayName("EncontraID quando sucesso")
-    void encontraIdDTO_RetornaAluno_QuandoSucesso() {
+    void encontraIdDTO_RetornaEquipe_QuandoSucesso() {
         Equipe equipe = EquipeBuilder.equipeValida();
 
         EquipeDTO resultado = service.encontraIdDTO(equipe.getId());

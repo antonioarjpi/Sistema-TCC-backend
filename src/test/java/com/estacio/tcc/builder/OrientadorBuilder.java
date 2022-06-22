@@ -19,6 +19,7 @@ public class OrientadorBuilder {
     public static Orientador orientadorValido(){
         return Orientador.builder()
                 .id(1l)
+                .nome("Nome")
                 .email("email@email.com")
                 .imagem("imagem.png")
                 .matricula("matricula")
