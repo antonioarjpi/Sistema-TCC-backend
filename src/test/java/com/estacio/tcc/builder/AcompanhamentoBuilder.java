@@ -12,6 +12,7 @@ public class AcompanhamentoBuilder {
                 .dataMudanca(LocalDate.of(2022, 06, 11))
                 .devolutiva(DevolutivaBuilder.criaDevolutiva())
                 .orientacao(OrientacaoBuilder.orientacaoValida())
+                .statusOrientacao("Status orientacao")
                 .build();
     }
 
@@ -21,6 +22,7 @@ public class AcompanhamentoBuilder {
                 .dataMudanca(LocalDate.of(2022, 06, 11))
                 .devolutiva(DevolutivaBuilder.devolutivaValida())
                 .orientacao(OrientacaoBuilder.orientacaoValida())
+                .statusOrientacao("Status orientacao")
                 .build();
     }
 }

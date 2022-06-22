@@ -76,20 +76,23 @@ public class DevolutivaService {
         AcompanhamentoOrientacao acompanhamento = encontrarId(novoAcompanhamento.getId());
 
         Orientacao orientacao = orientacaoService.encontrarId(dto.getOrientacaoId());
+        if (!acompanhamento.getOrientacao().getId().equals(dto.getOrientacaoId())){
+            throw new RuleOfBusinessException("Orientação não pode ser alterada!");
+        }
+
         novoAcompanhamento.setOrientacao(orientacao);
-
-        novoAcompanhamento.getDevolutiva().getLocalCorrecao().setId(acompanhamento.getDevolutiva().getLocalCorrecao().getId());
-
         attDevolutiva(acompanhamento, novoAcompanhamento);
         return repository.save(acompanhamento);
     }
 
     private void attDevolutiva(AcompanhamentoOrientacao nova, AcompanhamentoOrientacao acompanhamento){
+        Long idLocalCorrecao = nova.getDevolutiva().getLocalCorrecao().getId();
         nova.setStatusOrientacao(acompanhamento.getStatusOrientacao());
         nova.setDataMudanca(acompanhamento.getDataMudanca());
         nova.setDevolutiva(acompanhamento.getDevolutiva());
         nova.getDevolutiva().setLocalCorrecao(acompanhamento.getDevolutiva().getLocalCorrecao());
         nova.setOrientacao(acompanhamento.getOrientacao());
+        nova.getDevolutiva().getLocalCorrecao().setId(idLocalCorrecao);
     }
 
     public DevolutivaDTO entidadeParaDTO(AcompanhamentoOrientacao acompanhamentoOrientacao){
