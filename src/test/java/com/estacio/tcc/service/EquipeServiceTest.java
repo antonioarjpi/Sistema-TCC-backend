@@ -15,8 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -40,9 +38,6 @@ public class EquipeServiceTest {
 
     @MockBean
     private EquipeRepository repository;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @BeforeEach
     void setUp(){
@@ -89,13 +84,26 @@ public class EquipeServiceTest {
     @Test
     @DisplayName("mostrarTodaEquipePeloId quando sucesso")
     void mostrarTodaEquipePeloId_RetornaEquipeComDevolutivasAcompanhamentosEstruturaDeTCC_QuandoSucesso() {
-        Long id = EquipeBuilder.equipeValida().getId();
+        Equipe equipe = EquipeBuilder.equipeValida();
 
-        AcompanhamentoDTO resultado = service.mostrarTodaEquipePeloId(id);
+        AcompanhamentoDTO resultado = service.mostrarTodaEquipePeloId(equipe.getId());
 
         assertThat(resultado).isNotNull();
 
-        assertThat(resultado.getId()).isNotNull().isEqualTo(id);
+        assertThat(resultado.getId()).isNotNull().isEqualTo(equipe.getId());
+
+        assertThat(resultado.getNome()).isEqualTo(equipe.getNome());
+        assertThat(resultado.getQuantidade()).isEqualTo(equipe.getQuantidade());
+        assertThat(resultado.getDataCadastro()).isEqualTo(equipe.getDataCadastro());
+        assertThat(resultado.getTemaDelimitacao()).isEqualTo(equipe.getTema().getDelimitacao());
+        assertThat(resultado.getTemaLinhaPesquisaDescricao()).isEqualTo(equipe.getTema().getLinhaPesquisa().getDescricao());
+        assertThat(resultado.getTemaLinhaPesquisaAreaConhecimentoDescricao()).isEqualTo(equipe.getTema().getLinhaPesquisa().getAreaConhecimento().getDescricao());
+        assertThat(resultado.getOrientacaoId()).isEqualTo(equipe.getOrientacao().getId());
+        assertThat(resultado.getOrientacaoDataOrientacao()).isEqualTo(equipe.getOrientacao().getDataOrientacao());
+        assertThat(resultado.getOrientacaoOrientadorNome()).isEqualTo(equipe.getOrientacao().getOrientador().getNome());
+        assertThat(resultado.getOrientacaoOrientadorEmail()).isEqualTo(equipe.getOrientacao().getOrientador().getEmail());
+        assertThat(resultado.getEstruturaTCC()).isEqualTo(equipe.getOrientacao().getEstruturaTcc().getDescricao());
+        assertThat(resultado.getTipoTCC()).isEqualTo(equipe.getOrientacao().getEstruturaTcc().getTipoTcc().getDescricao());
     }
 
     @Test

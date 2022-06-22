@@ -20,8 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -47,9 +45,6 @@ public class OrientacaoServiceTest {
     @MockBean
     private OrientacaoRepository repository;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     @MockBean
     private OrientadorRepository orientadorRepository;
 
@@ -58,12 +53,12 @@ public class OrientacaoServiceTest {
 
     @BeforeEach
     void setUp(){
-        List<Orientacao> bancas = new ArrayList<>(List.of(OrientacaoBuilder.orientacaoValida()));
+        List<Orientacao> orientacaos = new ArrayList<>(List.of(OrientacaoBuilder.orientacaoValida()));
 
         BDDMockito.when(repository.findById(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.of((OrientacaoBuilder.orientacaoValida())));
         BDDMockito.when(repository.findAll(ArgumentMatchers.any(Example.class)))
-                .thenReturn(bancas);
+                .thenReturn(orientacaos);
         BDDMockito.when(repository.save(ArgumentMatchers.any(Orientacao.class)))
                 .thenReturn(OrientacaoBuilder.orientacaoValida());
         BDDMockito.when(orientadorRepository.findByMatricula(ArgumentMatchers.anyString()))
@@ -83,11 +78,17 @@ public class OrientacaoServiceTest {
 
         assertThat(list).isNotEmpty();
 
+        assertThat(list.get(0).getDescricaoTCC()).isEqualTo(orientacao.getEstruturaTcc().getDescricao());
+        assertThat(list.get(0).getDataOrientacao()).isEqualTo(orientacao.getDataOrientacao());
+        assertThat(list.get(0).getTipoTccDescricao()).isEqualTo(orientacao.getEstruturaTcc().getTipoTcc().getDescricao());
+        assertThat(list.get(0).getMatriculaOrientador()).isEqualTo(orientacao.getOrientador().getMatricula());
+        assertThat(list.get(0).getNomeOrientador()).isEqualTo(orientacao.getOrientador().getNome());
+        assertThat(list.get(0).getId()).isEqualTo(orientacao.getId());
     }
 
     @Test
     @DisplayName("EncontraID quando sucesso")
-    void encontraId_RetornaBanca_QuandoSucesso() {
+    void encontraId_RetornaOrientacao_QuandoSucesso() {
         Long id = OrientacaoBuilder.orientacaoValida().getId();
 
         Orientacao resultado = service.encontrarId(id);
@@ -212,7 +213,7 @@ public class OrientacaoServiceTest {
 
     @Test
     @DisplayName("Deleta Orientacao quando sucesso")
-    void deleta_DeletaBanca_QuandoSucesso(){
+    void deleta_DeletaOrientacao_QuandoSucesso(){
         Orientacao orientacao = OrientacaoBuilder.orientacaoValida();
         BDDMockito.when(equipeRepository.findById(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.of(EquipeBuilder.equipeValida()));

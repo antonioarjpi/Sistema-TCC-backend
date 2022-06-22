@@ -15,8 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -41,10 +39,6 @@ class OrientadorServiceTest {
 
     @MockBean
     private OrientadorRepository repository;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
 
     @BeforeEach
     void setUp(){
@@ -76,7 +70,16 @@ class OrientadorServiceTest {
 
         assertThat(list).isNotEmpty();
 
+        assertThat(list.get(0).getId()).isEqualTo(orientador.getId());
         assertThat(list.get(0).getNome()).isEqualTo(nome);
+        assertThat(list.get(0).getEmail()).isEqualTo(orientador.getEmail());
+        assertThat(list.get(0).getImagem()).isEqualTo(orientador.getImagem());
+        assertThat(list.get(0).getMatricula()).isEqualTo(orientador.getMatricula());
+        assertThat(list.get(0).getLinhaPesquisaDescricao()).isEqualTo(orientador.getLinhaPesquisa().getDescricao());
+        assertThat(list.get(0).getTitulacaoGrau()).isEqualTo(orientador.getTitulacao().getGrau());
+        assertThat(list.get(0).getTitulacaoIes()).isEqualTo(orientador.getTitulacao().getIes());
+        assertThat(list.get(0).getTitulacaoDescricao()).isEqualTo(orientador.getTitulacao().getDescricao());
+        assertThat(list.get(0).getAreaConhecimento()).isEqualTo(orientador.getLinhaPesquisa().getAreaConhecimento().getDescricao());
     }
 
     @Test

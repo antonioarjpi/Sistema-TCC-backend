@@ -18,7 +18,7 @@ public class AcompanhamentoDTO {
 
     private Long id;
     private String nome;
-    private Long quantidade;
+    private Integer quantidade;
     private LocalDate dataCadastro;
     private String temaDelimitacao;
     private String temaLinhaPesquisaDescricao;
