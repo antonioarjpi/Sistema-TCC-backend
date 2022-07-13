@@ -6,6 +6,8 @@ import com.estacio.tcc.model.Aluno;
 import com.estacio.tcc.service.AlunoService;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,15 +25,19 @@ public class AlunoController {
     private AlunoService alunoService;
 
     @GetMapping
-    public ResponseEntity listar(@RequestParam(required = false) String nome,
+    public ResponseEntity listar(Pageable pageable,
+                                 @RequestParam(required = false) String nome,
                                  @RequestParam(required = false) String matricula,
                                  @RequestParam(required = false) String email){
         Aluno aluno = new Aluno();
         aluno.setNome(nome);
         aluno.setMatricula(matricula);
         aluno.setEmail(email);
-        List<AlunoDTO> filtro = alunoService.listaFiltrada(aluno);
-        return ResponseEntity.ok(filtro);
+
+        Page<Aluno> alunoDTOS = alunoService.listaPageada(aluno, pageable);
+        Page<AlunoDTO> alunos = alunoDTOS.map(x -> alunoService.entidadeParaDTO(x));
+        
+        return ResponseEntity.ok(alunos);
     }
 
     @GetMapping("/email/{email}")
