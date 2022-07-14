@@ -8,6 +8,8 @@ import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.model.Titulacao;
 import com.estacio.tcc.service.OrientadorService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +32,13 @@ public class OrientadorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Orientador> encontrarId(@PathVariable Long id){
-        return ResponseEntity.ok(service.encontraId(id));
+    public ResponseEntity<OrientadorDTO> encontrarId(@PathVariable Long id){
+        return ResponseEntity.ok(service.encontraIdDTO(id));
     }
 
     @GetMapping
-    public ResponseEntity listar(@RequestParam(required = false) String nome,
+    public ResponseEntity listar(Pageable pageable,
+                                 @RequestParam(required = false) String nome,
                                  @RequestParam(required = false) String matricula,
                                  @RequestParam(required = false) String grau,
                                  @RequestParam(required = false) String ies,
@@ -53,8 +56,9 @@ public class OrientadorController {
         orientador.setTitulacao(titulacao);
         orientador.setLinhaPesquisa(linha);
 
-        List<OrientadorDTO> filtro = service.lista(orientador);
-        return ResponseEntity.ok(filtro);
+        Page<Orientador> orientadores = service.listaPageada(orientador, pageable);
+        Page<OrientadorDTO> page = orientadores.map(x -> service.entidadeParaDTO(x));
+        return ResponseEntity.ok(page);
     }
 
     @PutMapping("/{id}")

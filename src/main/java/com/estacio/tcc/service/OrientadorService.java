@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,9 +60,22 @@ public class OrientadorService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public Page<Orientador> listaPageada(Orientador orientador, Pageable pageable) {
+        Example example = Example.of(orientador, ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+        return repository.findAll(example, pageable);
+    }
+
     public Orientador encontraId(Long id){
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Orientador não encontrado."));
+    }
+
+    public OrientadorDTO encontraIdDTO(Long id){
+        OrientadorDTO orientadorDTO = entidadeParaDTO(encontraId(id));
+        return orientadorDTO;
     }
 
     @Transactional
