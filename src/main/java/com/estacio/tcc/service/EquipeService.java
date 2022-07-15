@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,6 +80,14 @@ public class EquipeService {
                 .stream()
                 .map(x -> entidadeParaDTO((Equipe) x))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Equipe> listaPageada(Equipe equipe, Pageable pageable) {
+        Example example = Example.of(equipe, ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+        return repository.findAll(example, pageable);
     }
 
     @Transactional(readOnly = true)

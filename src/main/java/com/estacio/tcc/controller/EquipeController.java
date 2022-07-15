@@ -6,6 +6,8 @@ import com.estacio.tcc.dto.EquipePostDTO;
 import com.estacio.tcc.model.*;
 import com.estacio.tcc.service.EquipeService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +37,8 @@ public class EquipeController {
                                  @RequestParam(required = false) String descricaoConhecimento,
                                  @RequestParam(required = false) String descricaoLinha,
                                  @RequestParam(required = false) String tema,
-                                 @RequestParam(required = false) String nome){
+                                 @RequestParam(required = false) String nome,
+                                 Pageable pageable){
         Equipe equipe = new Equipe();
         AreaConhecimento area = new AreaConhecimento(null, descricaoConhecimento);
         LinhaPesquisa linha = new LinhaPesquisa(null, descricaoLinha, area );
@@ -43,8 +46,11 @@ public class EquipeController {
         equipe.setNome(nome);
         equipe.setDataCadastro(dataCadastro);
         equipe.setTema(tema1);
-        List<EquipeDTO> filtro = service.lista(equipe);
-        return ResponseEntity.ok(filtro);
+
+        Page<Equipe> equipes = service.listaPageada(equipe, pageable);
+        Page<EquipeDTO> map = equipes.map(x -> service.entidadeParaDTO(x));
+
+        return ResponseEntity.ok(map);
     }
 
     @GetMapping("/{id}")
