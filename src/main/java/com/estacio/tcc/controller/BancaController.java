@@ -9,6 +9,8 @@ import com.estacio.tcc.model.Membro;
 import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.service.BancaService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +45,8 @@ public class BancaController {
     }
 
     @GetMapping
-    public ResponseEntity listar(@RequestParam(required = false) String descricao,
+    public ResponseEntity listar(Pageable pageable,
+                                 @RequestParam(required = false) String descricao,
                                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataBanca,
                                  @RequestParam(required = false) String orientadorNome,
                                  @RequestParam(required = false) Long equipeId,
@@ -60,8 +63,9 @@ public class BancaController {
         membro.setMatricula(membroMatricula);
 
         Banca banca = new Banca(id, descricao, dataBanca, null, equipe, orientador, membro, null);
-        List<BancaDTO> filtro = service.lista(banca);
-        return ResponseEntity.ok(filtro);
+        Page<Banca> bancas = service.listaPageada(banca, pageable);
+        Page<BancaDTO> page = bancas.map(x -> service.entidadeParaDTO(x));
+        return ResponseEntity.ok(page);
     }
 
     @PutMapping("/agendamento/{id}")

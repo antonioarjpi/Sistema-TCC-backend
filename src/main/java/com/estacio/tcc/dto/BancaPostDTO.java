@@ -25,11 +25,11 @@ public class BancaPostDTO {
     @NotNull
     private Integer ordemApresentacao;
 
-    @NotBlank
+    @NotBlank(message = "Orientador não pode ser nulo")
     @Size(min = 3, max = 255, message = "Campo tem que ter entre 3 a 6 caracteres")
     private String matriculaOrientador;
 
-    @NotNull
+    @NotNull(message = "Equipe não pode ser nulo")
     private Long equipe;
 
     private String membroMatricula;
