@@ -80,7 +80,7 @@ public class OrientacaoServiceTest {
 
         assertThat(list.get(0).getDescricaoTCC()).isEqualTo(orientacao.getEstruturaTcc().getDescricao());
         assertThat(list.get(0).getDataOrientacao()).isEqualTo(orientacao.getDataOrientacao());
-        assertThat(list.get(0).getTipoTccDescricao()).isEqualTo(orientacao.getEstruturaTcc().getTipoTcc().getDescricao());
+        assertThat(list.get(0).getTipoTCC()).isEqualTo(orientacao.getEstruturaTcc().getTipoTcc().getDescricao());
         assertThat(list.get(0).getMatriculaOrientador()).isEqualTo(orientacao.getOrientador().getMatricula());
         assertThat(list.get(0).getNomeOrientador()).isEqualTo(orientacao.getOrientador().getNome());
         assertThat(list.get(0).getId()).isEqualTo(orientacao.getId());
@@ -132,7 +132,7 @@ public class OrientacaoServiceTest {
 
         assertThat(resultado.getDescricaoTCC()).isEqualTo(orientacao.getEstruturaTcc().getDescricao());
 
-        assertThat(resultado.getTipoTccDescricao()).isEqualTo(orientacao.getEstruturaTcc().getTipoTcc().getDescricao());
+        assertThat(resultado.getTipoTCC()).isEqualTo(orientacao.getEstruturaTcc().getTipoTcc().getDescricao());
     }
 
     @Test

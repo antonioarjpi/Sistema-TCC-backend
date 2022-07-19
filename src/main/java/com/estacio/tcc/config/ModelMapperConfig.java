@@ -26,6 +26,16 @@ public class ModelMapperConfig {
                         (x, value) -> x.setConhecimento(value))
                 .<List>addMapping(src -> src.getAlunos(), (x, value) -> x.getAlunos());
 
+        modelMapper.createTypeMap(Orientacao.class, OrientacaoDTO.class)
+                .<String>addMapping(src -> src.getEstruturaTcc().getTipoTcc().getDescricao(),
+                        (x, value) -> x.getTipoTCC());
+
+        modelMapper.createTypeMap(OrientacaoPostDTO.class, Orientacao.class)
+                .<String>addMapping(src -> src.getDescricaoTCC(),
+                        (x, value) -> x.getEstruturaTcc().getDescricao())
+                .<String>addMapping(src -> src.getTipoTCC(),
+                        (x, value) -> x.getEstruturaTcc().getTipoTcc().getDescricao());
+
         modelMapper.createTypeMap(EquipePostDTO.class, Equipe.class)
                 .<String>addMapping(src -> src.getTemaLinhapesquisaDescricao(),
                         (x, value) -> x.getTema().getLinhaPesquisa().setDescricao(value));

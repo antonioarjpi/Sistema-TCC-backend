@@ -8,6 +8,8 @@ import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.model.TipoTcc;
 import com.estacio.tcc.service.OrientacaoService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +27,12 @@ public class OrientacaoController {
     private OrientacaoService service;
 
     @GetMapping
-    public ResponseEntity listar(@RequestParam(required = false) String nomeOrientador,
-                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataOrientacao,
-                               @RequestParam(required = false) String matriculaOrientador,
-                               @RequestParam(required = false) String tipoTCC,
-                               @RequestParam(required = false) String descricaoTCC){
+    public ResponseEntity listar(Pageable pageable,
+                                 @RequestParam(required = false) String nomeOrientador,
+                                 @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataOrientacao,
+                                 @RequestParam(required = false) String matriculaOrientador,
+                                 @RequestParam(required = false) String tipoTCC,
+                                 @RequestParam(required = false) String descricaoTCC){
 
         TipoTcc tipoTcc = new TipoTcc(null, tipoTCC);
         EstruturaTcc estruturaTcc = new EstruturaTcc(null, descricaoTCC, tipoTcc);
@@ -41,8 +44,8 @@ public class OrientacaoController {
 
         Orientacao orientacao = new Orientacao(null, dataOrientacao, estruturaTcc, orientador, null, null);
         orientacao.getEstruturaTcc().getTipoTcc().setDescricao(tipoTCC);
-        List<OrientacaoDTO> filtro = service.lista(orientacao);
-        return ResponseEntity.ok(filtro);
+        Page<OrientacaoDTO> page = service.listaPageada(orientacao, pageable);
+        return ResponseEntity.ok(page);
     }
 
     @GetMapping("/{id}")

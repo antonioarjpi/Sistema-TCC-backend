@@ -21,7 +21,7 @@ public class OrientacaoDTO {
     //Estrutura do tcc
     private String descricaoTCC;
     //Tipo do tcc
-    private String tipoTccDescricao;
+    private String tipoTCC;
     private Long equipe;
 
 
