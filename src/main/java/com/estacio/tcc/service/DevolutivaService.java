@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,16 +30,16 @@ public class DevolutivaService {
     private OrientacaoRepository orientacaoRepository;
     private ModelMapper modelMapper;
 
-    public AcompanhamentoOrientacao encontrarId(Long id){
+    public AcompanhamentoOrientacao encontrarId(Long id) {
         return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Devolutiva não encontrada"));
     }
 
-    public DevolutivaDTO encontrarIdDTO(Long id){
+    public DevolutivaDTO encontrarIdDTO(Long id) {
         AcompanhamentoOrientacao acompanhamento = encontrarId(id);
         return entidadeParaDTO(acompanhamento);
     }
 
-    public List<DevolutivaDTO> lista(AcompanhamentoOrientacao acompanhamento){
+    public List<DevolutivaDTO> lista(AcompanhamentoOrientacao acompanhamento) {
         Example<AcompanhamentoOrientacao> example = Example.of(acompanhamento, ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
@@ -47,10 +49,18 @@ public class DevolutivaService {
                 .collect(Collectors.toList());
     }
 
+    public Page<DevolutivaDTO> listaPageada(AcompanhamentoOrientacao acompanhamento, Pageable pageable) {
+        Example<AcompanhamentoOrientacao> example = Example.of(acompanhamento, ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+        Page<AcompanhamentoOrientacao> acompanhamentosDTO = repository.findAll(example, pageable);
+        return acompanhamentosDTO.map(x -> entidadeParaDTO(x));
+    }
+
     @Transactional
-    public AcompanhamentoOrientacao salvar(DevolutivaPostDTO dto){
+    public AcompanhamentoOrientacao salvar(DevolutivaPostDTO dto) {
         Orientacao orientacao = orientacaoService.encontrarId(dto.getOrientacaoId());
-        if (orientacao.getAcompanhamentoOrientacao() != null){
+        if (orientacao.getAcompanhamentoOrientacao() != null) {
             throw new RuleOfBusinessException("Orientação já possui acompanhamentos");
         }
         AcompanhamentoOrientacao acompanhamento = dtoParaEntidade(dto);
@@ -62,7 +72,7 @@ public class DevolutivaService {
     }
 
     @Transactional
-    public void deletar(AcompanhamentoOrientacao acompanhamentoOrientacao){
+    public void deletar(AcompanhamentoOrientacao acompanhamentoOrientacao) {
         Objects.requireNonNull(acompanhamentoOrientacao.getId());
         Orientacao orientacao = orientacaoService.encontrarId(acompanhamentoOrientacao.getOrientacao().getId());
         orientacao.setAcompanhamentoOrientacao(null);
@@ -71,12 +81,12 @@ public class DevolutivaService {
     }
 
     @Transactional
-    public AcompanhamentoOrientacao atualizar(DevolutivaPostDTO dto){
+    public AcompanhamentoOrientacao atualizar(DevolutivaPostDTO dto) {
         AcompanhamentoOrientacao novoAcompanhamento = dtoParaEntidade(dto);
         AcompanhamentoOrientacao acompanhamento = encontrarId(novoAcompanhamento.getId());
 
         Orientacao orientacao = orientacaoService.encontrarId(dto.getOrientacaoId());
-        if (!acompanhamento.getOrientacao().getId().equals(dto.getOrientacaoId())){
+        if (!acompanhamento.getOrientacao().getId().equals(dto.getOrientacaoId())) {
             throw new RuleOfBusinessException("Orientação não pode ser alterada!");
         }
 
@@ -85,7 +95,7 @@ public class DevolutivaService {
         return repository.save(acompanhamento);
     }
 
-    private void attDevolutiva(AcompanhamentoOrientacao nova, AcompanhamentoOrientacao acompanhamento){
+    private void attDevolutiva(AcompanhamentoOrientacao nova, AcompanhamentoOrientacao acompanhamento) {
         Long idLocalCorrecao = nova.getDevolutiva().getLocalCorrecao().getId();
         nova.setStatusOrientacao(acompanhamento.getStatusOrientacao());
         nova.setDataMudanca(acompanhamento.getDataMudanca());
@@ -95,11 +105,11 @@ public class DevolutivaService {
         nova.getDevolutiva().getLocalCorrecao().setId(idLocalCorrecao);
     }
 
-    public DevolutivaDTO entidadeParaDTO(AcompanhamentoOrientacao acompanhamentoOrientacao){
+    public DevolutivaDTO entidadeParaDTO(AcompanhamentoOrientacao acompanhamentoOrientacao) {
         return modelMapper.map(acompanhamentoOrientacao, DevolutivaDTO.class);
     }
 
-    public AcompanhamentoOrientacao dtoParaEntidade(DevolutivaPostDTO dto){
+    public AcompanhamentoOrientacao dtoParaEntidade(DevolutivaPostDTO dto) {
         return modelMapper.map(dto, AcompanhamentoOrientacao.class);
     }
 }
