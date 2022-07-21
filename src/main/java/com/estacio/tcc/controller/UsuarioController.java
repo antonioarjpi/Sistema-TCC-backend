@@ -33,7 +33,7 @@ public class UsuarioController {
     private JwtUtil jwtService;
 
     @PostMapping("/cadastrar")
-    public ResponseEntity salvar(@RequestBody @Valid UsuarioDTO userDTO){
+    public ResponseEntity salvar(@RequestBody @Valid UsuarioDTO userDTO) {
         Usuario usuario = Usuario.builder()
                 .nome(userDTO.getNome())
                 .email(userDTO.getEmail())
@@ -44,7 +44,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/autenticar")
-    public ResponseEntity autenticar(@RequestBody UsuarioDTO dto){
+    public ResponseEntity autenticar(@RequestBody UsuarioDTO dto) {
         Usuario usuario = service.autentica(dto.getEmail(), dto.getSenha());
         String token = jwtService.gerarToken(usuario.getEmail());
         TokenDTO tokenDTO = new TokenDTO(token, usuario.getNome(), usuario.getEmail());
@@ -52,11 +52,12 @@ public class UsuarioController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity refreshToken(HttpServletResponse response){
+    public ResponseEntity refreshToken(HttpServletResponse response) {
         UserSS userSS = UserService.authenticated();
         String token = jwtService.gerarToken(userSS.getUsername());
         response.addHeader("Authorization", "Bearer " + token);
         response.addHeader("access-control-expose-headers", "Authorization");
-        return ResponseEntity.ok(token);
+        TokenDTO tokenDTO = new TokenDTO(token, null, null);
+        return ResponseEntity.ok(tokenDTO);
     }
 }

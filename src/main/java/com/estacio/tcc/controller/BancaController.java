@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/bancas")
@@ -28,19 +27,19 @@ public class BancaController {
     private BancaService service;
 
     @PostMapping
-    public ResponseEntity<Banca> salvar(@RequestBody @Valid BancaPostDTO banca){
+    public ResponseEntity<Banca> salvar(@RequestBody @Valid BancaPostDTO banca) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(banca));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid BancaPostDTO dto){
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid BancaPostDTO dto) {
         dto.setId(id);
         Banca banca = service.atualizar(dto);
         return ResponseEntity.ok(banca);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BancaDTO> encontrarId(@PathVariable Long id){
+    public ResponseEntity<BancaDTO> encontrarId(@PathVariable Long id) {
         return ResponseEntity.ok(service.encontrarIdDTO(id));
     }
 
@@ -51,7 +50,7 @@ public class BancaController {
                                  @RequestParam(required = false) String orientadorNome,
                                  @RequestParam(required = false) Long equipeId,
                                  @RequestParam(required = false) Long id,
-                                 @RequestParam(required = false) String membroMatricula){
+                                 @RequestParam(required = false) String membroMatricula) {
         Equipe equipe = new Equipe();
         equipe.setId(equipeId);
         equipe.setDataCadastro(null);
@@ -69,13 +68,13 @@ public class BancaController {
     }
 
     @PutMapping("/agendamento/{id}")
-    public ResponseEntity<Banca> agendarDataBanca(@PathVariable Long id, @RequestBody DefesaPostDTO dto){
+    public ResponseEntity<Banca> agendarDataBanca(@PathVariable Long id, @RequestBody DefesaPostDTO dto) {
         Banca banca = service.agendamentoDefesa(id, dto);
         return ResponseEntity.ok(banca);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id){
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }

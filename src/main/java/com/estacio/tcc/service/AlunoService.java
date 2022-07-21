@@ -33,17 +33,16 @@ public class AlunoService {
     private S3Service s3Service;
     private ModelMapper modelMapper;
 
-    public Aluno encontraId(Long id){
+    public Aluno encontraId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Aluno não encontrado"));
     }
 
-    public AlunoDTO encontrarIdDTO(Long id){
+    public AlunoDTO encontrarIdDTO(Long id) {
         Aluno aluno = repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Aluno não encontrado"));
         return entidadeParaDTO(aluno);
     }
-
 
     @Transactional(readOnly = true)
     public List<AlunoDTO> listaFiltrada(Aluno aluno) {
@@ -56,7 +55,7 @@ public class AlunoService {
                 .collect(Collectors.toList());
     }
 
-    public Page<Aluno> listaPageada(Aluno aluno, Pageable pageable){
+    public Page<Aluno> listaPageada(Aluno aluno, Pageable pageable) {
         Example example = Example.of(aluno, ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
@@ -64,7 +63,7 @@ public class AlunoService {
     }
 
     @Transactional
-    public Aluno salvar(AlunoPostDTO dto){
+    public Aluno salvar(AlunoPostDTO dto) {
         criptografarSenha(dto);
         Aluno aluno = dtoParaEntidade(dto);
         validaEmail(aluno.getEmail());
@@ -79,16 +78,16 @@ public class AlunoService {
     }
 
     @Transactional
-    public void deletar(Aluno aluno){
+    public void deletar(Aluno aluno) {
         Objects.requireNonNull(aluno.getId());
         repository.delete(aluno);
     }
 
     @Transactional
-    public Aluno atualiza(AlunoPostDTO dto){
+    public Aluno atualiza(AlunoPostDTO dto) {
         Aluno aluno = dtoParaEntidade(dto);
         Aluno achou = encontraId(aluno.getId());
-        if (!aluno.getEmail().equals(achou.getEmail())){
+        if (!aluno.getEmail().equals(achou.getEmail())) {
             validaEmail(aluno.getEmail());
         }
         atualizaDados(achou, aluno);
@@ -99,25 +98,25 @@ public class AlunoService {
     }
 
     @Transactional
-    public Aluno encontraMatricula(String matricula){
+    public Aluno encontraMatricula(String matricula) {
         Aluno aluno = repository.findByMatricula(matricula);
-        if (aluno == null){
+        if (aluno == null) {
             throw new ObjectNotFoundException("Matricula inexistente");
         }
         return aluno;
     }
 
     @Transactional
-    public Aluno encontraEmail(String email){
+    public Aluno encontraEmail(String email) {
         Aluno aluno = repository.findByEmail(email);
-        if (aluno == null){
+        if (aluno == null) {
             throw new ObjectNotFoundException("E-mail inexistente");
         }
         return aluno;
     }
 
     @Transactional
-    public URI uploadFotoPerfil(MultipartFile file, Long id){
+    public URI uploadFotoPerfil(MultipartFile file, Long id) {
         URI uri = s3Service.uploadFile(file);
         Aluno aluno = encontraId(id);
         aluno.setId(aluno.getId());
@@ -126,23 +125,23 @@ public class AlunoService {
         return uri;
     }
 
-    private String gerarMatricula(){
+    private String gerarMatricula() {
         Random random = new Random();
         LocalDate dateTime = LocalDate.now();
 
         String matricula = String.valueOf(dateTime.getYear()); //captura o ano
 
-        for (int i=0; i<4; i++){ //Gera 4 digitos aleatórios do final da matrícula
+        for (int i = 0; i < 4; i++) { //Gera 4 digitos aleatórios do final da matrícula
             String valueRandom = String.valueOf(random.nextInt(9));
-            matricula +=  valueRandom;
+            matricula += valueRandom;
         }
         return matricula;
     }
 
-    private String matriculaValidada(){
+    private String matriculaValidada() {
         String matricula = gerarMatricula();
         boolean exists = repository.existsByMatricula(matricula);
-        while (exists){
+        while (exists) {
             matriculaValidada();
         }
         return matricula;
@@ -150,21 +149,21 @@ public class AlunoService {
 
     public void validaEmail(String email) {
         boolean exist = repository.existsByEmail(email);
-        if (exist){
+        if (exist) {
             throw new RuleOfBusinessException("E-mail já está cadastrado por outro aluno.");
         }
     }
 
-    private void atualizaDados(Aluno novoAluno, Aluno aluno){
+    private void atualizaDados(Aluno novoAluno, Aluno aluno) {
         novoAluno.setNome(aluno.getNome());
         novoAluno.setEmail(aluno.getEmail());
     }
 
-    public Aluno dtoParaEntidade(AlunoPostDTO dto){
+    public Aluno dtoParaEntidade(AlunoPostDTO dto) {
         return modelMapper.map(dto, Aluno.class);
     }
 
-    public AlunoDTO entidadeParaDTO(Aluno aluno){
+    public AlunoDTO entidadeParaDTO(Aluno aluno) {
         return modelMapper.map(aluno, AlunoDTO.class);
     }
 

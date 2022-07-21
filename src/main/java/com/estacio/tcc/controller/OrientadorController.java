@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/orientadores")
@@ -27,12 +26,12 @@ public class OrientadorController {
     private OrientadorService service;
 
     @PostMapping
-    public ResponseEntity<Orientador> salvar(@RequestBody @Valid OrientadorPostDTO orientador){
+    public ResponseEntity<Orientador> salvar(@RequestBody @Valid OrientadorPostDTO orientador) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(orientador));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrientadorDTO> encontrarId(@PathVariable Long id){
+    public ResponseEntity<OrientadorDTO> encontrarId(@PathVariable Long id) {
         return ResponseEntity.ok(service.encontraIdDTO(id));
     }
 
@@ -45,7 +44,7 @@ public class OrientadorController {
                                  @RequestParam(required = false) String descricaoTitulacao,
                                  @RequestParam(required = false) String conhecimento,
                                  @RequestParam(required = false) String linhaPesquisa,
-                                 @RequestParam(required = false) String email){
+                                 @RequestParam(required = false) String email) {
         Orientador orientador = new Orientador();
         Titulacao titulacao = new Titulacao(null, descricaoTitulacao, grau, ies);
         AreaConhecimento areaConhecimento = new AreaConhecimento(null, conhecimento);
@@ -62,21 +61,20 @@ public class OrientadorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity atualizar (@PathVariable Long id, @RequestBody OrientadorPostDTO dto){
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody OrientadorPostDTO dto) {
         dto.setId(id);
         Orientador orientador = service.atualiza(dto);
         return ResponseEntity.ok(orientador);
     }
 
     @PostMapping("/imagem/{id}")
-    public ResponseEntity<Void> uploadFotoOrientador(@RequestParam MultipartFile file, @PathVariable Long id){
+    public ResponseEntity<Void> uploadFotoOrientador(@RequestParam MultipartFile file, @PathVariable Long id) {
         URI uri = service.uploadFotoPerfil(file, id);
         return ResponseEntity.created(uri).build();
-
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id){
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         Orientador orientador = service.encontraId(id);
         service.delete(orientador);
         return ResponseEntity.noContent().build();

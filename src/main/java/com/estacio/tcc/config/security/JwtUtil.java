@@ -24,7 +24,7 @@ public class JwtUtil {
     public String gerarToken(String usuario) {
         long exp = Long.valueOf(expiracao);
         LocalDateTime dataHoraExpiracao = LocalDateTime.now().plusMinutes(exp);
-        Instant instant = dataHoraExpiracao.atZone( ZoneId.systemDefault() ).toInstant();
+        Instant instant = dataHoraExpiracao.atZone(ZoneId.systemDefault()).toInstant();
         java.util.Date data = Date.from(instant);
 
         return Jwts.builder()
@@ -50,7 +50,7 @@ public class JwtUtil {
                     .atZone(ZoneId.systemDefault()).toLocalDateTime();
             boolean dataHoraAtualIsAfterDataExpiracao = LocalDateTime.now().isAfter(dataExpiracao);
             return !dataHoraAtualIsAfterDataExpiracao;
-        }catch(ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) {
             return false;
         }
     }

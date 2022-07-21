@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data @AllArgsConstructor @Builder
+@Data
+@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class Aluno{
+public class Aluno {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

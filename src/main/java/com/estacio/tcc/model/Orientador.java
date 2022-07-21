@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Data @AllArgsConstructor @NoArgsConstructor @Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Orientador {
 
     @Id
@@ -28,11 +31,11 @@ public class Orientador {
     private String senha;
     private String imagem;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "titulacao_id")
     private Titulacao titulacao;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "linha_pesquisa_id")
     private LinhaPesquisa linhaPesquisa;
 

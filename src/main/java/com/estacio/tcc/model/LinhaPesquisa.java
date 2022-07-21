@@ -20,7 +20,7 @@ public class LinhaPesquisa {
 
     private String descricao;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "area_conhecimento_id")
     private AreaConhecimento areaConhecimento;
 }

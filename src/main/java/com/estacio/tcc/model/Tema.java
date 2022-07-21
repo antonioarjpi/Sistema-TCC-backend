@@ -20,7 +20,7 @@ public class Tema {
 
     private String delimitacao;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "linha_pesquisa_id")
     private LinhaPesquisa linhaPesquisa;
 }

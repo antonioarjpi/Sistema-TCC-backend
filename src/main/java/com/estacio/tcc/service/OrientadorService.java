@@ -34,7 +34,7 @@ public class OrientadorService {
     private ModelMapper modelMapper;
     private S3Service s3Service;
 
-    public Orientador encontraMatricula(String matricula){
+    public Orientador encontraMatricula(String matricula) {
         Orientador orientador = repository.findByMatricula(matricula);
         if (orientador == null) {
             throw new ObjectNotFoundException("Orientador não encontrado");
@@ -44,7 +44,7 @@ public class OrientadorService {
 
     public void validaEmail(String email) {
         boolean exist = repository.existsByEmail(email);
-        if (exist){
+        if (exist) {
             throw new RuleOfBusinessException("E-mail já está cadastrado por outro orientador.");
         }
     }
@@ -68,25 +68,25 @@ public class OrientadorService {
         return repository.findAll(example, pageable);
     }
 
-    public Orientador encontraId(Long id){
+    public Orientador encontraId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Orientador não encontrado."));
     }
 
-    public OrientadorDTO encontraIdDTO(Long id){
+    public OrientadorDTO encontraIdDTO(Long id) {
         OrientadorDTO orientadorDTO = entidadeParaDTO(encontraId(id));
         return orientadorDTO;
     }
 
     @Transactional
-    public void delete(Orientador orientador){
+    public void delete(Orientador orientador) {
         Objects.requireNonNull(orientador.getId());
         repository.delete(orientador);
         titulacaoRepository.delete(orientador.getTitulacao());
     }
 
     @Transactional
-    public Orientador salvar(OrientadorPostDTO dto){
+    public Orientador salvar(OrientadorPostDTO dto) {
         criptografarSenha(dto);
         Orientador orientador = dtoParaEntidade(dto);
         validaEmail(orientador.getEmail());
@@ -102,10 +102,10 @@ public class OrientadorService {
     }
 
     @Transactional
-    public Orientador atualiza(OrientadorPostDTO dto){
+    public Orientador atualiza(OrientadorPostDTO dto) {
         Orientador novoOrientador = dtoParaEntidade(dto);
         Orientador orientador = encontraId(novoOrientador.getId());
-        if (!novoOrientador.getEmail().equals(orientador.getEmail())){
+        if (!novoOrientador.getEmail().equals(orientador.getEmail())) {
             validaEmail(novoOrientador.getEmail());
         }
         novoOrientador.getTitulacao().setId(orientador.getTitulacao().getId());
@@ -115,7 +115,7 @@ public class OrientadorService {
         return repository.save(orientador);
     }
 
-    private void putOrientador(Orientador novo, Orientador orientador){
+    private void putOrientador(Orientador novo, Orientador orientador) {
         novo.setNome(orientador.getNome());
         novo.setEmail(orientador.getEmail());
         novo.setLinhaPesquisa(orientador.getLinhaPesquisa());
@@ -123,26 +123,26 @@ public class OrientadorService {
         novo.getLinhaPesquisa().setAreaConhecimento(orientador.getLinhaPesquisa().getAreaConhecimento());
     }
 
-    public String geraMatricula(){
+    public String geraMatricula() {
         Random random = new Random();
         String matricula = new String();
-        for (int i=0; i<4; i++){ //Gera 4 digitos aleatórios do final da matrícula
+        for (int i = 0; i < 4; i++) { //Gera 4 digitos aleatórios do final da matrícula
             String valueRandom = String.valueOf(random.nextInt(9));
-            matricula +=  valueRandom;
+            matricula += valueRandom;
         }
         return matricula;
     }
 
-    public String matriculaValidada(){
+    public String matriculaValidada() {
         String matricula = geraMatricula();
         boolean exists = repository.existsByMatricula(matricula);
-        while (exists){
+        while (exists) {
             matriculaValidada();
         }
         return matricula;
     }
 
-    public URI uploadFotoPerfil(MultipartFile file, Long id){
+    public URI uploadFotoPerfil(MultipartFile file, Long id) {
         URI uri = s3Service.uploadFile(file);
         Orientador orientador = encontraId(id);
         orientador.setId(orientador.getId());
@@ -151,11 +151,11 @@ public class OrientadorService {
         return uri;
     }
 
-    public OrientadorDTO entidadeParaDTO(Orientador orientador){
+    public OrientadorDTO entidadeParaDTO(Orientador orientador) {
         return modelMapper.map(orientador, OrientadorDTO.class);
     }
 
-    public Orientador dtoParaEntidade(OrientadorPostDTO dto){
+    public Orientador dtoParaEntidade(OrientadorPostDTO dto) {
         return modelMapper.map(dto, Orientador.class);
     }
 

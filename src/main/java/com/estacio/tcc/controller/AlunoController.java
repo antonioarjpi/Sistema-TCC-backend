@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/alunos")
@@ -28,7 +27,7 @@ public class AlunoController {
     public ResponseEntity listar(Pageable pageable,
                                  @RequestParam(required = false) String nome,
                                  @RequestParam(required = false) String matricula,
-                                 @RequestParam(required = false) String email){
+                                 @RequestParam(required = false) String email) {
         Aluno aluno = new Aluno();
         aluno.setNome(nome);
         aluno.setMatricula(matricula);
@@ -36,50 +35,50 @@ public class AlunoController {
 
         Page<Aluno> alunoDTOS = alunoService.listaPageada(aluno, pageable);
         Page<AlunoDTO> alunos = alunoDTOS.map(x -> alunoService.entidadeParaDTO(x));
-        
+
         return ResponseEntity.ok(alunos);
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity encontrarEmail(@PathVariable String email){
-        try{
+    public ResponseEntity encontrarEmail(@PathVariable String email) {
+        try {
             Aluno aluno = alunoService.encontraEmail(email);
             return ResponseEntity.ok(aluno.getMatricula());
-        }catch (ObjectNotFoundException e){
+        } catch (ObjectNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/matricula/{matricula}")
-    public ResponseEntity<Aluno> encontrarMatricula(@PathVariable String matricula){
+    public ResponseEntity<Aluno> encontrarMatricula(@PathVariable String matricula) {
         return ResponseEntity.ok(alunoService.encontraMatricula(matricula));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AlunoDTO> encontrarId(@PathVariable Long id){
+    public ResponseEntity<AlunoDTO> encontrarId(@PathVariable Long id) {
         return ResponseEntity.ok(alunoService.encontrarIdDTO(id));
     }
 
     @PostMapping
-    public ResponseEntity<Aluno> salvar(@RequestBody @Valid AlunoPostDTO alunoPostDTO){
+    public ResponseEntity<Aluno> salvar(@RequestBody @Valid AlunoPostDTO alunoPostDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(alunoService.salvar(alunoPostDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id){
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         Aluno aluno = alunoService.encontraId(id);
         alunoService.deletar(aluno);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/imagem/{id}")
-    public ResponseEntity<Void> uploadFotoOrientador(@RequestParam MultipartFile file, @PathVariable Long id){
+    public ResponseEntity<Void> uploadFotoOrientador(@RequestParam MultipartFile file, @PathVariable Long id) {
         URI uri = alunoService.uploadFotoPerfil(file, id);
         return ResponseEntity.created(uri).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody AlunoPostDTO alunoPostDTO){
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody AlunoPostDTO alunoPostDTO) {
         alunoPostDTO.setId(id);
         return ResponseEntity.ok(alunoService.atualiza(alunoPostDTO));
     }

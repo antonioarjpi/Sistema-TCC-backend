@@ -20,7 +20,7 @@ public class UsuarioService {
     private UsuarioRepository repository;
 
     @Transactional
-    public Usuario salva(Usuario usuario){
+    public Usuario salva(Usuario usuario) {
         criptografarSenha(usuario);
         validaEmail(usuario.getEmail());
         return repository.save(usuario);
@@ -33,7 +33,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario encontraId(Long id){
+    public Usuario encontraId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado."));
     }
@@ -41,22 +41,21 @@ public class UsuarioService {
     public Usuario autentica(String email, String senha) {
         Optional<Usuario> usuario = repository.findByEmail(email);
 
-        if (!usuario.isPresent()){
+        if (!usuario.isPresent()) {
             throw new AuthenticateErrorException("Usuário não encontrado.");
         }
 
         boolean senhas = passwordEncoder.matches(senha, usuario.get().getSenha());
 
-        if (!senhas){
+        if (!senhas) {
             throw new AuthenticateErrorException("Senha incorreta.");
         }
-
         return usuario.get();
     }
 
     public void validaEmail(String email) {
         boolean exist = repository.existsByEmail(email);
-        if (exist){
+        if (exist) {
             throw new RuleOfBusinessException("E-mail já está cadastrado.");
         }
     }

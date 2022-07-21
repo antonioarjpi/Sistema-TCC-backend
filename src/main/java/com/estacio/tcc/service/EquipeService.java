@@ -26,33 +26,33 @@ public class EquipeService {
     private EquipeRepository repository;
     private ModelMapper modelMapper;
 
-    public Equipe encontraId(Long id){
+    public Equipe encontraId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Equipe não encontrada."));
     }
 
-    public EquipeDTO encontraIdDTO(Long id){
+    public EquipeDTO encontraIdDTO(Long id) {
         Equipe equipe = repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Equipe não encontrada."));
         return entidadeParaDTO(equipe);
     }
 
     @Transactional
-    public Equipe salvar(EquipePostDTO dto){
+    public Equipe salvar(EquipePostDTO dto) {
         Equipe equipe = dtoParaEntidade(dto);
         equipe.setQuantidade(equipe.getAlunos().size());
         equipe = repository.save(equipe);
         return equipe;
     }
 
-    public Equipe atualizar(EquipePostDTO dto){
+    public Equipe atualizar(EquipePostDTO dto) {
         Equipe novaEquipe = dtoParaEntidade(dto);
         Equipe equipe = encontraId(novaEquipe.getId());
         atualizaDados(equipe, novaEquipe);
         return repository.save(equipe);
     }
 
-    private void atualizaDados (Equipe novaEquipe, Equipe equipe){
+    private void atualizaDados(Equipe novaEquipe, Equipe equipe) {
         Long idTema = novaEquipe.getTema().getId();
         Long idLinha = novaEquipe.getTema().getLinhaPesquisa().getId();
         Long idConhecimento = novaEquipe.getTema().getLinhaPesquisa().getAreaConhecimento().getId();
@@ -66,7 +66,7 @@ public class EquipeService {
     }
 
     @Transactional
-    public void deletar(Equipe equipe){
+    public void deletar(Equipe equipe) {
         Objects.requireNonNull(equipe.getId());
         repository.delete(equipe);
     }
@@ -91,21 +91,21 @@ public class EquipeService {
     }
 
     @Transactional(readOnly = true)
-    public AcompanhamentoDTO mostrarTodaEquipePeloId(Long id){
+    public AcompanhamentoDTO mostrarTodaEquipePeloId(Long id) {
         Equipe equipe = repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Equipe não encontrada."));
         return entidadeParaDTOCompleto(equipe);
     }
 
-    public EquipeDTO entidadeParaDTO(Equipe equipe){
+    public EquipeDTO entidadeParaDTO(Equipe equipe) {
         return modelMapper.map(equipe, EquipeDTO.class);
     }
 
-    public AcompanhamentoDTO entidadeParaDTOCompleto(Equipe equipe){
+    public AcompanhamentoDTO entidadeParaDTOCompleto(Equipe equipe) {
         return modelMapper.map(equipe, AcompanhamentoDTO.class);
     }
 
-    public Equipe dtoParaEntidade(EquipePostDTO dto){
+    public Equipe dtoParaEntidade(EquipePostDTO dto) {
         return modelMapper.map(dto, Equipe.class);
     }
 

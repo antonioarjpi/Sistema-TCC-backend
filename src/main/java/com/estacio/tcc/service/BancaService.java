@@ -3,7 +3,10 @@ package com.estacio.tcc.service;
 import com.estacio.tcc.dto.BancaDTO;
 import com.estacio.tcc.dto.BancaPostDTO;
 import com.estacio.tcc.dto.DefesaPostDTO;
-import com.estacio.tcc.model.*;
+import com.estacio.tcc.model.Banca;
+import com.estacio.tcc.model.Defesa;
+import com.estacio.tcc.model.Equipe;
+import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.repository.*;
 import com.estacio.tcc.service.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
@@ -30,19 +33,19 @@ public class BancaService {
     private DefesaRepository defesaRepository;
     private ModelMapper modelMapper;
 
-    public BancaDTO encontrarIdDTO(Long id){
+    public BancaDTO encontrarIdDTO(Long id) {
         Banca banca = repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Banca não encontrada"));
         return entidadeParaDTO(banca);
     }
 
-    public Banca encontrarId(Long id){
+    public Banca encontrarId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Banca não encontrada"));
     }
 
     @Transactional
-    public Banca salvar(BancaPostDTO dto){
+    public Banca salvar(BancaPostDTO dto) {
         Banca banca = dtoParaEntidade(dto);
         buscaOrientadorEquipe(dto, banca);
         return repository.save(banca);
@@ -57,12 +60,12 @@ public class BancaService {
     }
 
     @Transactional
-    public void deletar(Long id){
+    public void deletar(Long id) {
         Banca banca = encontrarId(id);
         repository.delete(banca);
     }
 
-    public List<BancaDTO> lista(Banca banca){
+    public List<BancaDTO> lista(Banca banca) {
         Example example = Example.of(banca, ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
@@ -72,7 +75,7 @@ public class BancaService {
                 .collect(Collectors.toList());
     }
 
-    public Page<Banca> listaPageada(Banca banca, Pageable pageable){
+    public Page<Banca> listaPageada(Banca banca, Pageable pageable) {
         Example example = Example.of(banca, ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
@@ -80,7 +83,7 @@ public class BancaService {
     }
 
     @Transactional
-    public Banca atualizar(BancaPostDTO dto){
+    public Banca atualizar(BancaPostDTO dto) {
         Banca banca = dtoParaEntidade(dto);
         Banca novaBanca = encontrarId(banca.getId());
 
@@ -90,7 +93,7 @@ public class BancaService {
         return repository.save(banca);
     }
 
-    private void atualizaDados(Banca novaBanca, Banca banca){
+    private void atualizaDados(Banca novaBanca, Banca banca) {
         //Guarda id de membro
         Long idMembro = novaBanca.getMembro().getId();
         //Bancas
@@ -106,13 +109,13 @@ public class BancaService {
     }
 
     @Transactional
-    public Banca agendamentoDefesa(Long id, DefesaPostDTO dto){
+    public Banca agendamentoDefesa(Long id, DefesaPostDTO dto) {
         Banca banca = encontrarId(id);
         if (banca.getDefesa() == null) {
             Defesa defesa = new Defesa();
             defesa.setDataDefesa(dto.getData());
             banca.setDefesa(defesa);
-        }else {
+        } else {
             Optional<Defesa> defesa = defesaRepository.findById(banca.getDefesa().getId());
             defesa.get().setId(defesa.get().getId());
             defesa.get().setDataDefesa(dto.getData());
@@ -121,11 +124,11 @@ public class BancaService {
         return repository.save(banca);
     }
 
-    public Banca dtoParaEntidade(BancaPostDTO dto){
+    public Banca dtoParaEntidade(BancaPostDTO dto) {
         return modelMapper.map(dto, Banca.class);
     }
 
-    public BancaDTO entidadeParaDTO(Banca banca){
+    public BancaDTO entidadeParaDTO(Banca banca) {
         return modelMapper.map(banca, BancaDTO.class);
     }
 

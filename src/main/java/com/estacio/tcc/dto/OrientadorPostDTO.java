@@ -14,35 +14,35 @@ public class OrientadorPostDTO {
 
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar o nome ")
     @Size(min = 3, max = 255, message = "Campo tem que ter entre 3 a 255 caracteres")
     private String nome;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "É obrigatório informar o e-mail ")
+    @Email(message = "Deve ser um e-mail válido")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar a senha")
     @Size(min = 6, max = 16, message = "Senha tem que ser entre 6 a 16 caracteres")
     private String senha;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar a descrição da titulação ")
     @Size(min = 3, max = 100, message = "Descrição da titulação tem que ter entre 3 a 100 caracteres")
     private String titulacaoDescricao;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar o grau ")
     @Size(min = 3, max = 100, message = "Grau tem que ter entre 3 a 100 caracteres")
     private String titulacaoGrau;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar a IES ")
     @Size(min = 3, max = 100, message = "IES tem que ter entre 3 a 100 caracteres")
     private String titulacaoIes;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar a linha de pesquisa ")
     @Size(min = 3, max = 255, message = "Linha de pesquisa tem que ter entre 3 a 255 caracteres")
     private String linhaPesquisaDescricao;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar a area de conhecimento ")
     @Size(min = 3, max = 255, message = "Area de conhecimento tem que ter entre 3 a 255 caracteres")
     private String linhaPesquisaAreaconhecimentoDescricao;
 

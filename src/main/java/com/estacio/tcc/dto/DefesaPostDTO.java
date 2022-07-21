@@ -9,10 +9,13 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-@Data @AllArgsConstructor @NoArgsConstructor @Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class DefesaPostDTO {
 
-    @NotNull
+    @NotNull(message = "É obrigatório informar a data da defesa")
     @FutureOrPresent(message = "Data banca menor que dia atual. ")
     public LocalDate data;
 

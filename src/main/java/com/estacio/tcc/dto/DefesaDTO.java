@@ -16,9 +16,9 @@ public class DefesaDTO {
 
     private Long id;
     private String descricao;
-    @JsonFormat(pattern="dd/MM/yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataBanca;
-    @JsonFormat(pattern="dd/MM/yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataDefesa;
 
 }

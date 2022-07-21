@@ -19,22 +19,22 @@ public class OrientacaoPostDTO {
 
     private Long id;
 
-    @NotNull
+    @NotNull(message = "É obrigatório informar data de orientação ")
     @FutureOrPresent
     private LocalDate dataOrientacao;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar a matrícula do orientador ")
     @Size(min = 3, max = 255, message = "Matrícula do orientador tem que ter entre 3 a 255 caracteres")
     private String matriculaOrientador;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar código de orientação ")
     @Size(min = 3, max = 255, message = "Tipo de TCC tem que ter entre 3 a 255 caracteres")
     private String tipoTCC;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar a descrição do TCC ")
     @Size(min = 3, max = 255, message = "Descrição de TCC tem que ter entre 3 a 255 caracteres")
     private String descricaoTCC;
 
-    @NotNull
+    @NotNull(message = "É obrigatório informar código de equipe ")
     private Long equipe;
 }

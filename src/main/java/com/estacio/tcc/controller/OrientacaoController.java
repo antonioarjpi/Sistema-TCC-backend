@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/orientacao")
@@ -32,7 +31,7 @@ public class OrientacaoController {
                                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataOrientacao,
                                  @RequestParam(required = false) String matriculaOrientador,
                                  @RequestParam(required = false) String tipoTCC,
-                                 @RequestParam(required = false) String descricaoTCC){
+                                 @RequestParam(required = false) String descricaoTCC) {
 
         TipoTcc tipoTcc = new TipoTcc(null, tipoTCC);
         EstruturaTcc estruturaTcc = new EstruturaTcc(null, descricaoTCC, tipoTcc);
@@ -49,24 +48,24 @@ public class OrientacaoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrientacaoDTO> encontrarId(@PathVariable Long id){
+    public ResponseEntity<OrientacaoDTO> encontrarId(@PathVariable Long id) {
         return ResponseEntity.ok(service.encontrarIdDTO(id));
     }
 
     @PostMapping
-    public ResponseEntity<Orientacao> salvar(@RequestBody @Valid OrientacaoPostDTO dto){
+    public ResponseEntity<Orientacao> salvar(@RequestBody @Valid OrientacaoPostDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody OrientacaoPostDTO dto){
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody OrientacaoPostDTO dto) {
         dto.setId(id);
         Orientacao orientacao = service.atualizar(dto);
         return ResponseEntity.ok(orientacao);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id){
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         Orientacao orientacao = service.encontrarId(id);
         service.deletar(orientacao);
         return ResponseEntity.noContent().build();

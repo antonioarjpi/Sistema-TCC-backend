@@ -18,29 +18,29 @@ public class DevolutivaPostDTO {
 
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar o status de orientação")
     @Size(min = 3, max = 255, message = "Campo status tem que ter entre 3 a 255 caracteres")
     private String statusOrientacao;
 
-    @NotNull
+    @NotNull(message = "É obrigatório informar a data de mudança")
     private LocalDate dataMudanca;
 
-    @NotNull
+    @NotNull(message = "É obrigatório informar código de orientação ")
     private Long orientacaoId;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar a descrição da devolutiva ")
     @Size(min = 3, max = 255, message = "Descrição devolutiva tem que ter entre 3 a 255 caracteres")
     private String devolutivaDescricao;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar a versão do documento ")
     @Size(min = 3, max = 255, message = "Versão do documento tem que ter entre 3 a 255 caracteres")
     private String devolutivaVersaoDoc;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar local de correção ")
     @Size(min = 3, max = 255, message = "Local de correção tem que ter entre 3 a 255 caracteres")
     private String devolutivaLocalCorrecaoLocal;
 
-    @NotBlank
+    @NotBlank(message = "É obrigatório informar a correção sugerida ")
     @Size(min = 3, max = 255, message = "Correção sugerida tem que ter entre 3 a 255 caracteres")
     private String devolutivaLocalCorrecaoCorrecaoSugerida;
 
