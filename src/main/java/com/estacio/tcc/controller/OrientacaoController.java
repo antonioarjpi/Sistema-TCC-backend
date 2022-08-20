@@ -7,6 +7,8 @@ import com.estacio.tcc.model.Orientacao;
 import com.estacio.tcc.model.Orientador;
 import com.estacio.tcc.model.TipoTcc;
 import com.estacio.tcc.service.OrientacaoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDate;
 
+@Api(tags = "Orientação Controller")
 @RestController
 @RequestMapping("/orientacao")
 @AllArgsConstructor
@@ -25,6 +28,7 @@ public class OrientacaoController {
 
     private OrientacaoService service;
 
+    @ApiOperation("Retorna lista paginada com busca de filtro de orientação")
     @GetMapping
     public ResponseEntity listar(Pageable pageable,
                                  @RequestParam(required = false) String nomeOrientador,
@@ -47,16 +51,19 @@ public class OrientacaoController {
         return ResponseEntity.ok(page);
     }
 
+    @ApiOperation("Busca orientação pelo id")
     @GetMapping("/{id}")
     public ResponseEntity<OrientacaoDTO> encontrarId(@PathVariable Long id) {
         return ResponseEntity.ok(service.encontrarIdDTO(id));
     }
 
+    @ApiOperation("Cadastra orientação no banco de dados")
     @PostMapping
     public ResponseEntity<Orientacao> salvar(@RequestBody @Valid OrientacaoPostDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(dto));
     }
 
+    @ApiOperation("Atualiza cadastro da orientação pelo id")
     @PutMapping("/{id}")
     public ResponseEntity atualizar(@PathVariable Long id, @RequestBody OrientacaoPostDTO dto) {
         dto.setId(id);
@@ -64,6 +71,7 @@ public class OrientacaoController {
         return ResponseEntity.ok(orientacao);
     }
 
+    @ApiOperation("Exclui uma orientação pelo id")
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         Orientacao orientacao = service.encontrarId(id);

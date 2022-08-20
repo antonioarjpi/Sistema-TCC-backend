@@ -7,6 +7,8 @@ import com.estacio.tcc.model.Devolutiva;
 import com.estacio.tcc.model.LocalCorrecao;
 import com.estacio.tcc.model.Orientacao;
 import com.estacio.tcc.service.DevolutivaService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDate;
 
+@Api(tags = "Devolutiva Controller")
 @RestController
 @RequestMapping("/acompanhamentos")
 @AllArgsConstructor
@@ -25,6 +28,7 @@ public class DevolutivaController {
 
     private DevolutivaService service;
 
+    @ApiOperation("Retorna lista paginada com busca de filtro de devolutiva")
     @GetMapping
     public ResponseEntity<Page<DevolutivaDTO>> listar(Pageable pageable,
                                                       @RequestParam(required = false) String statusOrientacao,
@@ -44,17 +48,20 @@ public class DevolutivaController {
         return ResponseEntity.ok(devolutivaDTOS);
     }
 
+    @ApiOperation("Busca de devolutiva pelo id")
     @GetMapping("/{id}")
     public ResponseEntity<DevolutivaDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.encontrarIdDTO(id));
     }
 
+    @ApiOperation("Cadastra uma devolutiva no banco de dados")
     @PostMapping
     public ResponseEntity<AcompanhamentoOrientacao> save(@RequestBody @Valid DevolutivaPostDTO dto) {
         AcompanhamentoOrientacao acompanhamento = service.salvar(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(acompanhamento);
     }
 
+    @ApiOperation("Exclui a devolutiva pelo id")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         AcompanhamentoOrientacao acompanhamento = service.encontrarId(id);
@@ -62,6 +69,7 @@ public class DevolutivaController {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation("Atualiza cadastro de devolutiva")
     @PutMapping("/{id}")
     public ResponseEntity update(@PathVariable Long id, @RequestBody @Valid DevolutivaPostDTO dto) {
         dto.setId(id);

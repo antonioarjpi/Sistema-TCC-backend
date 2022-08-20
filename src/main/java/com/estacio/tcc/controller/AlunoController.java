@@ -4,6 +4,8 @@ import com.estacio.tcc.dto.AlunoDTO;
 import com.estacio.tcc.dto.AlunoPostDTO;
 import com.estacio.tcc.model.Aluno;
 import com.estacio.tcc.service.AlunoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,11 +20,13 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/alunos")
+@Api(tags = "Aluno Controller")
 public class AlunoController {
 
     @Autowired
     private AlunoService alunoService;
 
+    @ApiOperation("Retorna lista paginada com busca de filtro de aluno")
     @GetMapping
     public ResponseEntity listar(Pageable pageable,
                                  @RequestParam(required = false) String nome,
@@ -39,6 +43,7 @@ public class AlunoController {
         return ResponseEntity.ok(alunos);
     }
 
+    @ApiOperation("Busca aluno pelo e-mail")
     @GetMapping("/email/{email}")
     public ResponseEntity encontrarEmail(@PathVariable String email) {
         try {
@@ -49,21 +54,25 @@ public class AlunoController {
         }
     }
 
+    @ApiOperation("Busca aluno pela matrícula")
     @GetMapping("/matricula/{matricula}")
     public ResponseEntity<Aluno> encontrarMatricula(@PathVariable String matricula) {
         return ResponseEntity.ok(alunoService.encontraMatricula(matricula));
     }
 
+    @ApiOperation("Busca aluno pelo id")
     @GetMapping("/{id}")
     public ResponseEntity<AlunoDTO> encontrarId(@PathVariable Long id) {
         return ResponseEntity.ok(alunoService.encontrarIdDTO(id));
     }
 
+    @ApiOperation("Cadastra aluno no banco de dados")
     @PostMapping
     public ResponseEntity<Aluno> salvar(@RequestBody @Valid AlunoPostDTO alunoPostDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(alunoService.salvar(alunoPostDTO));
     }
 
+    @ApiOperation("Deleta aluno pelo id")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         Aluno aluno = alunoService.encontraId(id);
@@ -71,12 +80,14 @@ public class AlunoController {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation("Cadastra foto de perfil no aluno")
     @PostMapping("/imagem/{id}")
     public ResponseEntity<Void> uploadFotoOrientador(@RequestParam MultipartFile file, @PathVariable Long id) {
         URI uri = alunoService.uploadFotoPerfil(file, id);
         return ResponseEntity.created(uri).build();
     }
 
+    @ApiOperation("Atualiza cadastro do aluno")
     @PutMapping("/{id}")
     public ResponseEntity atualizar(@PathVariable Long id, @RequestBody AlunoPostDTO alunoPostDTO) {
         alunoPostDTO.setId(id);
